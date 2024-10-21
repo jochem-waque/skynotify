@@ -25,7 +25,12 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
-self.addEventListener("notificationclick", console.log);
+self.addEventListener("notificationclick", (event) => {
+  console.log("Running custom click handler");
+  self.clients.openWindow(
+    event.notification.data.FCM_MSG.notification.click_action
+  );
+});
 
 const messaging = getMessaging(firebaseApp);
 onBackgroundMessage(messaging, console.log);
