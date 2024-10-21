@@ -3,7 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import firebaseApp from "@/firebase";
+import FirebaseApp from "@/util/firebase";
 import { defaultCache } from "@serwist/next/worker";
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
@@ -36,7 +36,7 @@ self.addEventListener("notificationclick", (event) => {
   self.clients.openWindow(url);
 });
 
-const messaging = getMessaging(firebaseApp);
+const messaging = getMessaging(FirebaseApp);
 onBackgroundMessage(messaging, console.log);
 
 serwist.addEventListeners();

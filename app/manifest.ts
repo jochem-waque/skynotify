@@ -3,15 +3,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import Variables from "@/util/variables";
 import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "BlueSky Post Notifications",
-    short_name: "BSPN",
-    description: "A Progressive Web App for BlueSky post notifications",
+    name: "Bluesky Post Notifications",
+    short_name: "BPN",
+    description: "A Progressive Web App for Bluesky post notifications",
     id: "/",
-    start_url: "/",
+    start_url: "/app",
     display: "standalone",
     icons: [
       {
@@ -41,5 +42,13 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     theme_color: "#1185fe",
     background_color: "#bfbfbf",
+    related_applications: [
+      {
+        platform: "webapp",
+        url: `https://${Variables.hostname}/manifest.webmanifest`,
+      },
+    ],
+    scope: "/",
+    orientation: "natural",
   };
 }

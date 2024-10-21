@@ -5,103 +5,95 @@
  */
 "use client";
 
-import firebaseApp from "@/firebase";
-import { getMessaging, getToken } from "firebase/messaging";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-function InstallPrompt() {
-  const [isIOS, setIsIOS] = useState(false);
-  const [isStandalone, setIsStandalone] = useState(false);
+type BeforeInstallPromptEvent = Event & {
+  prompt(): Promise<{ outcome: "accepted" | "dismissed"; platforms: string }>;
+};
 
-  useEffect(() => {
-    setIsIOS(
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window)
-    );
-
-    setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
-  }, []);
-
-  if (isStandalone) {
-    return null;
+declare global {
+  interface Navigator {
+    getInstalledRelatedApps?(): Promise<
+      {
+        id?: string;
+        platform:
+          | "chrome_web_store"
+          | "play"
+          | "chromeos_play"
+          | "webapp"
+          | "windows"
+          | "f-droid"
+          | "amazon";
+        url?: string;
+        version?: string;
+      }[]
+    >;
   }
-
-  return (
-    <div>
-      <h3>Install App</h3>
-      <button>Add to Home Screen</button>
-      {isIOS && (
-        <p>
-          To install this app on your iOS device, tap the share button
-          <span role="img" aria-label="share icon">
-            {" "}
-            ⎋{" "}
-          </span>
-          and then %quot;Add to Home Screen%quot;
-          <span role="img" aria-label="plus icon">
-            {" "}
-            ➕{" "}
-          </span>
-          .
-        </p>
-      )}
-    </div>
-  );
-}
-
-function Subscribe() {
-  const [isSupported, setIsSupported] = useState(false);
-  const [token, setToken] = useState("");
-
-  useEffect(() => {
-    if ("serviceWorker" in navigator && "PushManager" in window) {
-      setIsSupported(true);
-      registerServiceWorker();
-    }
-  }, []);
-
-  if (!isSupported) {
-    return null;
-  }
-
-  async function registerServiceWorker() {
-    const registration = await navigator.serviceWorker.register("/sw.js", {
-      scope: "/",
-      updateViaCache: "none",
-    });
-    const sub = await registration.pushManager.getSubscription();
-    if (sub) {
-      subscribeToPush(registration);
-    }
-  }
-
-  if (token) {
-    return <code>{token}</code>;
-  }
-
-  async function subscribeToPush(registration?: ServiceWorkerRegistration) {
-    registration = await navigator.serviceWorker.getRegistration();
-
-    const messaging = getMessaging(firebaseApp);
-    const token = await getToken(messaging, {
-      serviceWorkerRegistration: registration,
-      vapidKey:
-        "BL5X3aTsXTsiij2gjvsbVYCEKirzRaAaJ6ipnlI63PxaOCXbMDDb-KZ5_pQEPHZnORGct6aYYjgQc-cxrhm4D-c",
-    });
-    setToken(token);
-  }
-
-  return (
-    <button onClick={() => subscribeToPush()}>
-      Subscribe to push notifications
-    </button>
-  );
 }
 
 export default function Page() {
+  const router = useRouter();
+  const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent>();
+  const [disabled, setDisabled] = useState(true);
+  const [installed, setInstalled] = useState(false);
+
+  useEffect(() => {
+    setInstalled(window.matchMedia("(display-mode: standalone)").matches);
+    if (navigator.getInstalledRelatedApps) {
+      navigator.getInstalledRelatedApps().then(console.log); // TODO
+    }
+  }, []);
+
+  useEffect(() => {
+    setDisabled("BeforeInstallPromptEvent" in window && !installEvent);
+  }, [installEvent]);
+
+  useEffect(() => {
+    function listener(event: Event) {
+      setInstallEvent(event as BeforeInstallPromptEvent);
+    }
+
+    window.addEventListener("beforeinstallprompt", listener);
+
+    return () => window.removeEventListener("beforeinstallprompt", listener);
+  }, []);
+
+  if (installed) {
+    router.replace("/app");
+  }
+
+  async function tryInstall(event?: BeforeInstallPromptEvent) {
+    if (!event) {
+      // TODO: different installation flow
+      router.replace("/app");
+      return;
+    }
+
+    setDisabled(true);
+    const { outcome } = await event.prompt();
+    if (outcome === "accepted") {
+      router.replace("/app");
+    }
+
+    setDisabled(false);
+  }
+
   return (
-    <>
-      <InstallPrompt></InstallPrompt>
-      <Subscribe></Subscribe>
-    </>
+    <main>
+      <div className="flex flex-col min-h-[100svh] items-center justify-center gap-48">
+        <div className="text-center">
+          <h1 className="text-4xl">Bluesky Post Notifications</h1>
+          <span>by jochem.cc</span>
+        </div>
+        <button
+          disabled={disabled}
+          onClick={() => tryInstall(installEvent)}
+          className="px-16 py-4 dark:bg-blue-600 bg-blue-400 text-2xl rounded-lg transition-opacity disabled:opacity-25 disabled:cursor-progress hover:opacity-75"
+        >
+          Get started
+        </button>
+      </div>
+    </main>
   );
 }
