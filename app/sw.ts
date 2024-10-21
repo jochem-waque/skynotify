@@ -25,6 +25,8 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
+self.addEventListener("notificationclick", console.log);
+
 const messaging = getMessaging(firebaseApp);
 onBackgroundMessage(messaging, console.log);
 
