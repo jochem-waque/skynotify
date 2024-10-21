@@ -37,11 +37,14 @@ export default function Page() {
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent>();
   const [disabled, setDisabled] = useState(true);
   const [installed, setInstalled] = useState(false);
+  const [log, setLog] = useState("");
 
   useEffect(() => {
     setInstalled(window.matchMedia("(display-mode: standalone)").matches);
     if (navigator.getInstalledRelatedApps) {
-      navigator.getInstalledRelatedApps().then(console.log); // TODO
+      navigator
+        .getInstalledRelatedApps()
+        .then((result) => setLog(JSON.stringify(result))); // TODO
     }
   }, []);
 
@@ -85,6 +88,7 @@ export default function Page() {
         <div className="text-center">
           <h1 className="text-4xl">Bluesky Post Notifications</h1>
           <span>by jochem.cc</span>
+          <code>{log}</code>
         </div>
         <button
           disabled={disabled}
