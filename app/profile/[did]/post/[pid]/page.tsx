@@ -5,6 +5,7 @@
  */
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -23,5 +24,14 @@ export default function Page() {
       : url.toString();
   });
 
-  return <span>Opening in Bluesky...</span>;
+  return (
+    <div className="flex flex-col min-h-[100svh] items-center justify-center gap-2">
+      <span className="text-4xl">Opening in Bluesky...</span>
+      <span className="text-xl">
+        <Link href={url} className="underline text-blue-500">
+          Not opening? Click here
+        </Link>
+      </span>
+    </div>
+  );
 }
