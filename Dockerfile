@@ -9,7 +9,7 @@ COPY ["pnpm-lock.yaml", "package.json", "./"]
 # Install build tools
 RUN apt-get update && \
     apt-get install -y build-essential python3 && \
-    rm -rf /var/lib/apt/lists/* \
+    rm -rf /var/lib/apt/lists/* && \
     npm install -g pnpm && \
     NODE_ENV=development pnpm install
 
