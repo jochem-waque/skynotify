@@ -33,6 +33,11 @@ self.addEventListener("notificationclick", (event) => {
     return;
   }
 
+  if (url.hostname === "bsky.app") {
+    self.clients.openWindow(`bluesky:/${url.pathname}`);
+    return;
+  }
+
   self.clients.openWindow(
     event.notification.data.FCM_MSG.notification.click_action
   );
