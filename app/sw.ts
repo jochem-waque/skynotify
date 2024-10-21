@@ -33,18 +33,12 @@ self.addEventListener("notificationclick", (event) => {
     return;
   }
 
-  if (url.hostname === "bsky.app") {
-    try {
-      self.clients.openWindow(
-        `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
-      );
-      return;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  self.clients.openWindow(url);
+  const userAgent = navigator.userAgent.toLowerCase();
+  self.clients.openWindow(
+    userAgent.indexOf("android")
+      ? `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
+      : url
+  );
 });
 
 const messaging = getMessaging(firebaseApp);
