@@ -39,5 +39,6 @@ export default function manifest(): MetadataRoute.Manifest {
         form_factor: "wide",
       },
     ],
+    theme_color: "#1185fe",
   };
 }
