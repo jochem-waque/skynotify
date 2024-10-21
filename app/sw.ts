@@ -25,22 +25,6 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
-self.addEventListener("notificationclick", (event) => {
-  const url = new URL(
-    event.notification.data.FCM_MSG.notification.click_action
-  );
-  if (url.hostname === self.location.hostname) {
-    return;
-  }
-
-  const userAgent = navigator.userAgent.toLowerCase();
-  self.clients.openWindow(
-    userAgent.includes("android")
-      ? `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
-      : url
-  );
-});
-
 const messaging = getMessaging(firebaseApp);
 onBackgroundMessage(messaging, console.log);
 
