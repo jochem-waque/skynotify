@@ -34,13 +34,17 @@ self.addEventListener("notificationclick", (event) => {
   }
 
   if (url.hostname === "bsky.app") {
-    self.clients.openWindow(`bluesky:/${url.pathname}`);
-    return;
+    try {
+      self.clients.openWindow(
+        `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
+      );
+      return;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  self.clients.openWindow(
-    event.notification.data.FCM_MSG.notification.click_action
-  );
+  self.clients.openWindow(url);
 });
 
 const messaging = getMessaging(firebaseApp);
