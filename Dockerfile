@@ -15,7 +15,7 @@ RUN apk add --no-cache alpine-sdk python3 && \
 COPY . .
 
 # Compile and remove dev packages
-RUN pnpm build --experimental-build-mode compile && \
+RUN pnpm build && \
     pnpm prune --prod
 
 # Set-up running image
@@ -30,4 +30,4 @@ RUN npm install -g pnpm
 COPY --from=builder /app .
 
 # Generate and run
-CMD pnpm build ; pnpm start
+CMD pnpm start
