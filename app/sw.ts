@@ -5,7 +5,7 @@
  */
 import FirebaseApp from "@/util/firebase";
 import { defaultCache } from "@serwist/next/worker";
-import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
+import { getMessaging } from "firebase/messaging/sw";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
 
@@ -25,18 +25,6 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
-self.addEventListener("notificationclick", (event) => {
-  const url = new URL(
-    event.notification.data.FCM_MSG.notification.click_action
-  );
-  if (url.hostname === self.location.hostname) {
-    return;
-  }
-
-  self.clients.openWindow(url);
-});
-
-const messaging = getMessaging(FirebaseApp);
-onBackgroundMessage(messaging, console.log);
+getMessaging(FirebaseApp);
 
 serwist.addEventListeners();
