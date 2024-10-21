@@ -75,8 +75,7 @@ function Subscribe() {
   }
 
   if (token) {
-    console.log(token);
-    return null;
+    return <code>{token}</code>;
   }
 
   async function subscribeToPush(registration?: ServiceWorkerRegistration) {
