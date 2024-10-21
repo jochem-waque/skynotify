@@ -25,6 +25,17 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
+self.addEventListener("notificationclick", (event) => {
+  const url = new URL(
+    event.notification.data.FCM_MSG.notification.click_action
+  );
+  if (url.hostname === self.location.hostname) {
+    return;
+  }
+
+  self.clients.openWindow(url);
+});
+
 const messaging = getMessaging(firebaseApp);
 onBackgroundMessage(messaging, console.log);
 
