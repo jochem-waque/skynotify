@@ -25,6 +25,13 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
+self.addEventListener("notificationclick", (event) => {
+  const url = new URL(
+    event.notification.data.FCM_MSG.notification.click_action
+  );
+  self.clients.openWindow(url);
+});
+
 getMessaging(FirebaseApp);
 
 serwist.addEventListeners();
