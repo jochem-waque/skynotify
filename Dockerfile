@@ -4,7 +4,7 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 # Copy package.json, lockfile and .npmrc
-COPY ["pnpm-lock.yaml", "package.json", ".npmrc", "./"]
+COPY ["pnpm-lock.yaml", "package.json", "./"]
 
 # Install build tools
 RUN apk add --no-cache alpine-sdk python3 && \
