@@ -1,0 +1,12 @@
+services:
+  app:
+    container_name: bpn-app
+    build: .
+    restart: unless-stopped
+    networks:
+      - ubuntu_caddy
+      - default
+
+networks:
+  ubuntu_caddy:
+    external: true
