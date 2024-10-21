@@ -40,5 +40,6 @@ export default function manifest(): MetadataRoute.Manifest {
       },
     ],
     theme_color: "#1185fe",
+    background_color: "#bfbfbf",
   };
 }
