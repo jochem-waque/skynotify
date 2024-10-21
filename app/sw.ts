@@ -5,7 +5,7 @@
  */
 import firebaseApp from "@/firebase";
 import { defaultCache } from "@serwist/next/worker";
-import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
+import { getMessaging } from "firebase/messaging/sw";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
 
@@ -25,20 +25,6 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
-const messaging = getMessaging(firebaseApp);
-onBackgroundMessage(messaging, function (payload) {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload
-  );
-
-  const notificationTitle = "Background Message Title";
-  const notificationOptions = {
-    body: "Background Message body.",
-    icon: "/firebase-logo.png",
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
+getMessaging(firebaseApp);
 
 serwist.addEventListeners();
