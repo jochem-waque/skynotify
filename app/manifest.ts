@@ -30,13 +30,11 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         src: "/screenshot-720x1280.png",
         sizes: "720x1280",
-        // @ts-expect-error Types are outdated
         form_factor: "narrow",
       },
       {
         src: "/screenshot-1280x720.png",
         sizes: "1280x720",
-        // @ts-expect-error Types are outdated
         form_factor: "wide",
       },
     ],
