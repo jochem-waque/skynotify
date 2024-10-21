@@ -63,20 +63,20 @@ export default function Page() {
   }, []);
 
   if (installed) {
-    router.replace("/app");
+    router.replace("/configure");
   }
 
   async function tryInstall(event?: BeforeInstallPromptEvent) {
     if (!event) {
       // TODO: different installation flow
-      router.replace("/app");
+      router.replace("/configure");
       return;
     }
 
     setDisabled(true);
     const { outcome } = await event.prompt();
     if (outcome === "accepted") {
-      router.replace("/app");
+      router.replace("/configure");
     }
 
     setDisabled(false);
