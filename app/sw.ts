@@ -5,7 +5,7 @@
  */
 import firebaseApp from "@/firebase";
 import { defaultCache } from "@serwist/next/worker";
-import { getMessaging } from "firebase/messaging/sw";
+import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
 
@@ -25,6 +25,7 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
-getMessaging(firebaseApp);
+const messaging = getMessaging(firebaseApp);
+onBackgroundMessage(messaging, console.log);
 
 serwist.addEventListeners();
