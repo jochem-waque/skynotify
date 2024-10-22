@@ -35,13 +35,18 @@ self.addEventListener("notificationclick", async (event) => {
     ? `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
     : url.toString()
 
-  let [client] = await self.clients.matchAll({ type: "window" })
+  const [client] = await self.clients.matchAll({ type: "window" })
   if (!client) {
     await self.clients.openWindow(urlString)
     return
   }
 
-  client = await client.focus()
+  try {
+    await client.focus()
+  } catch (e) {
+    console.error(e)
+  }
+
   await client.navigate(urlString)
 })
 
