@@ -12,7 +12,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "BPN",
     description: "A Progressive Web App for Bluesky post notifications",
     id: "/",
-    start_url: "/configure",
+    start_url: "/",
     display: "standalone",
     icons: [
       {
