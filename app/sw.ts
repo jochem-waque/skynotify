@@ -25,7 +25,7 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 })
 
-self.addEventListener("notificationclick", async (event) => {
+self.addEventListener("notificationclick", (event) => {
   const url = new URL(event.notification.data.FCM_MSG.notification.click_action)
   if (url.hostname !== "bsky.app") {
     return
@@ -35,19 +35,23 @@ self.addEventListener("notificationclick", async (event) => {
     ? `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
     : url.toString()
 
-  const [client] = await self.clients.matchAll({ type: "window" })
-  if (!client) {
-    await self.clients.openWindow(urlString)
-    return
-  }
+  return event.waitUntil(
+    self.clients
+      .matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      })
+      .then((clients) => {
+        const client = clients.find(
+          (c) => new URL(c.url).hostname === self.location.hostname,
+        )
+        if (!client) {
+          return self.clients.openWindow(urlString)
+        }
 
-  try {
-    await client.focus()
-  } catch (e) {
-    console.error(e)
-  }
-
-  await client.navigate(urlString)
+        return client.focus().finally(() => client.navigate(urlString))
+      }),
+  )
 })
 
 getMessaging(FirebaseApp)
