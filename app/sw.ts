@@ -25,8 +25,10 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
-self.addEventListener("notificationclick", (event) => {
-  console.log(event);
+self.addEventListener("message", (event) => {
+  if (event.data.messageType === "notification-clicked") {
+    window.location.href = event.data.notification.click_action;
+  }
 });
 
 getMessaging(FirebaseApp);
