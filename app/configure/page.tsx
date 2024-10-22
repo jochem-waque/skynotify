@@ -16,11 +16,7 @@ function Subscribe() {
   useEffect(() => {
     async function registerNotifications() {
       const registration = await navigator.serviceWorker.getRegistration()
-      if (!registration) {
-        return
-      }
-
-      const subscription = await registration.pushManager.getSubscription()
+      const subscription = await registration?.pushManager.getSubscription()
       if (subscription) {
         subscribeToPush(registration)
       }
@@ -31,6 +27,29 @@ function Subscribe() {
       registerNotifications()
     }
   }, [])
+
+  useEffect(() => {
+    function listener(event: MessageEvent) {
+      if (event.data.messageType === "notification-clicked") {
+        window.location.href = event.data.notification.click_action
+      }
+    }
+
+    navigator.serviceWorker.addEventListener("message", listener)
+    return () => {
+      navigator.serviceWorker.removeEventListener("message", listener)
+    }
+  }, [])
+
+  async function subscribeToPush(registration?: ServiceWorkerRegistration) {
+    const messaging = getMessaging(FirebaseApp)
+    const token = await getToken(messaging, {
+      serviceWorkerRegistration: registration,
+      vapidKey:
+        "BL5X3aTsXTsiij2gjvsbVYCEKirzRaAaJ6ipnlI63PxaOCXbMDDb-KZ5_pQEPHZnORGct6aYYjgQc-cxrhm4D-c",
+    })
+    setToken(token)
+  }
 
   if (!isSupported) {
     return null
@@ -44,24 +63,6 @@ function Subscribe() {
     )
   }
 
-  async function subscribeToPush(registration?: ServiceWorkerRegistration) {
-    registration = await navigator.serviceWorker.getRegistration()
-
-    const messaging = getMessaging(FirebaseApp)
-    const token = await getToken(messaging, {
-      serviceWorkerRegistration: registration,
-      vapidKey:
-        "BL5X3aTsXTsiij2gjvsbVYCEKirzRaAaJ6ipnlI63PxaOCXbMDDb-KZ5_pQEPHZnORGct6aYYjgQc-cxrhm4D-c",
-    })
-    setToken(token)
-
-    navigator.serviceWorker.addEventListener("message", (event) => {
-      if (event.data.messageType === "notification-clicked") {
-        window.location.href = event.data.notification.click_action
-      }
-    })
-  }
-
   return (
     <button onClick={() => subscribeToPush()}>
       Subscribe to push notifications
@@ -70,9 +71,5 @@ function Subscribe() {
 }
 
 export default function Page() {
-  return (
-    <>
-      <Subscribe></Subscribe>
-    </>
-  )
+  return <Subscribe></Subscribe>
 }
