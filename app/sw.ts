@@ -31,24 +31,15 @@ self.addEventListener("notificationclick", (event) => {
     return
   }
 
-  const urlString = self.navigator.userAgent.toLowerCase().includes("android")
-    ? `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
-    : url.toString()
+  if (self.navigator.userAgent.toLowerCase().includes("android")) {
+    return event.waitUntil(
+      self.clients.openWindow(
+        `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`,
+      ),
+    )
+  }
 
-  return event.waitUntil(
-    self.clients
-      .matchAll({
-        type: "window",
-        includeUncontrolled: true,
-      })
-      .then(([client]) => {
-        if (!client) {
-          return self.clients.openWindow(urlString)
-        }
-
-        return client.focus().finally(() => client.navigate(urlString))
-      }),
-  )
+  return event.waitUntil(self.clients.openWindow(url))
 })
 
 getMessaging(FirebaseApp)
