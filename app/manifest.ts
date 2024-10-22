@@ -16,8 +16,12 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/configure",
     display: "standalone",
     orientation: "natural",
+    launch_handler: {
+      client_mode: "navigate-existing",
+    },
     theme_color: "#1185fe",
     background_color: "#bfbfbf",
+    prefer_related_applications: false,
     related_applications: [
       {
         platform: "webapp",
