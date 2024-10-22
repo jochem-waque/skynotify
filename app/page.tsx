@@ -6,27 +6,28 @@
 "use client"
 
 import Onboarding from "@/components/onboarding"
-import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function Page() {
-  const [isStandalone, setIsStandalone] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
-    function listener({ matches }: MediaQueryListEvent) {
-      setIsStandalone(matches)
+    function listener() {
+      router.push("/configure")
     }
 
     const mql = window.matchMedia("(display-mode: standalone)")
-    setIsStandalone(mql.matches)
+    if (mql.matches) {
+      router.push("/configure")
+    }
 
     mql.addEventListener("change", listener)
 
     return () => {
       mql.removeEventListener("change", listener)
     }
-  })
+  }, [router])
 
-  if (!isStandalone) {
-    return <Onboarding></Onboarding>
-  }
+  return <Onboarding></Onboarding>
 }

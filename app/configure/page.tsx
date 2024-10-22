@@ -14,11 +14,12 @@ function Subscribe() {
   const [token, setToken] = useState("")
 
   useEffect(() => {
-    async function registerServiceWorker() {
-      const registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      })
+    async function registerNotifications() {
+      const registration = await navigator.serviceWorker.getRegistration()
+      if (!registration) {
+        return
+      }
+
       const subscription = await registration.pushManager.getSubscription()
       if (subscription) {
         subscribeToPush(registration)
@@ -27,7 +28,7 @@ function Subscribe() {
 
     if ("serviceWorker" in navigator && "PushManager" in window) {
       setIsSupported(true)
-      registerServiceWorker()
+      registerNotifications()
     }
   }, [])
 
@@ -36,7 +37,11 @@ function Subscribe() {
   }
 
   if (token) {
-    return <code>{token}</code>
+    return (
+      <code className="break-all bg-neutral-100 p-1 dark:bg-neutral-900">
+        {token}
+      </code>
+    )
   }
 
   async function subscribeToPush(registration?: ServiceWorkerRegistration) {
