@@ -41,10 +41,7 @@ self.addEventListener("notificationclick", (event) => {
         type: "window",
         includeUncontrolled: true,
       })
-      .then((clients) => {
-        const client = clients.find(
-          (c) => new URL(c.url).hostname === self.location.hostname,
-        )
+      .then(([client]) => {
         if (!client) {
           return self.clients.openWindow(urlString)
         }
