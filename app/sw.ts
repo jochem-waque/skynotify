@@ -25,6 +25,19 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 })
 
+self.addEventListener("notificationclick", (event) => {
+  const url = new URL(event.notification.data.FCM_MSG.notification.click_action)
+  if (url.hostname !== "bsky.app") {
+    return
+  }
+
+  self.clients.openWindow(
+    self.navigator.userAgent.toLowerCase().includes("android")
+      ? `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
+      : url,
+  )
+})
+
 getMessaging(FirebaseApp)
 
 serwist.addEventListeners()
