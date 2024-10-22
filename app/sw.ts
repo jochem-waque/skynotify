@@ -25,6 +25,10 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
+self.addEventListener("notificationclick", (event) => {
+  console.log(event);
+});
+
 getMessaging(FirebaseApp);
 
 serwist.addEventListeners();

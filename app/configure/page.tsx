@@ -43,15 +43,6 @@ function Subscribe() {
     registration = await navigator.serviceWorker.getRegistration();
 
     const messaging = getMessaging(FirebaseApp);
-    onMessage(messaging, (payload) => {
-      console.log(payload);
-      if (!payload.fcmOptions?.link) {
-        return;
-      }
-
-      window.open(payload.fcmOptions.link);
-    });
-
     const token = await getToken(messaging, {
       serviceWorkerRegistration: registration,
       vapidKey:
