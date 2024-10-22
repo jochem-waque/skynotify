@@ -7,22 +7,29 @@
 
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function Page() {
   const params: { did: string; pid: string } = useParams()
-
-  const url = new URL(
-    `https://bsky.app/profile/${decodeURIComponent(
-      params.did,
-    )}/post/${decodeURIComponent(params.pid)}`,
+  const [url, setUrl] = useState(
+    new URL(
+      `https://bsky.app/profile/${decodeURIComponent(
+        params.did,
+      )}/post/${decodeURIComponent(params.pid)}`,
+    ),
   )
 
   useEffect(() => {
-    window.location.href = navigator.userAgent.toLowerCase().includes("android")
-      ? `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
-      : url.toString()
-  })
+    setUrl((old) => {
+      const value = navigator.userAgent.toLowerCase().includes("android")
+        ? new URL(
+            `intent:/${old.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${old};end`,
+          )
+        : old
+      window.location.href = value.toString()
+      return value
+    })
+  }, [])
 
   return (
     <div className="flex min-h-[100svh] flex-col items-center justify-center gap-2">
