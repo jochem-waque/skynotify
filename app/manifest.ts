@@ -3,8 +3,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Variables from "@/util/variables";
-import { MetadataRoute } from "next";
+import Variables from "@/util/variables"
+import { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -48,5 +48,5 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     scope: "/",
     orientation: "natural",
-  };
+  }
 }

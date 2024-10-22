@@ -4,12 +4,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 /** @type {import('next').NextConfig} */
-
-import withSerwistInit from "@serwist/next";
+import withSerwistInit from "@serwist/next"
 
 const withSerwist = withSerwistInit({
   swSrc: "app/sw.ts",
   swDest: "public/sw.js",
-});
+})
 
-export default withSerwist({});
+export default withSerwist({})

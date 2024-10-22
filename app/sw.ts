@@ -3,19 +3,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import FirebaseApp from "@/util/firebase";
-import { defaultCache } from "@serwist/next/worker";
-import { getMessaging } from "firebase/messaging/sw";
-import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import { Serwist } from "serwist";
+import FirebaseApp from "@/util/firebase"
+import { defaultCache } from "@serwist/next/worker"
+import { getMessaging } from "firebase/messaging/sw"
+import type { PrecacheEntry, SerwistGlobalConfig } from "serwist"
+import { Serwist } from "serwist"
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
-    __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
+    __SW_MANIFEST: (PrecacheEntry | string)[] | undefined
   }
 }
 
-declare const self: ServiceWorkerGlobalScope;
+declare const self: ServiceWorkerGlobalScope
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
@@ -23,8 +23,8 @@ const serwist = new Serwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: defaultCache,
-});
+})
 
-getMessaging(FirebaseApp);
+getMessaging(FirebaseApp)
 
-serwist.addEventListeners();
+serwist.addEventListeners()
