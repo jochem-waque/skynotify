@@ -49,6 +49,10 @@ function Subscribe() {
         "BL5X3aTsXTsiij2gjvsbVYCEKirzRaAaJ6ipnlI63PxaOCXbMDDb-KZ5_pQEPHZnORGct6aYYjgQc-cxrhm4D-c",
     });
     setToken(token);
+
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      console.log(event);
+    });
   }
 
   return (

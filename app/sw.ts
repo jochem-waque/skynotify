@@ -26,9 +26,7 @@ const serwist = new Serwist({
 });
 
 self.addEventListener("message", (event) => {
-  if (event.data.messageType === "notification-clicked") {
-    window.location.href = event.data.notification.click_action;
-  }
+  console.log(event);
 });
 
 getMessaging(FirebaseApp);
