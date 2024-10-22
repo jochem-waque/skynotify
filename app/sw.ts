@@ -25,10 +25,6 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 });
 
-self.addEventListener("message", (event) => {
-  console.log(event);
-});
-
 getMessaging(FirebaseApp);
 
 serwist.addEventListeners();

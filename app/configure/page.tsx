@@ -51,7 +51,9 @@ function Subscribe() {
     setToken(token);
 
     navigator.serviceWorker.addEventListener("message", (event) => {
-      console.log(event);
+      if (event.data.messageType === "notification-clicked") {
+        window.location.href = event.data.notification.click_action;
+      }
     });
   }
 
