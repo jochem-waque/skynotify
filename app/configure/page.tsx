@@ -6,7 +6,7 @@
 "use client";
 
 import FirebaseApp from "@/util/firebase";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getMessaging, getToken } from "firebase/messaging";
 import { useState, useEffect } from "react";
 
 function Subscribe() {
