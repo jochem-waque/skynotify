@@ -12,8 +12,18 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "BPN",
     description: "A Progressive Web App for Bluesky post notifications",
     id: "/",
+    scope: "/",
     start_url: "/configure",
     display: "standalone",
+    orientation: "natural",
+    theme_color: "#1185fe",
+    background_color: "#bfbfbf",
+    related_applications: [
+      {
+        platform: "webapp",
+        url: `https://${Variables.hostname}/manifest.webmanifest`,
+      },
+    ],
     icons: [
       {
         src: "/icon-192x192.png",
@@ -38,15 +48,5 @@ export default function manifest(): MetadataRoute.Manifest {
         form_factor: "wide",
       },
     ],
-    theme_color: "#1185fe",
-    background_color: "#bfbfbf",
-    related_applications: [
-      {
-        platform: "webapp",
-        url: `https://${Variables.hostname}/manifest.webmanifest`,
-      },
-    ],
-    scope: "/",
-    orientation: "natural",
   }
 }
