@@ -20,7 +20,7 @@ export default function Page() {
 
   useEffect(() => {
     window.location.href = navigator.userAgent.toLowerCase().includes("android")
-      ? `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;end`
+      ? `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`
       : url.toString()
   })
 
