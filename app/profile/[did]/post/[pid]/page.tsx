@@ -3,42 +3,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-"use client"
+import { headers } from "next/headers"
+import { redirect, RedirectType } from "next/navigation"
+import { UAParser } from "ua-parser-js"
 
-import Link from "next/link"
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ pid: string; did: string }>
+}) {
+  const { pid, did } = await params
 
-export default function Page() {
-  const params: { did: string; pid: string } = useParams()
-  const [url, setUrl] = useState(
-    new URL(
-      `https://bsky.app/profile/${decodeURIComponent(
-        params.did,
-      )}/post/${decodeURIComponent(params.pid)}`,
-    ),
+  let url = new URL(
+    `https://bsky.app/profile/${decodeURIComponent(did)}/post/${decodeURIComponent(pid)}`,
   )
 
-  useEffect(() => {
-    setUrl((old) => {
-      const value = navigator.userAgent.toLowerCase().includes("android")
-        ? new URL(
-            `intent:/${old.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${old};end`,
-          )
-        : old
-      window.location.href = value.toString()
-      return value
-    })
-  }, [])
+  const hdrs = await headers()
+  const userAgent = hdrs.get("User-Agent")
+  if (userAgent) {
+    const parser = new UAParser(userAgent)
+    if (parser.getOS().name === "Android") {
+      url = new URL(
+        `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`,
+      )
+    }
+  }
 
-  return (
-    <div className="container flex min-h-[100svh] flex-col items-center justify-center gap-2">
-      <span className="text-4xl">Opening in Bluesky...</span>
-      <span className="text-xl">
-        <Link href={url} className="text-blue-500 underline">
-          Not opening? Click here
-        </Link>
-      </span>
-    </div>
-  )
+  redirect(url.toString(), RedirectType.replace)
 }
