@@ -22,12 +22,12 @@ type Platform =
 
 function simplifyPlatform(platform: ExactPlatform): Platform {
   switch (platform) {
-    // "Add to Home Screen" in hamburger menu
+    // Any Android Chrome
     case "android-chromium":
     case "mobile-chromium":
       return "android"
 
-    // + in address bar
+    // Any non-mobile Chrome
     case "desktop-chromium":
     case "windows-chromium":
     case "macos-chromium":
