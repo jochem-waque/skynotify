@@ -27,11 +27,6 @@ export default function manifest(): MetadataRoute.Manifest {
         platform: "webapp",
         url: `https://${Variables.hostname}/manifest.webmanifest`,
       },
-      {
-        platform: "play",
-        url: "https://play.google.com/store/apps/details?id=xyz.blueskyweb.app",
-        id: "xyz.blueskyweb.app",
-      },
     ],
     icons: [
       {
