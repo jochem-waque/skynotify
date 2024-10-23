@@ -237,47 +237,55 @@ export default function Page() {
   }, [])
 
   return (
-    <div className="container z-10 flex h-full w-full flex-col justify-between bg-white dark:bg-black">
-      <div className="flex flex-col items-start gap-4">
+    <div className="container z-10 flex h-full w-full flex-col justify-between gap-4 bg-white dark:bg-black">
+      <div className="flex flex-col items-start gap-4 overflow-hidden">
         <div className="flex flex-col gap-2">
           <h1 className="text-center text-3xl">Bluesky Post Notifications</h1>
-          <h2 className="text-2xl">Installation</h2>
+          <div className="flex flex-wrap items-center gap-2 text-xl">
+            <h2>Install for </h2>{" "}
+            <select
+              className="inline border-b bg-transparent dark:border-white"
+              onChange={(evt) => setPlatform(evt.target.value as Platform)}
+              name="platform"
+              value={platform}
+            >
+              <option className="text-base dark:bg-black" value="android">
+                Android
+              </option>
+              <option
+                className="text-base dark:bg-black"
+                value="desktop-chromium"
+              >
+                Chrome on desktops
+              </option>
+              <option className="text-base dark:bg-black" value="macos-safari">
+                Safari on MacOS
+              </option>
+              <option className="text-base dark:bg-black" value="ios">
+                iOS
+              </option>
+              <option className="text-base dark:bg-black" value="firefox">
+                Firefox
+              </option>
+              <option className="text-base dark:bg-black" value="unknown">
+                Other
+              </option>
+            </select>
+          </div>
         </div>
-        <div className="flex flex-col items-start gap-2">
-          <select
-            className="border-b bg-transparent p-1 dark:border-white"
-            onChange={(evt) => setPlatform(evt.target.value as Platform)}
-            name="platform"
-            value={platform}
-          >
-            <option className="dark:bg-black" value="android">
-              Android
-            </option>
-            <option className="dark:bg-black" value="desktop-chromium">
-              Chrome for desktops
-            </option>
-            <option className="dark:bg-black" value="macos-safari">
-              Safari for MacOS
-            </option>
-            <option className="dark:bg-black" value="ios">
-              iOS
-            </option>
-            <option className="dark:bg-black" value="firefox">
-              Firefox
-            </option>
-            <option className="dark:bg-black" value="unknown">
-              Other
-            </option>
-          </select>
+        <div className="flex shrink flex-col items-start gap-2 overflow-y-auto">
           {platformInstructions(platform)}
         </div>
       </div>
-      <Link
-        href={"/configure"}
-        className="rounded-lg bg-blue-400 py-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
-      >
-        I&apos;ve installed the app
-      </Link>
+      <div className="flex flex-col items-center gap-4">
+        <span>To skip this page, open the app using the separate icon.</span>
+        <Link
+          href={"/configure"}
+          className="w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
+        >
+          I&apos;ve installed the app
+        </Link>
+      </div>
     </div>
   )
 }
