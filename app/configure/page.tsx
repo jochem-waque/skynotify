@@ -6,12 +6,15 @@
 "use client"
 
 import FirebaseApp from "@/util/firebase"
+import { FirebaseError } from "firebase/app"
 import { getMessaging, getToken } from "firebase/messaging"
+import Link from "next/link"
 import { useState, useEffect } from "react"
 
-function Subscribe() {
+export default function Page() {
   const [isSupported, setIsSupported] = useState(false)
   const [token, setToken] = useState("")
+  const [denied, setDenied] = useState(false)
 
   useEffect(() => {
     async function registerNotifications() {
@@ -48,11 +51,26 @@ function Subscribe() {
     }
 
     const messaging = getMessaging(FirebaseApp)
-    const token = await getToken(messaging, {
-      serviceWorkerRegistration: registration,
-      vapidKey:
-        "BL5X3aTsXTsiij2gjvsbVYCEKirzRaAaJ6ipnlI63PxaOCXbMDDb-KZ5_pQEPHZnORGct6aYYjgQc-cxrhm4D-c",
-    })
+    let token
+    try {
+      token = await getToken(messaging, {
+        serviceWorkerRegistration: registration,
+        vapidKey:
+          "BL5X3aTsXTsiij2gjvsbVYCEKirzRaAaJ6ipnlI63PxaOCXbMDDb-KZ5_pQEPHZnORGct6aYYjgQc-cxrhm4D-c",
+      })
+    } catch (err) {
+      if (
+        !(err instanceof FirebaseError) ||
+        err.code !== "messaging/permission-blocked"
+      ) {
+        // TODO: other error
+        return
+      }
+
+      setDenied(true)
+      return
+    }
+
     setToken(token)
   }
 
@@ -60,21 +78,19 @@ function Subscribe() {
     return null
   }
 
-  if (token) {
-    return (
-      <code className="break-all bg-neutral-100 p-1 dark:bg-neutral-900">
-        {token}
-      </code>
-    )
-  }
-
   return (
-    <button onClick={() => subscribeToPush()}>
-      Subscribe to push notifications
-    </button>
+    <div className="container">
+      {token && (
+        <code className="break-all bg-neutral-100 p-1 dark:bg-neutral-900">
+          {token}
+        </code>
+      )}
+      {!token && (
+        <button onClick={() => subscribeToPush()}>
+          Subscribe to push notifications
+        </button>
+      )}
+      {denied && <Link href="/">Click here now lol</Link>}
+    </div>
   )
-}
-
-export default function Page() {
-  return <Subscribe></Subscribe>
 }

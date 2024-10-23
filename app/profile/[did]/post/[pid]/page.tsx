@@ -32,7 +32,7 @@ export default function Page() {
   }, [])
 
   return (
-    <div className="flex min-h-[100svh] flex-col items-center justify-center gap-2">
+    <div className="container flex min-h-[100svh] flex-col items-center justify-center gap-2">
       <span className="text-4xl">Opening in Bluesky...</span>
       <span className="text-xl">
         <Link href={url} className="text-blue-500 underline">
