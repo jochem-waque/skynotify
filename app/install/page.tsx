@@ -192,6 +192,24 @@ function platformInstructions(platform: Platform) {
   }
 }
 
+function appLocation(platform: Platform) {
+  const options = []
+  if (platform === "android" || platform === "ios") {
+    options.push("on your home screen")
+  }
+
+  if (platform === "desktop-chromium" || platform === "macos-safari") {
+    options.push("on your desktop")
+  }
+
+  if (platform !== "ios") {
+    options.push("in the list of installed apps")
+  }
+
+  const last = options.pop() as string
+  return options.length > 0 ? options.join(", ") + ` or ${last}` : last
+}
+
 export default function Page() {
   const [platform, setPlatform] = useState<Platform>("unknown")
 
@@ -278,7 +296,12 @@ export default function Page() {
         </div>
       </div>
       <div className="flex flex-col items-center gap-4">
-        <span>To skip this page, open the app using the separate icon.</span>
+        {platform !== "firefox" && platform !== "unknown" && (
+          <span>
+            To skip this page, open the app using the icon{" "}
+            {appLocation(platform)}
+          </span>
+        )}
         <Link
           href={"/configure"}
           className="w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
