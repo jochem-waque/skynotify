@@ -35,6 +35,7 @@ declare global {
 export default function GetStarted() {
   const router = useRouter()
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent>()
+  const [isSupported, setIsSupported] = useState<boolean>()
 
   useEffect(() => {
     function listener() {
@@ -73,6 +74,10 @@ export default function GetStarted() {
     return () => window.removeEventListener("beforeinstallprompt", listener)
   }, [])
 
+  useEffect(() => {
+    setIsSupported("serviceWorker" in navigator && "PushManager" in window)
+  }, [])
+
   async function tryInstall(event?: BeforeInstallPromptEvent) {
     if (!event) {
       router.replace("/install")
@@ -83,11 +88,20 @@ export default function GetStarted() {
   }
 
   return (
-    <button
-      onClick={() => tryInstall(installEvent)}
-      className="rounded-lg bg-blue-400 px-16 py-4 text-2xl transition-opacity hover:opacity-75 dark:bg-blue-600"
-    >
-      Get started
-    </button>
+    <div className="flex flex-col items-center gap-2">
+      <button
+        disabled={!isSupported}
+        onClick={() => tryInstall(installEvent)}
+        className="rounded-lg bg-blue-400 px-16 py-4 text-2xl transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
+      >
+        Get started
+      </button>
+      {isSupported === false && (
+        <p>
+          Your browser doesn&apos;t support installable web apps. Please try
+          using a more modern browser.
+        </p>
+      )}
+    </div>
   )
 }
