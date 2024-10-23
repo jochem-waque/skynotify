@@ -38,12 +38,12 @@ export default function Page() {
 
   useEffect(() => {
     function listener() {
-      router.push("/configure")
+      router.replace("/configure")
     }
 
     const mql = window.matchMedia("(display-mode: standalone)")
     if (mql.matches) {
-      router.push("/configure")
+      router.replace("/configure")
     }
 
     mql.addEventListener("change", listener)
@@ -55,7 +55,7 @@ export default function Page() {
 
   useEffect(() => {
     function listener() {
-      router.push("/configure")
+      router.replace("/configure")
     }
 
     window.addEventListener("appinstalled", listener)
@@ -75,7 +75,7 @@ export default function Page() {
 
   async function tryInstall(event?: BeforeInstallPromptEvent) {
     if (!event) {
-      router.push("/install")
+      router.replace("/install")
       return
     }
 
