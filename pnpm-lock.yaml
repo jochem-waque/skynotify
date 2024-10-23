@@ -39,9 +39,6 @@ importers:
       ua-parser-js:
         specifier: ^1.0.39
         version: 1.0.39
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.1.0

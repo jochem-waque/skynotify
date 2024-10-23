@@ -3,7 +3,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Variables from "@/util/variables"
 import { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
@@ -25,7 +24,7 @@ export default function manifest(): MetadataRoute.Manifest {
     related_applications: [
       {
         platform: "webapp",
-        url: `https://${Variables.hostname}/manifest.webmanifest`,
+        url: `https://${process.env.HOSTNAME}/manifest.webmanifest`,
       },
     ],
     icons: [
