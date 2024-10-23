@@ -255,7 +255,7 @@ export default function Page() {
   }, [])
 
   return (
-    <div className="container z-10 flex h-full w-full flex-col justify-between gap-4 bg-white dark:bg-black">
+    <main className="container z-10 flex h-full w-full flex-col justify-between gap-4 bg-white dark:bg-black">
       <div className="flex flex-col items-start gap-4 overflow-hidden">
         <div className="flex flex-col gap-2">
           <h1 className="text-center text-3xl">Bluesky Post Notifications</h1>
@@ -310,6 +310,6 @@ export default function Page() {
           I&apos;ve installed the app
         </Link>
       </div>
-    </div>
+    </main>
   )
 }

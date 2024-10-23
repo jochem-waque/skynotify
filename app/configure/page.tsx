@@ -79,7 +79,7 @@ export default function Page() {
   }
 
   return (
-    <div className="container">
+    <main className="container">
       {token && (
         <code className="break-all bg-neutral-100 p-1 dark:bg-neutral-900">
           {token}
@@ -91,6 +91,6 @@ export default function Page() {
         </button>
       )}
       {denied && <Link href="/">Click here now lol</Link>}
-    </div>
+    </main>
   )
 }
