@@ -36,11 +36,21 @@ export default function Onboarding() {
   const router = useRouter()
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent>()
 
-  function listener(event: Event) {
-    setInstallEvent(event as BeforeInstallPromptEvent)
-  }
+  useEffect(() => {
+    function listener() {
+      router.push("/configure")
+    }
+
+    window.addEventListener("appinstalled", listener)
+
+    return () => window.removeEventListener("appinstaled", listener)
+  }, [router])
 
   useEffect(() => {
+    function listener(event: Event) {
+      setInstallEvent(event as BeforeInstallPromptEvent)
+    }
+
     window.addEventListener("beforeinstallprompt", listener)
 
     return () => window.removeEventListener("beforeinstallprompt", listener)
