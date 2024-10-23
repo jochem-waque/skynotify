@@ -42,6 +42,11 @@ function Subscribe() {
   }, [])
 
   async function subscribeToPush(registration?: ServiceWorkerRegistration) {
+    registration ??= await navigator.serviceWorker.getRegistration()
+    if (!registration) {
+      return // TODO: error
+    }
+
     const messaging = getMessaging(FirebaseApp)
     const token = await getToken(messaging, {
       serviceWorkerRegistration: registration,
