@@ -3,17 +3,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Platform } from "@/util/platform"
 import Link from "next/link"
 
-export default function PlatformInstructions({
-  platform,
-}: {
-  platform: Platform
-}) {
-  switch (platform) {
-    case "android":
-      return (
+export default function PlatformInstructions() {
+  return (
+    <>
+      <div
+        id="android"
+        className="hidden flex-col gap-2 overflow-y-auto target:flex"
+      >
         <ol className="list-inside list-decimal">
           <li>
             Open the hamburger menu <span className="font-black">⋮</span> in the
@@ -27,25 +25,37 @@ export default function PlatformInstructions({
             Click <span className="font-bold">Install</span>
           </li>
         </ol>
-      )
-    case "desktop-chromium":
-      return (
-        <>
-          <p>
-            Click the install button in the address bar on the left and follow
-            the instructions in the installation prompt.
-          </p>
-          <p>
-            If this button is not shown, the app can be installed by opening the
-            hamburger menu <span className="font-black">⋮</span> and looking for
-            an <span className="font-bold">Install</span> option, sometimes
-            inside of an <span className="font-bold">Apps</span> or{" "}
-            <span className="font-bold">Share</span> dropdown.
-          </p>
-        </>
-      )
-    case "macos-safari":
-      return (
+        <p>
+          If you&apos;ve previously installed the app and want to automatically
+          skip this page, open the app using the icon on your home screen or
+          from the list of installed apps.
+        </p>
+      </div>
+      <div
+        id="desktop-chromium"
+        className="hidden flex-col gap-2 overflow-y-auto target:flex"
+      >
+        <p>
+          Click the install button in the address bar on the left and follow the
+          instructions in the installation prompt.
+        </p>
+        <p>
+          If this button is not shown, the app can be installed by opening the
+          hamburger menu <span className="font-black">⋮</span> and looking for
+          an <span className="font-bold">Install</span> option, sometimes inside
+          of an <span className="font-bold">Apps</span> or{" "}
+          <span className="font-bold">Share</span> dropdown.
+        </p>
+        <p>
+          If you&apos;ve previously installed the app and want to automatically
+          skip this page, open the app using the icon on your desktop or from
+          the list of installed apps.
+        </p>
+      </div>
+      <div
+        id="macos-safari"
+        className="hidden flex-col gap-2 overflow-y-auto target:flex"
+      >
         <ol className="list-inside list-decimal">
           <li>
             Click the{" "}
@@ -65,10 +75,16 @@ export default function PlatformInstructions({
             <span className="font-bold">Add to Home Screen</span> on iPadOS
           </li>
         </ol>
-      )
-    // TODO button might not always be in navbar
-    case "ios":
-      return (
+        <p>
+          If you&apos;ve previously installed the app and want to automatically
+          skip this page, open the app using the icon on your desktop or from
+          the list of installed apps.
+        </p>
+      </div>
+      <div
+        id="ios"
+        className="hidden flex-col gap-2 overflow-y-auto target:flex"
+      >
         <ol className="list-inside list-decimal">
           <li>
             Click the{" "}
@@ -87,51 +103,53 @@ export default function PlatformInstructions({
             Click <span className="font-bold">Add to Home Screen</span>
           </li>
         </ol>
-      )
-    case "unknown":
-      return (
-        <>
-          <p>
-            Your browser could not be automatically detected. Please select an
-            applicable browser from the dropdown menu, or use the instructions
-            below to install the app.
-          </p>
-          <ul className="list-inside list-disc">
-            <li>
-              On mobile devices, progressive web apps can usually be installed
-              by clicking an{" "}
-              <span className="font-bold">Add to Home screen</span> button in
-              supported browsers. This option might be inside of another menu,
-              and this option might require the use of Safari on iOS and iPadOS
-              devices, or Chrome on Android devices.
-            </li>
-            <li>
-              On desktop devices, progressive web apps can usually be installed
-              by clicking a button on the left of the inside of the address bar
-              in supported browsers. On other browsers, you might need to look
-              for an <span className="font-bold">Install</span> button inside of
-              the hamburger menu <span className="font-black">⋮</span> on the
-              navigation bar, sometimes inside of an{" "}
-              <span className="font-bold">Apps</span> or{" "}
-              <span className="font-bold">Share</span> dropdown.
-            </li>
-          </ul>
-        </>
-      )
-    case "firefox":
-      return (
         <p>
-          Firefox is currently not officially supported. Please use a different
-          browser, or install the{" "}
-          <Link
-            className="text-blue-500 underline transition-opacity hover:opacity-75"
-            href="https://addons.mozilla.org/firefox/addon/pwas-for-firefox/"
-            target="_blank"
-          >
-            Progressive Web Apps for Firefox
-          </Link>{" "}
-          extension. No additional support will be given.
+          If you&apos;ve previously installed the app and want to automatically
+          skip this page, open the app using the icon on your home screen or
+          from the list of installed apps.
         </p>
-      )
-  }
+      </div>
+      <div
+        id="unknown"
+        className="hidden flex-col gap-2 overflow-y-auto target:flex"
+      >
+        <p>
+          Your browser could not be automatically detected. Please select an
+          applicable browser from the dropdown menu, or use the instructions
+          below to install the app.
+        </p>
+        <ul className="list-inside list-disc">
+          <li>
+            On mobile devices, progressive web apps can usually be installed by
+            clicking an <span className="font-bold">Add to Home screen</span>{" "}
+            button in supported browsers. This option might be inside of another
+            menu, and this option might require the use of Safari on iOS and
+            iPadOS devices, or Chrome on Android devices.
+          </li>
+          <li>
+            On desktop devices, progressive web apps can usually be installed by
+            clicking a button on the left of the inside of the address bar in
+            supported browsers. On other browsers, you might need to look for an{" "}
+            <span className="font-bold">Install</span> button inside of the
+            hamburger menu <span className="font-black">⋮</span> on the
+            navigation bar, sometimes inside of an{" "}
+            <span className="font-bold">Apps</span> or{" "}
+            <span className="font-bold">Share</span> dropdown.
+          </li>
+        </ul>
+      </div>
+      <p id="firefox" className="hidden overflow-y-auto target:block">
+        Firefox is currently not officially supported. Please use a different
+        browser, or install the{" "}
+        <Link
+          className="text-blue-500 underline transition-opacity hover:opacity-75"
+          href="https://addons.mozilla.org/firefox/addon/pwas-for-firefox/"
+          target="_blank"
+        >
+          Progressive Web Apps for Firefox
+        </Link>{" "}
+        extension. No additional support will be given.
+      </p>
+    </>
+  )
 }
