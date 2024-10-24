@@ -73,7 +73,6 @@ export default async function Page() {
         <PlatformInstructions></PlatformInstructions>
       </div>
       <Link
-        replace={true}
         href={"/configure"}
         className="w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
       >

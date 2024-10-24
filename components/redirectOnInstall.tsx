@@ -13,7 +13,7 @@ export default function RedirectOnInstall() {
 
   useEffect(() => {
     function listener() {
-      router.replace("/configure")
+      router.push("/configure")
     }
 
     window.addEventListener("appinstalled", listener)
