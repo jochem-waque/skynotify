@@ -4,6 +4,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { pgTable, primaryKey, text } from "drizzle-orm/pg-core"
+import "server-only"
 
 export const accountTable = pgTable("account", {
   id: text("id").primaryKey(),
