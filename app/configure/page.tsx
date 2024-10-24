@@ -4,15 +4,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Subscribe from "@/components/subscribe"
-import { getAccount } from "@/util/auth"
-import { cookies } from "next/headers"
+import { getCurrentAccount } from "@/util/auth"
 import { redirect } from "next/navigation"
 
 export default async function Page() {
-  const cookiesResult = await cookies()
-  const accountId = cookiesResult.get("account")
-  const account = accountId ? await getAccount(accountId.value) : null
-
+  const account = await getCurrentAccount()
   if (!account) {
     redirect("/auth?installed=true")
   }

@@ -5,7 +5,7 @@
  */
 "use server"
 
-import Drizzle from "@/util/drizzle"
+import Drizzle from "@/util/db"
 import { accountTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
 import { cookies } from "next/headers"

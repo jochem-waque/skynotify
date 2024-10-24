@@ -3,6 +3,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { accountTable } from "./schema"
+import { eq } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/postgres-js"
 import { migrate } from "drizzle-orm/postgres-js/migrator"
 import postgres from "postgres"
@@ -25,4 +27,13 @@ export default Drizzle
 
 if (process.env.NODE_ENV !== "production") {
   globalThis.drizzleGlobal = Drizzle
+}
+
+export async function getAccount(accountId: string) {
+  const [account] = await Drizzle.select()
+    .from(accountTable)
+    .where(eq(accountTable.id, accountId))
+    .limit(1)
+
+  return account ?? null
 }
