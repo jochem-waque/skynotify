@@ -86,7 +86,7 @@ export default function GetStarted({
           ? "/configure"
           : authenticated
             ? "/install"
-            : `/auth=${installed}`
+            : `/auth?installed=${installed}`
       }
     >
       Get started
