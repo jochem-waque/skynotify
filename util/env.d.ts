@@ -8,6 +8,7 @@ declare global {
     interface ProcessEnv {
       NEXT_PUBLIC_VAPID_KEY: string
       HOSTNAME: string
+      DATABASE_URL: string
     }
   }
 }
