@@ -41,16 +41,14 @@ export default function GetStarted({
       }
 
       const apps = await navigator.getInstalledRelatedApps()
-      if (
+      setInstalled(
         apps.some(
           (app) =>
             app.platform === "webapp" &&
             app.url &&
             new URL(app.url).hostname === location.hostname,
-        )
-      ) {
-        setInstalled(true)
-      }
+        ),
+      )
     }
 
     checkInstalledApps()
