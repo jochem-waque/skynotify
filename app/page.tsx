@@ -4,21 +4,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import GetStarted from "@/components/getStarted"
-import Drizzle from "@/util/drizzle"
-import { accountTable } from "@/util/schema"
-import { eq } from "drizzle-orm"
+import { getAccount } from "@/util/auth"
 import { cookies } from "next/headers"
 
 export default async function Page() {
   const cookiesResult = await cookies()
   const accountId = cookiesResult.get("account")
-  let account
-  if (accountId) {
-    ;[account] = await Drizzle.select({})
-      .from(accountTable)
-      .where(eq(accountTable.id, accountId.value))
-      .limit(1)
-  }
+  const account = accountId ? await getAccount(accountId.value) : null
 
   return (
     <main className="container relative z-0 flex h-full flex-col items-center justify-center gap-48">

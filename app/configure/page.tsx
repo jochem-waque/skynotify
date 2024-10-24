@@ -4,8 +4,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Subscribe from "@/components/subscribe"
+import { getAccount } from "@/util/auth"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
-export default function Page() {
+export default async function Page() {
+  const cookiesResult = await cookies()
+  const accountId = cookiesResult.get("account")
+  const account = accountId ? await getAccount(accountId.value) : null
+
+  if (!account) {
+    redirect("/auth?installed=true")
+  }
+
   return (
     <main className="container flex h-full flex-col justify-between gap-4">
       <h1>Test</h1>
