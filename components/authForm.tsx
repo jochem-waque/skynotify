@@ -9,7 +9,7 @@ import { auth } from "@/actions/auth"
 import { useActionState } from "react"
 
 export default function AuthForm({ installed }: { installed: boolean }) {
-  const [error, authAction] = useActionState(auth, "none")
+  const [, authAction] = useActionState(auth, "none")
 
   return (
     <form

@@ -11,7 +11,7 @@ import { getMessaging, getToken } from "firebase/messaging"
 import { useState, useEffect } from "react"
 
 export default function Subscribe() {
-  const [token, setToken] = useState("")
+  const [, setToken] = useState("")
 
   useEffect(() => {
     async function restoreToken() {
