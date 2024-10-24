@@ -10,13 +10,13 @@ import { useEffect } from "react"
 
 export default function PlatformSelect({ platform }: { platform: Platform }) {
   useEffect(() => {
-    window.location.hash = platform
+    location.replace(`#${platform}`)
   }, [platform])
 
   return (
     <select
       className="inline border-b bg-transparent dark:border-white"
-      onChange={(evt) => (window.location.hash = evt.currentTarget.value)}
+      onChange={(evt) => location.replace(`#${evt.currentTarget.value}`)}
       defaultValue={platform}
       name="platform"
     >

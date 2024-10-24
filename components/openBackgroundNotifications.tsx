@@ -5,13 +5,16 @@
  */
 "use client"
 
+import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 export default function OpenBackgroundNotifications() {
+  const router = useRouter()
+
   useEffect(() => {
     function listener(event: MessageEvent) {
       if (event.data.messageType === "notification-clicked") {
-        window.location.href = event.data.notification.click_action
+        router.replace(event.data.notification.click_action)
       }
     }
 
@@ -19,7 +22,7 @@ export default function OpenBackgroundNotifications() {
     return () => {
       navigator.serviceWorker.removeEventListener("message", listener)
     }
-  }, [])
+  }, [router])
 
   return null
 }
