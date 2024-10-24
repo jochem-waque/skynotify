@@ -17,7 +17,7 @@ export async function auth(
   _previousState: AuthError,
   data: FormData,
 ): Promise<AuthError> {
-  const accountId = data.get("account")
+  const accountId = data.get("password")
   const installed = data.get("installed")
   if (typeof accountId !== "string") {
     return "invalid_input"

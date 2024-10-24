@@ -17,15 +17,17 @@ export default function AuthForm({ installed }: { installed: boolean }) {
       className="container flex h-full flex-col items-center justify-center gap-48"
     >
       <div className="flex w-full flex-col items-center gap-2">
-        <label className="w-full max-w-[36ch]" htmlFor="account">
+        <label className="w-full max-w-[36ch]" htmlFor="password">
           Account ID
         </label>
         <input
+          autoComplete="password"
           maxLength={36}
           required={true}
           className="box-content w-full max-w-[36ch] rounded-lg p-2 font-mono"
-          id="account"
-          name="account"
+          id="password"
+          name="password"
+          type="password"
           placeholder="________-____-____-____-____________"
           pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
         ></input>
