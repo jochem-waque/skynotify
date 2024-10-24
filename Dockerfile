@@ -17,7 +17,7 @@ RUN apt-get update && \
 COPY . .
 
 # Compile and remove dev packages
-RUN pnpm build && \
+RUN pnpm build --experimental-build-mode compile && \
     pnpm prune --prod
 
 # Set-up running image
@@ -32,4 +32,4 @@ RUN npm install -g pnpm
 COPY --from=builder /app .
 
 # Generate and run
-CMD pnpm start
+CMD pnpm build --experimental-build-mode generate ; pnpm start
