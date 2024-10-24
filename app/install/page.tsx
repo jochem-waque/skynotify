@@ -6,8 +6,12 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { UAParser } from "ua-parser-js"
+
+// TODO it could be possible to refactor this to a server component and use
+// headers()... but it won't have many benefits i think?
 
 type OS = "windows" | "macos" | "ios" | "android" | "desktop" | "mobile"
 type Browser = "chromium" | "firefox" | "safari" | "unknown"
@@ -211,6 +215,7 @@ function appLocation(platform: Platform) {
 }
 
 export default function Page() {
+  const router = useRouter()
   const [platform, setPlatform] = useState<Platform>("unknown")
 
   useEffect(() => {
@@ -253,6 +258,16 @@ export default function Page() {
 
     setPlatform(simplifyPlatform(`${os}-${browser}`))
   }, [])
+
+  useEffect(() => {
+    function listener() {
+      router.replace("/configure")
+    }
+
+    window.addEventListener("appinstalled", listener)
+
+    return () => window.removeEventListener("appinstaled", listener)
+  }, [router])
 
   return (
     <main className="container z-10 flex h-full w-full flex-col justify-between gap-4 bg-white dark:bg-black">

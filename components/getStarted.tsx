@@ -5,64 +5,24 @@
  */
 "use client"
 
+import { BeforeInstallPromptEvent } from "@/util/types"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-type BeforeInstallPromptEvent = Event & {
-  prompt(): Promise<{ outcome: "accepted" | "dismissed"; platforms: string }>
-}
-
-declare global {
-  interface Navigator {
-    getInstalledRelatedApps?(): Promise<
-      {
-        id?: string
-        platform:
-          | "chrome_web_store"
-          | "play"
-          | "chromeos_play"
-          | "webapp"
-          | "windows"
-          | "f-droid"
-          | "amazon"
-        url?: string
-        version?: string
-      }[]
-    >
-  }
-}
-
-export default function GetStarted() {
+/*
+ * If possible, prompt to install. If not authenticated, redirect to auth with
+ * query parameter indicating installation status. Otherwise, redirect to
+ * install or configure depending on installation status.
+ */
+export default function GetStarted({
+  authenticated,
+}: {
+  authenticated: boolean
+}) {
   const router = useRouter()
+  const [installed, setInstalled] = useState(false)
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent>()
-  const [isSupported, setIsSupported] = useState<boolean>()
-
-  useEffect(() => {
-    function listener() {
-      router.replace("/configure")
-    }
-
-    const mql = window.matchMedia("(display-mode: standalone)")
-    if (mql.matches) {
-      router.replace("/configure")
-    }
-
-    mql.addEventListener("change", listener)
-
-    return () => {
-      mql.removeEventListener("change", listener)
-    }
-  }, [router])
-
-  useEffect(() => {
-    function listener() {
-      router.replace("/configure")
-    }
-
-    window.addEventListener("appinstalled", listener)
-
-    return () => window.removeEventListener("appinstaled", listener)
-  }, [router])
 
   useEffect(() => {
     function listener(event: Event) {
@@ -75,33 +35,61 @@ export default function GetStarted() {
   }, [])
 
   useEffect(() => {
-    setIsSupported("serviceWorker" in navigator && "PushManager" in window)
+    async function checkInstalledApps() {
+      if (!navigator.getInstalledRelatedApps) {
+        return
+      }
+
+      const apps = await navigator.getInstalledRelatedApps()
+      if (
+        apps.some(
+          (app) =>
+            app.platform === "webapp" &&
+            app.url &&
+            new URL(app.url).hostname === location.hostname,
+        )
+      ) {
+        setInstalled(true)
+      }
+    }
+
+    checkInstalledApps()
   }, [])
 
-  async function tryInstall(event?: BeforeInstallPromptEvent) {
-    if (!event) {
-      router.replace("/install")
+  async function promptAndRedirect() {
+    const result = await installEvent?.prompt()
+    const accepted = result?.outcome === "accepted"
+    if (!authenticated) {
+      router.push(`/auth?installed=${accepted}`)
       return
     }
 
-    await event.prompt()
+    router.push(accepted || installed ? "/configure" : "/install")
   }
 
-  return (
-    <div className="flex flex-col items-center gap-2">
+  if (installEvent) {
+    return (
       <button
-        disabled={!isSupported}
-        onClick={() => tryInstall(installEvent)}
         className="rounded-lg bg-blue-400 px-16 py-4 text-2xl transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
+        onClick={promptAndRedirect}
       >
         Get started
       </button>
-      {isSupported === false && (
-        <p>
-          Your browser doesn&apos;t support installable web apps. Please try
-          using a more modern browser.
-        </p>
-      )}
-    </div>
+    )
+  }
+
+  return (
+    <Link
+      className="rounded-lg bg-blue-400 px-16 py-4 text-2xl transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
+      href={
+        installed && authenticated
+          ? "/configure"
+          : authenticated
+            ? "/install"
+            : `/auth=${installed}`
+      }
+    >
+      Get started
+    </Link>
   )
 }

@@ -8,20 +8,19 @@
 import Drizzle from "@/util/drizzle"
 import { accountTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
-type ErrorCodes = "invalid_input" | "account_not_found"
-type State =
-  | { error: true; code: ErrorCodes }
-  | { error: false; name: string; account: string }
-  | { error: null }
+type AuthError = "invalid_input" | "account_not_found" | "none"
 
 export async function auth(
-  _previousState: State,
+  _previousState: AuthError,
   data: FormData,
-): Promise<State> {
+): Promise<AuthError> {
   const accountId = data.get("account")
-  if (!(typeof accountId === "string")) {
-    return { error: true, code: "invalid_input" }
+  const installed = data.get("installed")
+  if (typeof accountId !== "string") {
+    return "invalid_input"
   }
 
   const [account] = await Drizzle.select({ name: accountTable.name })
@@ -29,8 +28,11 @@ export async function auth(
     .where(eq(accountTable.id, accountId))
     .limit(1)
   if (!account) {
-    return { error: true, code: "account_not_found" }
+    return "account_not_found"
   }
 
-  return { error: false, name: account.name, account: accountId }
+  const cookiesResult = await cookies()
+  cookiesResult.set("account", accountId)
+
+  redirect(installed ? "/configure" : "/install")
 }
