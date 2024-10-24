@@ -4,6 +4,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import "./globals.css"
+import OpenBackgroundNotifications from "@/components/openBackgroundNotifications"
 
 export default function RootLayout({
   children,
@@ -13,6 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex h-[100svh] flex-col items-center p-4">
+        <OpenBackgroundNotifications></OpenBackgroundNotifications>
         {children}
       </body>
     </html>

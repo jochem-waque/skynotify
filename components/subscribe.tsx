@@ -8,35 +8,9 @@
 import FirebaseApp from "@/util/firebase"
 import { FirebaseError } from "firebase/app"
 import { getMessaging, getToken } from "firebase/messaging"
-import { useState, useEffect } from "react"
 
 export default function Subscribe() {
-  const [, setToken] = useState("")
-
-  useEffect(() => {
-    async function restoreToken() {
-      const registration = await navigator.serviceWorker.getRegistration()
-      const subscription = await registration?.pushManager.getSubscription()
-      if (subscription) {
-        subscribeToPush(registration)
-      }
-    }
-
-    restoreToken()
-  }, [])
-
-  useEffect(() => {
-    function listener(event: MessageEvent) {
-      if (event.data.messageType === "notification-clicked") {
-        window.location.href = event.data.notification.click_action
-      }
-    }
-
-    navigator.serviceWorker.addEventListener("message", listener)
-    return () => {
-      navigator.serviceWorker.removeEventListener("message", listener)
-    }
-  }, [])
+  // TODO handle token expiry
 
   async function subscribeToPush(registration?: ServiceWorkerRegistration) {
     registration ??= await navigator.serviceWorker.getRegistration()
@@ -63,7 +37,7 @@ export default function Subscribe() {
       return
     }
 
-    setToken(token)
+    return token
   }
 
   return <button onClick={() => subscribeToPush()}>Subscribe</button>
