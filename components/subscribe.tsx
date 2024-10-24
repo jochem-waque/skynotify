@@ -5,6 +5,7 @@
  */
 "use client"
 
+import { putToken } from "@/actions/token"
 import FirebaseApp from "@/util/firebase"
 import { FirebaseError } from "firebase/app"
 import { getMessaging, getToken } from "firebase/messaging"
@@ -37,7 +38,7 @@ export default function Subscribe() {
       return
     }
 
-    return token
+    await putToken(token)
   }
 
   return <button onClick={() => subscribeToPush()}>Subscribe</button>
