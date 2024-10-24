@@ -4,20 +4,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { drizzle } from "drizzle-orm/postgres-js"
+import { migrate } from "drizzle-orm/postgres-js/migrator"
 import postgres from "postgres"
 
-const drizzleClientSingleton = () => {
-  console.log("Instantiate drizzle client")
+const drizzleClientSingleton = async () => {
   const pg = postgres(process.env.DATABASE_URL)
   const orm = drizzle(pg)
+  await migrate(orm, { migrationsFolder: "./drizzle" })
   return orm
 }
 
 declare const globalThis: {
-  drizzleGlobal: ReturnType<typeof drizzleClientSingleton>
+  drizzleGlobal: Awaited<ReturnType<typeof drizzleClientSingleton>>
 } & typeof global
 
-const Drizzle = globalThis.drizzleGlobal ?? drizzleClientSingleton()
+const Drizzle = globalThis.drizzleGlobal ?? (await drizzleClientSingleton())
 
 export default Drizzle
 
