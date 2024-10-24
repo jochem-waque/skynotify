@@ -5,7 +5,13 @@
  */
 import GetStarted from "@/components/getStarted"
 import { getAccount } from "@/util/auth"
+import { Viewport } from "next"
 import { cookies } from "next/headers"
+
+// TODO this is rough. when typing the url into chrome, the keyboard causes the
+// innerHeight to be wrong until the user taps the screen. this fixes it, but is
+// horrible when the keyboard does need to be used
+export const viewport: Viewport = { interactiveWidget: "resizes-content" }
 
 export default async function Page() {
   const cookiesResult = await cookies()
