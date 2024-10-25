@@ -4,11 +4,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import ProfileSelectorList from "@/components/profileSelectorList"
+import RedirectOnEmptyStore from "@/components/redirectOnEmptyStore"
 import Link from "next/link"
 
 export default function Page() {
   return (
     <main className="flex max-w-lg flex-col gap-2 overflow-hidden">
+      <RedirectOnEmptyStore></RedirectOnEmptyStore>
       <h1 className="text-3xl">Following</h1>
       <p>
         Now, select the accounts you&apos;d like to receive notifications for.

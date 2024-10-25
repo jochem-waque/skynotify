@@ -7,19 +7,9 @@
 
 import { useProfilesStore } from "./profilesStore"
 import SelectableProfile from "./selectableProfile"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
 
 export default function ProfileSelectorList() {
-  const fetching = useProfilesStore((state) => state.fetching)
   const profiles = useProfilesStore((state) => state.profiles)
-  const router = useRouter()
-
-  useEffect(() => {
-    if (profiles.length === 0 && !fetching) {
-      router.push("import")
-    }
-  }, [router, profiles, fetching])
 
   return (
     <>
