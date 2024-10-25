@@ -5,8 +5,8 @@
  */
 "use client"
 
-import Profile from "@/components/profile"
-import { useProfilesStore } from "@/components/profilesStore"
+import Profile from "@/components/profile/profile"
+import { useProfilesStore } from "@/util/profilesStore"
 import { useEffect } from "react"
 
 export default function Page() {

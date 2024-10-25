@@ -3,9 +3,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import ProfileSelectorList from "@/components/profileSelectorList"
+import ProfileSelectorList from "@/components/profile/profileSelectorList"
+import SyncNotificationPreferences from "@/components/profile/syncNotificationPreferences"
 import RedirectOnEmptyStore from "@/components/redirectOnEmptyStore"
-import SyncNotificationPreferences from "@/components/syncNotificationPreferences"
 import Link from "next/link"
 
 export default function Page() {

@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useProfilesStore } from "./profilesStore"
+import { useProfilesStore } from "../util/profilesStore"
 import { useRouter } from "next/navigation"
 import { KeyboardEvent, MouseEvent } from "react"
 

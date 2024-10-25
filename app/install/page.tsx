@@ -3,8 +3,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import PlatformInstructions from "@/components/platformInstructions"
-import PlatformSelect from "@/components/platformSelect"
+import PlatformInstructions from "@/components/platform/platformInstructions"
+import PlatformSelect from "@/components/platform/platformSelect"
 import RedirectOnInstall from "@/components/redirectOnInstall"
 import { Browser, OS, Platform, simplifyPlatform } from "@/util/platform"
 import { headers } from "next/headers"

@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useProfilesStore } from "./profilesStore"
+import { useProfilesStore } from "../../util/profilesStore"
 import { useEffect } from "react"
 
 export default function SyncNotificationPreferences() {
