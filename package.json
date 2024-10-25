@@ -19,7 +19,8 @@
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
     "server-only": "^0.0.1",
-    "ua-parser-js": "^1.0.39"
+    "ua-parser-js": "^1.0.39",
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",

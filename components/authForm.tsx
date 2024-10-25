@@ -32,12 +32,7 @@ export default function AuthForm({ installed }: { installed: boolean }) {
           pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
         ></input>
         {installed && (
-          <input
-            readOnly={true}
-            className="hidden"
-            name="installed"
-            value="true"
-          ></input>
+          <input type="hidden" name="installed" value="true"></input>
         )}
       </div>
       <button className="w-full rounded-lg bg-blue-500 p-4" type="submit">

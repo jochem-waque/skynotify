@@ -62,7 +62,7 @@ export default function GetStarted({
       return
     }
 
-    router.push(accepted || installed ? "/configure" : "/install")
+    router.push(accepted || installed ? "/configure/import" : "/install")
   }
 
   if (installEvent) {
@@ -81,7 +81,7 @@ export default function GetStarted({
       className="rounded-lg bg-blue-400 px-16 py-4 text-2xl transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
       href={
         installed && authenticated
-          ? "/configure"
+          ? "/configure/import"
           : authenticated
             ? "/install"
             : `/auth?installed=${installed}`

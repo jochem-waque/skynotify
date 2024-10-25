@@ -10,4 +10,8 @@ const withSerwist = withSerwistInit({
   swDest: "public/sw.js",
 })
 
-export default withSerwist({})
+export default withSerwist({
+  images: {
+    remotePatterns: [{ hostname: "cdn.bsky.app", protocol: "https" }],
+  },
+})
