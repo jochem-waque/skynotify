@@ -3,7 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import ProfileSelector from "@/components/profileSelector"
+import ProfileSelectorList from "@/components/profileSelectorList"
 import Link from "next/link"
 
 export default function Page() {
@@ -15,10 +15,14 @@ export default function Page() {
         You&apos;ll be able to specify whether you want to receive post, repost
         and/or reply notifications later.
       </p>
-      <ProfileSelector></ProfileSelector>
-      <Link href="specify" className="w-full rounded-lg bg-blue-500 p-4">
-        Continue
-      </Link>
+      <form className="flex flex-col gap-4 overflow-hidden">
+        <div className="flex w-full flex-col gap-2 overflow-y-auto">
+          <ProfileSelectorList></ProfileSelectorList>
+        </div>
+        <Link href="specify" className="w-full rounded-lg bg-blue-500 p-4">
+          Continue
+        </Link>
+      </form>
     </main>
   )
 }

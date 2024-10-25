@@ -8,12 +8,11 @@
 import { useProfilesStore } from "./profilesStore"
 import SelectableProfile from "./selectableProfile"
 import { useRouter } from "next/navigation"
-import { FormEvent, useEffect } from "react"
+import { useEffect } from "react"
 
-export default function ProfileSelector() {
+export default function ProfileSelectorList() {
   const fetching = useProfilesStore((state) => state.fetching)
   const profiles = useProfilesStore((state) => state.profiles)
-  const toggleSelected = useProfilesStore((state) => state.toggleSelected)
   const router = useRouter()
 
   useEffect(() => {
@@ -22,19 +21,8 @@ export default function ProfileSelector() {
     }
   }, [router, profiles, fetching])
 
-  function change(event: FormEvent<HTMLFormElement>) {
-    if (!(event.target instanceof HTMLInputElement)) {
-      return
-    }
-
-    toggleSelected(event.target.name)
-  }
-
   return (
-    <form
-      onChange={change}
-      className="flex w-full flex-col gap-2 overflow-y-auto"
-    >
+    <>
       {profiles.map((profile) => (
         <SelectableProfile
           avatar={profile.avatar}
@@ -42,8 +30,9 @@ export default function ProfileSelector() {
           handle={profile.handle}
           key={profile.did}
           did={profile.did}
+          defaultChecked={profile.selected}
         ></SelectableProfile>
       ))}
-    </form>
+    </>
   )
 }
