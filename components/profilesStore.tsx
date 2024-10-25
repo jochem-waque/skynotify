@@ -55,6 +55,7 @@ export const useProfilesStore = create(
       fetching: false,
       profiles: [] as Profile[],
       tempSelected: new Set<string>(),
+      tempNotificationPreferences: new Map<string, NotificationPreferences>(),
     },
     (set) => ({
       fetchProfiles: async (actor: string) => {
@@ -91,17 +92,13 @@ export const useProfilesStore = create(
           return { tempSelected: new Set(tempSelected) }
         }),
       setNotificationPreferences: (
-        preferences: Map<string, NotificationPreferences>,
+        did: string,
+        preferences: NotificationPreferences,
       ) =>
-        set(({ profiles }) => ({
-          profiles: profiles.map((profile) => {
-            const profilePreferences = preferences.get(profile.did)
-            if (!profilePreferences) {
-              return profile
-            }
-
-            return { ...profile, ...profilePreferences }
-          }),
+        set(({ tempNotificationPreferences }) => ({
+          tempNotificationPreferences: new Map(
+            tempNotificationPreferences.set(did, preferences),
+          ),
         })),
       setFetching: (fetching: boolean) => set({ fetching }),
       updateSelectedOnProfiles: () =>
@@ -109,6 +106,13 @@ export const useProfilesStore = create(
           profiles: profiles.map((profile) => ({
             ...profile,
             selected: tempSelected.has(profile.did),
+          })),
+        })),
+      updateNotificationPreferencesOnProfiles: () =>
+        set(({ profiles, tempNotificationPreferences }) => ({
+          profiles: profiles.map((profile) => ({
+            ...profile,
+            ...tempNotificationPreferences.get(profile.did),
           })),
         })),
     }),
