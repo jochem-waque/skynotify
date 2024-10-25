@@ -11,13 +11,11 @@ import { useEffect } from "react"
 
 export default function Page() {
     const profiles = useProfilesStore((state) => state.profiles)
-const updateSelectedOnProfiles = useProfilesStore(
-    (state) => state.updateSelectedOnProfiles,
-  )
+const syncSelected = useProfilesStore((state) => state.syncSelected)
 
   useEffect(() => {
-    updateSelectedOnProfiles()
-  }, [updateSelectedOnProfiles])
+    syncSelected()
+  }, [syncSelected])
 
   return (
     <main className="flex w-full max-w-lg flex-col gap-2">

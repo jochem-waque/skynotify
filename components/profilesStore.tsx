@@ -92,7 +92,7 @@ export const useProfilesStore = create(
           tempSelected.delete(did)
           return { tempSelected: new Set(tempSelected) }
         }),
-      updateSelectedOnProfiles: () =>
+      syncSelected: () =>
         set(({ profiles, tempSelected }) => ({
           profiles: profiles.map((profile) => ({
             ...profile,
@@ -110,7 +110,7 @@ export const useProfilesStore = create(
             preferences,
           ),
         })),
-      updateNotificationPreferencesOnProfiles: () =>
+      syncNotificationPreferences: () =>
         set(({ profiles, tempNotificationPreferences }) => ({
           profiles: profiles.map((profile) => ({
             ...profile,
