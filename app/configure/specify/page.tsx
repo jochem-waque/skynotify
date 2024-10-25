@@ -5,6 +5,7 @@
  */
 "use client"
 
+import NotificationChips from "@/components/profile/notificationChips"
 import Profile from "@/components/profile/profile"
 import { useProfilesStore } from "@/util/profilesStore"
 import { useEffect } from "react"
@@ -31,32 +32,12 @@ export default function Page() {
               handle={profile.handle}
               displayName={profile.displayName}
             ></Profile>
-            <form className="flex flex-wrap gap-2">
-              <label className="relative flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
-                <span className="z-10 select-none">Posts</span>
-                <input
-                  defaultChecked={profile.notifyPosts}
-                  className="h-0 w-0"
-                  type="checkbox"
-                ></input>
-              </label>
-              <label className="relative flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
-                <span className="z-10 select-none">Reposts</span>
-                <input
-                  defaultChecked={profile.notifyReposts}
-                  className="h-0 w-0"
-                  type="checkbox"
-                ></input>
-              </label>
-              <label className="relative flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
-                <span className="z-10 select-none">Replies</span>
-                <input
-                  defaultChecked={profile.notifyReplies}
-                  className="h-0 w-0"
-                  type="checkbox"
-                ></input>
-              </label>
-            </form>
+            <NotificationChips
+              did={profile.did}
+              defaultPosts={profile.notifyPosts}
+              defaultReplies={profile.notifyReplies}
+              defaultReposts={profile.notifyReposts}
+            ></NotificationChips>
           </div>
         ))}
     </main>

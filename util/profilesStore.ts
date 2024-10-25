@@ -49,13 +49,16 @@ export function pickProfile({
   }
 }
 
+// TODO consider moving tempX to separate store
 export const useProfilesStore = create(
   combine(
     {
       fetching: false,
       profiles: [] as Profile[],
       tempSelected: new Set<string>(),
-      tempNotificationPreferences: new Map<string, NotificationPreferences>(),
+      tempNotifyPosts: new Set<string>(),
+      tempNotifyReplies: new Set<string>(),
+      tempNotifyReposts: new Set<string>(),
     },
     (set) => ({
       setFetching: (fetching: boolean) => set({ fetching }),
@@ -100,23 +103,49 @@ export const useProfilesStore = create(
           })),
         })),
 
-      setNotificationPreferences: (
-        did: string,
-        preferences: NotificationPreferences,
-      ) =>
-        set(({ tempNotificationPreferences }) => ({
-          tempNotificationPreferences: new Map(tempNotificationPreferences).set(
-            did,
-            preferences,
-          ),
-        })),
+      setNotifyPosts: (did: string, notify: boolean) =>
+        set(({ tempNotifyPosts }) => {
+          if (notify) {
+            return { tempNotifyPosts: new Set(tempNotifyPosts).add(did) }
+          }
+
+          tempNotifyPosts.delete(did)
+          return { tempNotifyPosts: new Set(tempNotifyPosts) }
+        }),
+      setNotifyReposts: (did: string, notify: boolean) =>
+        set(({ tempNotifyReposts }) => {
+          if (notify) {
+            return { tempNotifyReposts: new Set(tempNotifyReposts).add(did) }
+          }
+
+          tempNotifyReposts.delete(did)
+          return { tempNotifyReposts: new Set(tempNotifyReposts) }
+        }),
+      setNotifyReplies: (did: string, notify: boolean) =>
+        set(({ tempNotifyReplies }) => {
+          if (notify) {
+            return { tempNotifyReplies: new Set(tempNotifyReplies).add(did) }
+          }
+
+          tempNotifyReplies.delete(did)
+          return { tempNotifyReplies: new Set(tempNotifyReplies) }
+        }),
       syncNotificationPreferences: () =>
-        set(({ profiles, tempNotificationPreferences }) => ({
-          profiles: profiles.map((profile) => ({
-            ...profile,
-            ...tempNotificationPreferences.get(profile.did),
-          })),
-        })),
+        set(
+          ({
+            profiles,
+            tempNotifyPosts,
+            tempNotifyReplies,
+            tempNotifyReposts,
+          }) => ({
+            profiles: profiles.map((profile) => ({
+              ...profile,
+              notifyPosts: tempNotifyPosts.has(profile.did),
+              notifyReplies: tempNotifyReplies.has(profile.did),
+              notifyReposts: tempNotifyReposts.has(profile.did),
+            })),
+          }),
+        ),
     }),
   ),
 )
