@@ -86,8 +86,7 @@ export const useProfilesStore = create(
       setSelected: (did: string, selected: boolean) =>
         set(({ tempSelected }) => {
           if (selected) {
-            tempSelected.add(did)
-            return { tempSelected: new Set(tempSelected) }
+            return { tempSelected: new Set(tempSelected).add(did) }
           }
 
           tempSelected.delete(did)
@@ -106,8 +105,9 @@ export const useProfilesStore = create(
         preferences: NotificationPreferences,
       ) =>
         set(({ tempNotificationPreferences }) => ({
-          tempNotificationPreferences: new Map(
-            tempNotificationPreferences.set(did, preferences),
+          tempNotificationPreferences: new Map(tempNotificationPreferences).set(
+            did,
+            preferences,
           ),
         })),
       updateNotificationPreferencesOnProfiles: () =>
