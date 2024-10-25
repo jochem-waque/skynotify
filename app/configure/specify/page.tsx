@@ -7,24 +7,31 @@
 
 import Profile from "@/components/profile"
 import { useProfilesStore } from "@/components/profilesStore"
+import { useEffect } from "react"
 
 export default function Page() {
-  const selection = useProfilesStore((state) => state.selection)
-  const profiles = useProfilesStore((state) => state.profiles)
+    const profiles = useProfilesStore((state) => state.profiles)
+const updateSelectedOnProfiles = useProfilesStore(
+    (state) => state.updateSelectedOnProfiles,
+  )
+
+  useEffect(() => {
+    updateSelectedOnProfiles()
+  }, [updateSelectedOnProfiles])
 
   return (
     <main className="flex w-full max-w-lg flex-col gap-2">
       {profiles
-        .filter((p) => selection.includes(p.did))
-        .map((p) => (
+        .filter((profile) => profile.selected)
+        .map((profile) => (
           <div
             className="flex flex-col gap-2 rounded-lg bg-neutral-100 p-2 dark:bg-neutral-900"
-            key={p.did}
+            key={profile.did}
           >
             <Profile
-              avatar={p.avatar}
-              handle={p.handle}
-              displayName={p.displayName}
+              avatar={profile.avatar}
+              handle={profile.handle}
+              displayName={profile.displayName}
             ></Profile>
             <div className="flex flex-wrap gap-2">
               <label className="relative flex items-center rounded-full bg-neutral-200 px-2 outline-2 outline-black has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
@@ -42,6 +49,6 @@ export default function Page() {
             </div>
           </div>
         ))}
-    </div>
+    </main>
   )
 }
