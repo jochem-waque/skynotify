@@ -10,8 +10,8 @@ import { useProfilesStore } from "@/components/profilesStore"
 import { useEffect } from "react"
 
 export default function Page() {
-    const profiles = useProfilesStore((state) => state.profiles)
-const syncSelected = useProfilesStore((state) => state.syncSelected)
+  const profiles = useProfilesStore((state) => state.profiles)
+  const syncSelected = useProfilesStore((state) => state.syncSelected)
 
   useEffect(() => {
     syncSelected()
@@ -31,20 +31,32 @@ const syncSelected = useProfilesStore((state) => state.syncSelected)
               handle={profile.handle}
               displayName={profile.displayName}
             ></Profile>
-            <div className="flex flex-wrap gap-2">
-              <label className="relative flex items-center rounded-full bg-neutral-200 px-2 outline-2 outline-black has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
-                <span className="z-10">Posts</span>
-                <input className="h-0 w-0" type="checkbox"></input>
+            <form className="flex flex-wrap gap-2">
+              <label className="relative flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
+                <span className="z-10 select-none">Posts</span>
+                <input
+                  defaultChecked={profile.notifyPosts}
+                  className="h-0 w-0"
+                  type="checkbox"
+                ></input>
               </label>
-              <label className="relative flex items-center rounded-full bg-neutral-200 px-2 outline-2 outline-black has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
-                <span className="z-10">Reposts</span>
-                <input className="h-0 w-0" type="checkbox"></input>
+              <label className="relative flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
+                <span className="z-10 select-none">Reposts</span>
+                <input
+                  defaultChecked={profile.notifyReposts}
+                  className="h-0 w-0"
+                  type="checkbox"
+                ></input>
               </label>
-              <label className="relative flex items-center rounded-full bg-neutral-200 px-2 outline-2 outline-black has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
-                <span className="z-10">Replies</span>
-                <input className="h-0 w-0" type="checkbox"></input>
+              <label className="relative flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
+                <span className="z-10 select-none">Replies</span>
+                <input
+                  defaultChecked={profile.notifyReplies}
+                  className="h-0 w-0"
+                  type="checkbox"
+                ></input>
               </label>
-            </div>
+            </form>
           </div>
         ))}
     </main>
