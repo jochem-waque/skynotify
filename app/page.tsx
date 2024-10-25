@@ -16,7 +16,7 @@ export default async function Page() {
   const account = await getCurrentAccount()
 
   return (
-    <main className="container relative z-0 flex h-full flex-col items-center justify-center gap-48">
+    <main className="container relative z-0 flex h-full max-w-lg flex-col items-center justify-center gap-48">
       <div className="text-center">
         <h1 className="text-4xl">Bluesky Post Notifications</h1>
         <span>by jochem.cc</span>

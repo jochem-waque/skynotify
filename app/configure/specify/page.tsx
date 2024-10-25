@@ -13,7 +13,7 @@ export default function Page() {
   const profiles = useProfilesStore((state) => state.profiles)
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <main className="flex w-full max-w-lg flex-col gap-2">
       {profiles
         .filter((p) => selection.includes(p.did))
         .map((p) => (

@@ -7,7 +7,7 @@ import ImportFollowing from "@/components/importFollowing"
 
 export default function Page() {
   return (
-    <main className="container flex h-full flex-col justify-between gap-4">
+    <main className="container flex h-full max-w-lg flex-col justify-between gap-4">
       <div className="flex flex-col overflow-hidden">
         <h1>Following</h1>
         <p>Let&apos;s import your Bluesky following</p>

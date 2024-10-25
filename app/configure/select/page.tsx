@@ -8,7 +8,7 @@ import Link from "next/link"
 
 export default function Page() {
   return (
-    <main className="flex flex-col gap-2 overflow-hidden">
+    <main className="flex max-w-lg flex-col gap-2 overflow-hidden">
       <h1 className="text-3xl">Following</h1>
       <p>
         Now, select the accounts you&apos;d like to receive notifications for.
