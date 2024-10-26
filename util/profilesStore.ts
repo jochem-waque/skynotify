@@ -70,6 +70,7 @@ export const useProfilesStore = create(
   persist(
     combine(
       {
+        actor: null as string | null,
         fetching: false,
         allSelected: false,
         allNotifyPosts: false,
@@ -82,6 +83,7 @@ export const useProfilesStore = create(
         notifyReplies: new Set<string>(),
       },
       (set) => ({
+        setActor: (actor: string) => set({ actor }),
         setFetching: (value: boolean) => set({ fetching: value }),
         fetchProfiles: async (actor: string) => {
           set({ fetching: true, profiles: new Map() })
@@ -220,13 +222,14 @@ export const useProfilesStore = create(
     ),
     {
       name: "preferences",
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
+        actor: state.actor,
         selected: state.selected,
         notifyPosts: state.notifyPosts,
         notifyReplies: state.notifyReplies,
         notifyReposts: state.notifyReposts,
       }),
-      storage: createJSONStorage(() => localStorage),
     },
   ),
 )

@@ -12,9 +12,12 @@ import { KeyboardEvent, MouseEvent } from "react"
 export default function ImportFollowing() {
   const fetchProfiles = useProfilesStore((state) => state.fetchProfiles)
   const setFetching = useProfilesStore((state) => state.setFetching)
+  const setActor = useProfilesStore((state) => state.setActor)
   const router = useRouter()
+  const actor = useProfilesStore((state) => state.actor)
 
   function getFollowing(actor: string) {
+    setActor(actor)
     setFetching(true)
     fetchProfiles(actor)
     router.push("select")
@@ -39,6 +42,7 @@ export default function ImportFollowing() {
   return (
     <>
       <input
+        defaultValue={actor ?? undefined}
         className="rounded-lg p-2 font-mono"
         spellCheck={false}
         type="text"
