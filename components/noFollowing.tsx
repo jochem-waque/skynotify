@@ -6,19 +6,14 @@
 "use client"
 
 import { useProfilesStore } from "../util/profilesStore"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
 
-export default function RedirectOnEmptyStore() {
+export default function NoFollowing() {
   const fetching = useProfilesStore((state) => state.fetching)
   const profiles = useProfilesStore((state) => state.profiles)
-  const router = useRouter()
 
-  useEffect(() => {
-    if (profiles.length === 0 && !fetching) {
-      router.push("import")
-    }
-  }, [router, profiles, fetching])
+  if (fetching || profiles.length) {
+    return null
+  }
 
-  return null
+  return <p>It appears that you don&apos;t follow anyone on Bluesky</p>
 }
