@@ -46,7 +46,7 @@ export default function ImportFollowing() {
         placeholder="handle.bsky.social"
       ></input>
       <button
-        className="mt-auto rounded-lg bg-blue-400 p-4 transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
+        className="mt-auto rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
         onClick={click}
         type="button"
       >
