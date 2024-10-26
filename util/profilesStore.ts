@@ -8,7 +8,7 @@
 import { AppBskyGraphGetFollows, AtpAgent } from "@atproto/api"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { create } from "zustand"
-import { combine } from "zustand/middleware"
+import { combine, createJSONStorage, persist } from "zustand/middleware"
 
 type Profile = {
   handle: string
@@ -67,152 +67,166 @@ export function updateAllNotifyReplies() {
 }
 
 export const useProfilesStore = create(
-  combine(
-    {
-      fetching: false,
-      allSelected: false,
-      allNotifyPosts: false,
-      allNotifyReposts: false,
-      allNotifyReplies: false,
-      profiles: new Map<string, Profile>(),
-      selected: new Set<string>(),
-      notifyPosts: new Set<string>(),
-      notifyReposts: new Set<string>(),
-      notifyReplies: new Set<string>(),
-    },
-    (set) => ({
-      setFetching: (value: boolean) => set({ fetching: value }),
-      fetchProfiles: async (actor: string) => {
-        set({ fetching: true, profiles: new Map() })
+  persist(
+    combine(
+      {
+        fetching: false,
+        allSelected: false,
+        allNotifyPosts: false,
+        allNotifyReposts: false,
+        allNotifyReplies: false,
+        profiles: new Map<string, Profile>(),
+        selected: new Set<string>(),
+        notifyPosts: new Set<string>(),
+        notifyReposts: new Set<string>(),
+        notifyReplies: new Set<string>(),
+      },
+      (set) => ({
+        setFetching: (value: boolean) => set({ fetching: value }),
+        fetchProfiles: async (actor: string) => {
+          set({ fetching: true, profiles: new Map() })
 
-        const agent = new AtpAgent({ service: "https://public.api.bsky.app/" })
-
-        let response: AppBskyGraphGetFollows.Response | undefined = undefined
-        do {
-          response = await agent.getFollows({
-            actor,
-            limit: 100,
-            cursor: response?.data.cursor,
+          const agent = new AtpAgent({
+            service: "https://public.api.bsky.app/",
           })
 
-          set(({ profiles: oldProfiles }) => ({
-            profiles: new Map([
-              ...oldProfiles.entries(),
-              ...response!.data.follows.map(
-                (follow) => [follow.did, pickProfile(follow)] as const,
-              ),
-            ]),
-          }))
-        } while (response.data.cursor)
+          let response: AppBskyGraphGetFollows.Response | undefined = undefined
+          do {
+            response = await agent.getFollows({
+              actor,
+              limit: 100,
+              cursor: response?.data.cursor,
+            })
 
-        set(() => ({ fetching: false }))
-      },
-      setSelected: (did: string, value?: boolean) =>
-        set(({ selected }) => {
-          const current = selected.has(did)
-          if (value === current) {
-            return {}
-          }
+            set(({ profiles: oldProfiles }) => ({
+              profiles: new Map([
+                ...oldProfiles.entries(),
+                ...response!.data.follows.map(
+                  (follow) => [follow.did, pickProfile(follow)] as const,
+                ),
+              ]),
+            }))
+          } while (response.data.cursor)
 
-          if (value === undefined) {
-            value = !current
-          }
+          set(() => ({ fetching: false }))
+        },
+        setSelected: (did: string, value?: boolean) =>
+          set(({ selected }) => {
+            const current = selected.has(did)
+            if (value === current) {
+              return {}
+            }
 
-          if (value) {
-            const newSelected = new Set(selected).add(did)
-            return { selected: newSelected }
-          }
+            if (value === undefined) {
+              value = !current
+            }
 
-          selected.delete(did)
-          return { selected: new Set(selected) }
-        }),
-      setNotifyPosts: (did: string, value?: boolean) =>
-        set(({ notifyPosts }) => {
-          const current = notifyPosts.has(did)
-          if (value === current) {
-            return {}
-          }
+            if (value) {
+              const newSelected = new Set(selected).add(did)
+              return { selected: newSelected }
+            }
 
-          if (value === undefined) {
-            value = !current
-          }
+            selected.delete(did)
+            return { selected: new Set(selected) }
+          }),
+        setNotifyPosts: (did: string, value?: boolean) =>
+          set(({ notifyPosts }) => {
+            const current = notifyPosts.has(did)
+            if (value === current) {
+              return {}
+            }
 
-          if (value) {
-            return { notifyPosts: new Set(notifyPosts).add(did) }
-          }
+            if (value === undefined) {
+              value = !current
+            }
 
-          notifyPosts.delete(did)
-          return { notifyPosts: new Set(notifyPosts) }
-        }),
-      setNotifyReposts: (did: string, value?: boolean) =>
-        set(({ notifyReposts }) => {
-          const current = notifyReposts.has(did)
-          if (value === current) {
-            return {}
-          }
+            if (value) {
+              return { notifyPosts: new Set(notifyPosts).add(did) }
+            }
 
-          if (value === undefined) {
-            value = !current
-          }
+            notifyPosts.delete(did)
+            return { notifyPosts: new Set(notifyPosts) }
+          }),
+        setNotifyReposts: (did: string, value?: boolean) =>
+          set(({ notifyReposts }) => {
+            const current = notifyReposts.has(did)
+            if (value === current) {
+              return {}
+            }
 
-          if (value) {
-            return { notifyReposts: new Set(notifyReposts).add(did) }
-          }
+            if (value === undefined) {
+              value = !current
+            }
 
-          notifyReposts.delete(did)
-          return { notifyReposts: new Set(notifyReposts) }
-        }),
-      setNotifyReplies: (did: string, value?: boolean) =>
-        set(({ notifyReplies }) => {
-          const current = notifyReplies.has(did)
-          if (value === current) {
-            return {}
-          }
+            if (value) {
+              return { notifyReposts: new Set(notifyReposts).add(did) }
+            }
 
-          if (value === undefined) {
-            value = !current
-          }
+            notifyReposts.delete(did)
+            return { notifyReposts: new Set(notifyReposts) }
+          }),
+        setNotifyReplies: (did: string, value?: boolean) =>
+          set(({ notifyReplies }) => {
+            const current = notifyReplies.has(did)
+            if (value === current) {
+              return {}
+            }
 
-          if (value) {
-            return { notifyReplies: new Set(notifyReplies).add(did) }
-          }
+            if (value === undefined) {
+              value = !current
+            }
 
-          notifyReplies.delete(did)
-          return { notifyReplies: new Set(notifyReplies) }
-        }),
-      toggleSelectAll: () =>
-        set(({ profiles, selected }) => {
-          const all = new Set(profiles.keys())
-          if (all.symmetricDifference(selected).size === 0) {
-            return { selected: new Set(), allSelected: false }
-          }
+            if (value) {
+              return { notifyReplies: new Set(notifyReplies).add(did) }
+            }
 
-          return { selected: all, allSelected: true }
-        }),
-      toggleNotifyPostsAll: () =>
-        set(({ notifyPosts, selected }) => {
-          if (selected.symmetricDifference(notifyPosts).size === 0) {
-            return { notifyPosts: new Set(), allnotifyPosts: false }
-          }
+            notifyReplies.delete(did)
+            return { notifyReplies: new Set(notifyReplies) }
+          }),
+        toggleSelectAll: () =>
+          set(({ profiles, selected }) => {
+            const all = new Set(profiles.keys())
+            if (all.symmetricDifference(selected).size === 0) {
+              return { selected: new Set(), allSelected: false }
+            }
 
-          return { notifyPosts: new Set(selected), allnotifyPosts: true }
-        }),
-      toggleNotifyRepostsAll: () =>
-        set(({ notifyReposts, selected }) => {
-          if (selected.symmetricDifference(notifyReposts).size === 0) {
-            return { notifyReposts: new Set(), allnotifyReposts: false }
-          }
+            return { selected: all, allSelected: true }
+          }),
+        toggleNotifyPostsAll: () =>
+          set(({ notifyPosts, selected }) => {
+            if (selected.symmetricDifference(notifyPosts).size === 0) {
+              return { notifyPosts: new Set(), allnotifyPosts: false }
+            }
 
-          return { notifyReposts: new Set(selected), allnotifyReposts: true }
-        }),
-      toggleNotifyRepliesAll: () =>
-        set(({ notifyReplies, selected }) => {
-          if (selected.symmetricDifference(notifyReplies).size === 0) {
-            return { notifyReplies: new Set(), allnotifyReplies: false }
-          }
+            return { notifyPosts: new Set(selected), allnotifyPosts: true }
+          }),
+        toggleNotifyRepostsAll: () =>
+          set(({ notifyReposts, selected }) => {
+            if (selected.symmetricDifference(notifyReposts).size === 0) {
+              return { notifyReposts: new Set(), allnotifyReposts: false }
+            }
 
-          return { notifyReplies: new Set(selected), allnotifyReplies: true }
-        }),
-    }),
+            return { notifyReposts: new Set(selected), allnotifyReposts: true }
+          }),
+        toggleNotifyRepliesAll: () =>
+          set(({ notifyReplies, selected }) => {
+            if (selected.symmetricDifference(notifyReplies).size === 0) {
+              return { notifyReplies: new Set(), allnotifyReplies: false }
+            }
+
+            return { notifyReplies: new Set(selected), allnotifyReplies: true }
+          }),
+      }),
+    ),
+    {
+      name: "preferences",
+      partialize: (state) => ({
+        selected: state.selected,
+        notifyPosts: state.notifyPosts,
+        notifyReplies: state.notifyReplies,
+        notifyReposts: state.notifyReposts,
+      }),
+      storage: createJSONStorage(() => localStorage),
+    },
   ),
 )
