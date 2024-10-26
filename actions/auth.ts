@@ -34,5 +34,5 @@ export async function auth(
   const cookiesResult = await cookies()
   cookiesResult.set("account", accountId)
 
-  redirect(installed ? "configure/import" : "install")
+  redirect(installed ? "/configure/import" : "/install")
 }
