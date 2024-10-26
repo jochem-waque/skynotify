@@ -22,7 +22,7 @@ export default function ProfileChipsList() {
     .filter((profile) => profile.selected)
     .map((profile) => (
       <div
-        className="flex flex-col gap-2 rounded-lg bg-neutral-100 p-2 dark:bg-neutral-900"
+        className="flex flex-col gap-2 rounded-lg bg-neutral-100 p-2 dark:bg-neutral-800"
         key={profile.did}
       >
         <Profile

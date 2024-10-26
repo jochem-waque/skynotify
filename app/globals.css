@@ -9,7 +9,7 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
-      @apply bg-black text-white;
+      @apply bg-neutral-900 text-white;
     }
   }
 }

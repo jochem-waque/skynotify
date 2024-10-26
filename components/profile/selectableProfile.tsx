@@ -17,7 +17,7 @@ export default function SelectableProfile({
   defaultChecked: boolean
 }) {
   return (
-    <label className="flex cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:opacity-75 dark:bg-neutral-900 has-[:checked]:dark:bg-blue-600">
+    <label className="flex cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:opacity-75 dark:bg-neutral-800 has-[:checked]:dark:bg-blue-600">
       <Profile
         avatar={avatar}
         displayName={displayName}
