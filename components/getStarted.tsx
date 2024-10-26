@@ -13,7 +13,7 @@ import { useEffect, useState } from "react"
 /*
  * If possible, prompt to install. If not authenticated, redirect to auth with
  * query parameter indicating installation status. Otherwise, redirect to
- * install or configure depending on installation status.
+ * install or import depending on installation status.
  */
 export default function GetStarted({
   authenticated,
@@ -58,11 +58,11 @@ export default function GetStarted({
     const result = await installEvent?.prompt()
     const accepted = result?.outcome === "accepted"
     if (!authenticated) {
-      router.push(`/auth?installed=${accepted}`)
+      router.push(`auth?installed=${accepted}`)
       return
     }
 
-    router.push(accepted || installed ? "/configure/import" : "/install")
+    router.push(accepted || installed ? "configure/import" : "install")
   }
 
   if (installEvent) {
@@ -81,10 +81,10 @@ export default function GetStarted({
       className="rounded-lg bg-blue-400 px-16 py-4 text-2xl transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
       href={
         installed && authenticated
-          ? "/configure/import"
+          ? "import"
           : authenticated
-            ? "/install"
-            : `/auth?installed=${installed}`
+            ? "install"
+            : `auth?installed=${installed}`
       }
     >
       Get started

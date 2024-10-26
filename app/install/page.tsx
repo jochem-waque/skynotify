@@ -73,7 +73,7 @@ export default async function Page() {
         <PlatformInstructions></PlatformInstructions>
       </div>
       <Link
-        href={"/configure/import"}
+        href={"configure/import"}
         className="w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
       >
         I&apos;ve installed the app
