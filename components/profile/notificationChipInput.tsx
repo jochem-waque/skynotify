@@ -9,11 +9,11 @@ import { useProfilesStore } from "@/util/profilesStore"
 import { ChangeEvent } from "react"
 
 export default function NotificationChipInput({
-  defaultChecked,
+  checked,
   name,
   did,
 }: {
-  defaultChecked: boolean
+  checked: boolean
   name: "reposts" | "replies" | "posts"
   did: string
 }) {
@@ -31,7 +31,7 @@ export default function NotificationChipInput({
 
   return (
     <input
-      defaultChecked={defaultChecked}
+      checked={checked}
       className="h-0 w-0"
       type="checkbox"
       onChange={change}

@@ -32,9 +32,9 @@ export default function ProfileChipsList() {
         ></Profile>
         <NotificationChips
           did={profile.did}
-          defaultPosts={profile.notifyPosts}
-          defaultReplies={profile.notifyReplies}
-          defaultReposts={profile.notifyReposts}
+          notifyPosts={profile.notifyPosts}
+          notifyReplies={profile.notifyReplies}
+          notifyReposts={profile.notifyReposts}
         ></NotificationChips>
       </div>
     ))

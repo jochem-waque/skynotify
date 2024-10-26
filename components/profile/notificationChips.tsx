@@ -7,14 +7,14 @@ import NotificationChipInput from "./notificationChipInput"
 
 export default function NotificationChips({
   did,
-  defaultPosts,
-  defaultReposts,
-  defaultReplies,
+  notifyPosts,
+  notifyReposts,
+  notifyReplies,
 }: {
   did: string
-  defaultPosts: boolean
-  defaultReposts: boolean
-  defaultReplies: boolean
+  notifyPosts: boolean
+  notifyReposts: boolean
+  notifyReplies: boolean
 }) {
   return (
     <form className="flex flex-wrap gap-2">
@@ -22,7 +22,7 @@ export default function NotificationChips({
         <span className="select-none">Posts</span>
         <NotificationChipInput
           did={did}
-          defaultChecked={defaultPosts}
+          checked={notifyPosts}
           name={"posts"}
         ></NotificationChipInput>
       </label>
@@ -30,7 +30,7 @@ export default function NotificationChips({
         <span className="select-none">Reposts</span>
         <NotificationChipInput
           did={did}
-          defaultChecked={defaultReposts}
+          checked={notifyReposts}
           name={"reposts"}
         ></NotificationChipInput>
       </label>
@@ -38,7 +38,7 @@ export default function NotificationChips({
         <span className="select-none">Replies</span>
         <NotificationChipInput
           did={did}
-          defaultChecked={defaultReplies}
+          checked={notifyReplies}
           name={"replies"}
         ></NotificationChipInput>
       </label>
