@@ -35,7 +35,10 @@ export default function AuthForm({ installed }: { installed: boolean }) {
           <input type="hidden" name="installed" value="true"></input>
         )}
       </div>
-      <button className="w-full rounded-lg bg-blue-500 p-4" type="submit">
+      <button
+        className="w-full rounded-lg bg-blue-400 p-4 dark:bg-blue-600"
+        type="submit"
+      >
         Authenticate
       </button>
     </form>

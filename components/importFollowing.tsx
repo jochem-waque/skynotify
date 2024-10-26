@@ -35,16 +35,18 @@ export default function ImportFollowing() {
     }
   }
 
+  // TODO mt-auto shouldn't be specified here
   return (
     <>
       <input
-        className="p-2"
+        className="rounded-lg p-2 font-mono"
         spellCheck={false}
         type="text"
         onKeyDown={keyDown}
+        placeholder="handle.bsky.social"
       ></input>
       <button
-        className="bg-blue-500 p-2 transition-opacity hover:opacity-75 disabled:opacity-50"
+        className="mt-auto rounded-lg bg-blue-400 p-4 transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
         onClick={click}
         type="button"
       >

@@ -24,7 +24,9 @@ export default function Profile({
       )}
       <div className="flex flex-col justify-center overflow-hidden">
         {displayName && <span className="truncate">{displayName}</span>}
-        <span className="truncate font-mono">@{handle}</span>
+        <span className="truncate font-mono even:text-sm even:opacity-75">
+          @{handle}
+        </span>
       </div>
     </div>
   )

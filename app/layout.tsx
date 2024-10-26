@@ -5,17 +5,35 @@
  */
 import "./globals.css"
 import OpenBackgroundNotifications from "@/components/openBackgroundNotifications"
+import { Viewport } from "next"
+import { Noto_Sans, Noto_Sans_Mono } from "next/font/google"
+
+const font = Noto_Sans({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
+
+const mono = Noto_Sans_Mono({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-mono",
+})
+
+// TODO re-evaluate
+export const viewport: Viewport = { interactiveWidget: "resizes-content" }
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // TODO: h-0??
   return (
-    <html lang="en">
-      <body className="flex h-[100svh] flex-col items-center p-4">
-        <OpenBackgroundNotifications></OpenBackgroundNotifications>
+    <html lang="en" className={`${font.variable} ${mono.variable} font-sans`}>
+      <body className="relative flex min-h-[100svh] flex-col items-center p-4">
         {children}
+        <OpenBackgroundNotifications></OpenBackgroundNotifications>
       </body>
     </html>
   )

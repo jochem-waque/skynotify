@@ -18,24 +18,24 @@ export default function NotificationChips({
 }) {
   return (
     <form className="flex flex-wrap gap-2">
-      <label className="relative flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
-        <span className="z-10 select-none">Posts</span>
+      <label className="flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
+        <span className="select-none">Posts</span>
         <NotificationChipInput
           did={did}
           defaultChecked={defaultPosts}
           name={"posts"}
         ></NotificationChipInput>
       </label>
-      <label className="relative flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
-        <span className="z-10 select-none">Reposts</span>
+      <label className="flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
+        <span className="select-none">Reposts</span>
         <NotificationChipInput
           did={did}
           defaultChecked={defaultReposts}
           name={"reposts"}
         ></NotificationChipInput>
       </label>
-      <label className="relative flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-500 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white">
-        <span className="z-10 select-none">Replies</span>
+      <label className="flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
+        <span className="select-none">Replies</span>
         <NotificationChipInput
           did={did}
           defaultChecked={defaultReplies}

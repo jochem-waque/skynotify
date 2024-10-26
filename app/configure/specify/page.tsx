@@ -3,43 +3,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-"use client"
-
-import NotificationChips from "@/components/profile/notificationChips"
-import Profile from "@/components/profile/profile"
-import { useProfilesStore } from "@/util/profilesStore"
-import { useEffect } from "react"
+import ProfileChipsList from "@/components/profile/profileChipsLists"
+import SyncSelected from "@/components/profile/syncSelected"
+import Link from "next/link"
 
 export default function Page() {
-  const profiles = useProfilesStore((state) => state.profiles)
-  const syncSelected = useProfilesStore((state) => state.syncSelected)
-
-  useEffect(() => {
-    syncSelected()
-  }, [syncSelected])
-
   return (
-    <main className="flex w-full max-w-lg flex-col gap-2">
-      {profiles
-        .filter((profile) => profile.selected)
-        .map((profile) => (
-          <div
-            className="flex flex-col gap-2 rounded-lg bg-neutral-100 p-2 dark:bg-neutral-900"
-            key={profile.did}
-          >
-            <Profile
-              avatar={profile.avatar}
-              handle={profile.handle}
-              displayName={profile.displayName}
-            ></Profile>
-            <NotificationChips
-              did={profile.did}
-              defaultPosts={profile.notifyPosts}
-              defaultReplies={profile.notifyReplies}
-              defaultReposts={profile.notifyReposts}
-            ></NotificationChips>
-          </div>
-        ))}
+    <main className="flex w-full max-w-lg flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl">Set notifications</h1>
+        <p>
+          Finally, select the types of notifications you&apos;d like to receive
+          for each account.
+        </p>
+      </div>
+      <div className="flex flex-col gap-2">
+        <ProfileChipsList></ProfileChipsList>
+      </div>
+      <div className="sticky bottom-4 mt-auto flex after:absolute after:-bottom-4 after:z-0 after:h-[calc(100%+2rem)] after:w-full after:bg-white after:dark:bg-black">
+        <Link
+          href="specify"
+          className="z-10 w-full rounded-lg bg-blue-400 p-4 dark:bg-blue-600"
+        >
+          Save changes
+        </Link>
+      </div>
+      <SyncSelected></SyncSelected>
     </main>
   )
 }

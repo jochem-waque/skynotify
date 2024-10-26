@@ -9,24 +9,29 @@ import RedirectOnEmptyStore from "@/components/redirectOnEmptyStore"
 import Link from "next/link"
 
 export default function Page() {
+  // TODO get rid of double bottom padding
   return (
-    <main className="flex max-w-lg flex-col gap-2 overflow-hidden">
+    <main className="flex w-full max-w-lg grow flex-col gap-4">
       <RedirectOnEmptyStore></RedirectOnEmptyStore>
       <SyncNotificationPreferences></SyncNotificationPreferences>
-      <h1 className="text-3xl">Following</h1>
-      <p>
-        Now, select the accounts you&apos;d like to receive notifications for.
-        You&apos;ll be able to specify whether you want to receive post, repost
-        and/or reply notifications later.
-      </p>
-      <form className="flex flex-col gap-4 overflow-hidden">
-        <div className="flex w-full flex-col gap-2 overflow-y-auto">
-          <ProfileSelectorList></ProfileSelectorList>
-        </div>
-        <Link href="specify" className="w-full rounded-lg bg-blue-500 p-4">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl">Select</h1>
+        <p>
+          Now, select the accounts you&apos;d like to receive notifications for.
+          You&apos;ll be able to set the types of notifications later.
+        </p>
+      </div>
+      <div className="flex flex-col gap-2">
+        <ProfileSelectorList></ProfileSelectorList>
+      </div>
+      <div className="sticky bottom-4 mt-auto flex after:absolute after:-bottom-4 after:z-0 after:h-[calc(100%+2rem)] after:w-full after:bg-white after:dark:bg-black">
+        <Link
+          href="specify"
+          className="z-10 w-full rounded-lg bg-blue-400 p-4 dark:bg-blue-600"
+        >
           Continue
         </Link>
-      </form>
+      </div>
     </main>
   )
 }

@@ -61,23 +61,24 @@ export default async function Page() {
   const platform = await parseUserAgent()
 
   return (
-    <main className="container z-10 flex h-full max-w-lg flex-col justify-between gap-4 bg-white dark:bg-black">
-      <div className="flex flex-col items-start gap-4 overflow-hidden">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-center text-3xl">Bluesky Post Notifications</h1>
-          <div className="flex flex-wrap items-center gap-2 text-xl">
-            <h2>Install for </h2>{" "}
-            <PlatformSelect platform={platform}></PlatformSelect>
-          </div>
+    <main className="container flex max-w-lg grow flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl">Installation</h1>
+        First, let&apos;s get this app installed on your device.
+        <div className="flex flex-wrap items-center gap-2 text-xl">
+          <h2>Install for </h2>{" "}
+          <PlatformSelect platform={platform}></PlatformSelect>
         </div>
-        <PlatformInstructions></PlatformInstructions>
       </div>
-      <Link
-        href={"configure/import"}
-        className="w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
-      >
-        I&apos;ve installed the app
-      </Link>
+      <PlatformInstructions></PlatformInstructions>
+      <div className="sticky bottom-4 mt-auto flex after:absolute after:-bottom-4 after:z-0 after:h-[calc(100%+2rem)] after:w-full after:bg-white after:dark:bg-black">
+        <Link
+          href={"configure/import"}
+          className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
+        >
+          I&apos;ve installed the app
+        </Link>
+      </div>
       <RedirectOnInstall></RedirectOnInstall>
     </main>
   )

@@ -8,10 +8,7 @@ import Link from "next/link"
 export default function PlatformInstructions() {
   return (
     <>
-      <div
-        id="android"
-        className="hidden flex-col gap-2 overflow-y-auto target:flex"
-      >
+      <div id="android" className="hidden flex-col gap-2 target:flex">
         <ol className="list-inside list-decimal">
           <li>
             Open the hamburger menu <span className="font-black">⋮</span> in the
@@ -31,10 +28,7 @@ export default function PlatformInstructions() {
           from the list of installed apps.
         </p>
       </div>
-      <div
-        id="desktop-chromium"
-        className="hidden flex-col gap-2 overflow-y-auto target:flex"
-      >
+      <div id="desktop-chromium" className="hidden flex-col gap-2 target:flex">
         <p>
           Click the install button in the address bar on the left and follow the
           instructions in the installation prompt.
@@ -52,10 +46,7 @@ export default function PlatformInstructions() {
           the list of installed apps.
         </p>
       </div>
-      <div
-        id="macos-safari"
-        className="hidden flex-col gap-2 overflow-y-auto target:flex"
-      >
+      <div id="macos-safari" className="hidden flex-col gap-2 target:flex">
         <ol className="list-inside list-decimal">
           <li>
             Click the{" "}
@@ -81,10 +72,7 @@ export default function PlatformInstructions() {
           the list of installed apps.
         </p>
       </div>
-      <div
-        id="ios"
-        className="hidden flex-col gap-2 overflow-y-auto target:flex"
-      >
+      <div id="ios" className="hidden flex-col gap-2 target:flex">
         <ol className="list-inside list-decimal">
           <li>
             Click the{" "}
@@ -109,10 +97,7 @@ export default function PlatformInstructions() {
           from the list of installed apps.
         </p>
       </div>
-      <div
-        id="unknown"
-        className="hidden flex-col gap-2 overflow-y-auto target:flex"
-      >
+      <div id="unknown" className="hidden flex-col gap-2 target:flex">
         <p>
           Your browser could not be automatically detected. Please select an
           applicable browser from the dropdown menu, or use the instructions
@@ -138,7 +123,7 @@ export default function PlatformInstructions() {
           </li>
         </ul>
       </div>
-      <p id="firefox" className="hidden overflow-y-auto target:block">
+      <p id="firefox" className="hidden target:block">
         Firefox is currently not officially supported. Please use a different
         browser, or install the{" "}
         <Link
