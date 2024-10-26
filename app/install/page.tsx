@@ -62,7 +62,7 @@ export default async function Page() {
   return (
     <main className="container flex max-w-lg grow flex-col gap-4">
       <InstallationContent defaultPlatform={platform}></InstallationContent>
-      <div className="sticky bottom-4 mt-auto flex after:absolute after:-bottom-4 after:z-0 after:h-[calc(100%+2rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
+      <div className="sticky bottom-4 mt-auto flex after:absolute after:-bottom-4 after:left-0 after:z-0 after:h-[calc(100%+2rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
         <Link
           href={"configure/import"}
           className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
