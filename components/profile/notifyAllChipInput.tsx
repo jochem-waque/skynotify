@@ -11,28 +11,25 @@ import {
   updateAllNotifyReposts,
   useProfilesStore,
 } from "@/util/profilesStore"
-import { ChangeEvent, useEffect } from "react"
 
-export default function NotificationChipInput({
+export default function NotifyAllChipInput({
   type,
-  did,
 }: {
-  type: "reposts" | "replies" | "posts"
-  did: string
+  type: "posts" | "reposts" | "replies"
 }) {
   const checked = useProfilesStore((state) =>
     type === "posts"
-      ? state.notifyPosts
+      ? state.allNotifyPosts
       : type === "reposts"
-        ? state.notifyReposts
-        : state.notifyReplies,
+        ? state.allNotifyReposts
+        : state.allNotifyReplies,
   )
-  const setPreference = useProfilesStore((state) =>
+  const toggleAll = useProfilesStore((state) =>
     type === "posts"
-      ? state.setNotifyPosts
+      ? state.toggleNotifyPostsAll
       : type === "reposts"
-        ? state.setNotifyReposts
-        : state.setNotifyReplies,
+        ? state.toggleNotifyRepostsAll
+        : state.toggleNotifyRepliesAll,
   )
   const update =
     type === "posts"
@@ -41,17 +38,15 @@ export default function NotificationChipInput({
         ? updateAllNotifyReposts
         : updateAllNotifyReplies
 
-  useEffect(() => update(), [update])
-
-  function change(event: ChangeEvent<HTMLInputElement>) {
-    setPreference(did, event.currentTarget.checked)
+  function change() {
+    toggleAll()
     update()
   }
 
   return (
     <input
-      checked={checked.has(did)}
-      className="h-0 w-0"
+      checked={checked}
+      className="peer h-0 w-0"
       type="checkbox"
       onChange={change}
     ></input>

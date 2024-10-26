@@ -42,11 +42,38 @@ export function updateAllSelected() {
   }))
 }
 
+export function updateAllNotifyPosts() {
+  useProfilesStore.setState(({ notifyPosts, selected }) => ({
+    allNotifyPosts:
+      notifyPosts.size >= selected.size &&
+      selected.symmetricDifference(notifyPosts).size === 0,
+  }))
+}
+
+export function updateAllNotifyReposts() {
+  useProfilesStore.setState(({ notifyReposts, selected }) => ({
+    allNotifyReposts:
+      notifyReposts.size >= selected.size &&
+      selected.symmetricDifference(notifyReposts).size === 0,
+  }))
+}
+
+export function updateAllNotifyReplies() {
+  useProfilesStore.setState(({ notifyReplies, selected }) => ({
+    allNotifyReplies:
+      notifyReplies.size >= selected.size &&
+      selected.symmetricDifference(notifyReplies).size === 0,
+  }))
+}
+
 export const useProfilesStore = create(
   combine(
     {
       fetching: false,
       allSelected: false,
+      allNotifyPosts: false,
+      allNotifyReposts: false,
+      allNotifyReplies: false,
       profiles: new Map<string, Profile>(),
       selected: new Set<string>(),
       notifyPosts: new Set<string>(),
@@ -161,6 +188,30 @@ export const useProfilesStore = create(
           }
 
           return { selected: all, allSelected: true }
+        }),
+      toggleNotifyPostsAll: () =>
+        set(({ notifyPosts, selected }) => {
+          if (selected.symmetricDifference(notifyPosts).size === 0) {
+            return { notifyPosts: new Set(), allnotifyPosts: false }
+          }
+
+          return { notifyPosts: new Set(selected), allnotifyPosts: true }
+        }),
+      toggleNotifyRepostsAll: () =>
+        set(({ notifyReposts, selected }) => {
+          if (selected.symmetricDifference(notifyReposts).size === 0) {
+            return { notifyReposts: new Set(), allnotifyReposts: false }
+          }
+
+          return { notifyReposts: new Set(selected), allnotifyReposts: true }
+        }),
+      toggleNotifyRepliesAll: () =>
+        set(({ notifyReplies, selected }) => {
+          if (selected.symmetricDifference(notifyReplies).size === 0) {
+            return { notifyReplies: new Set(), allnotifyReplies: false }
+          }
+
+          return { notifyReplies: new Set(selected), allnotifyReplies: true }
         }),
     }),
   ),
