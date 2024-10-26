@@ -13,11 +13,11 @@ export default function Page() {
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl">Set notifications</h1>
         <p>
-          Finally, select the types of notifications you&apos;d like to receive
-          for each account.
+          Finally, select the kinds of notifications you&apos;d like to receive
+          from each profile.
         </p>
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <label className="flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
           <NotifyAllChipInput type={"posts"}></NotifyAllChipInput>
           <span className="select-none">Posts</span>

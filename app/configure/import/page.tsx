@@ -9,8 +9,8 @@ export default function Page() {
   return (
     <main className="container flex max-w-lg grow flex-col justify-between gap-4">
       <div className="flex grow flex-col gap-2">
-        <h1 className="text-3xl">Import</h1>
-        <p>Let&apos;s import your Bluesky following!</p>
+        <h1 className="text-3xl">Import following</h1>
+        <p>Next, let&apos;s import your Bluesky following.</p>
         <ImportFollowing></ImportFollowing>
       </div>
     </main>
