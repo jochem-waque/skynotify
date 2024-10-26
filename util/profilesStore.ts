@@ -34,11 +34,19 @@ export function pickProfile({
   }
 }
 
+export function updateAllSelected() {
+  useProfilesStore.setState(({ selected, profiles }) => ({
+    allSelected:
+      selected.size >= profiles.size &&
+      new Set(profiles.keys()).symmetricDifference(selected).size === 0,
+  }))
+}
+
 export const useProfilesStore = create(
   combine(
     {
       fetching: false,
-      allSelected: true,
+      allSelected: false,
       profiles: new Map<string, Profile>(),
       selected: new Set<string>(),
       notifyPosts: new Set<string>(),
@@ -48,7 +56,7 @@ export const useProfilesStore = create(
     (set) => ({
       setFetching: (value: boolean) => set({ fetching: value }),
       fetchProfiles: async (actor: string) => {
-        set({ fetching: true, profiles: new Map(), allSelected: true })
+        set({ fetching: true, profiles: new Map() })
 
         const agent = new AtpAgent({ service: "https://public.api.bsky.app/" })
 
@@ -60,9 +68,7 @@ export const useProfilesStore = create(
             cursor: response?.data.cursor,
           })
 
-          // TODO allSelected could be wrong
           set(({ profiles: oldProfiles }) => ({
-            allSelected: false,
             profiles: new Map([
               ...oldProfiles.entries(),
               ...response!.data.follows.map(
@@ -72,15 +78,10 @@ export const useProfilesStore = create(
           }))
         } while (response.data.cursor)
 
-        set(({ profiles, selected }) => ({
-          allSelected:
-            selected.size >= profiles.size &&
-            new Set(profiles.keys()).symmetricDifference(selected).size === 0,
-          fetching: false,
-        }))
+        set(() => ({ fetching: false }))
       },
       setSelected: (did: string, value?: boolean) =>
-        set(({ selected, profiles }) => {
+        set(({ selected }) => {
           const current = selected.has(did)
           if (value === current) {
             return {}
@@ -92,20 +93,11 @@ export const useProfilesStore = create(
 
           if (value) {
             const newSelected = new Set(selected).add(did)
-            return {
-              selected: newSelected,
-              allSelected:
-                newSelected.size >= profiles.size &&
-                new Set(profiles.keys()).symmetricDifference(newSelected)
-                  .size === 0,
-            }
+            return { selected: newSelected }
           }
 
           selected.delete(did)
-          return {
-            selected: new Set(selected),
-            allSelected: profiles.size === 0,
-          }
+          return { selected: new Set(selected) }
         }),
       setNotifyPosts: (did: string, value?: boolean) =>
         set(({ notifyPosts }) => {
