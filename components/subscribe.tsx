@@ -41,5 +41,9 @@ export default function Subscribe() {
     await putToken(token)
   }
 
-  return <button onClick={() => subscribeToPush()}>Subscribe</button>
+  return (
+    <button type="button" onClick={() => subscribeToPush()}>
+      Subscribe
+    </button>
+  )
 }

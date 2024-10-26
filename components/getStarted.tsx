@@ -68,6 +68,7 @@ export default function GetStarted({
   if (installEvent) {
     return (
       <button
+        type="button"
         className="rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
         onClick={promptAndRedirect}
       >
