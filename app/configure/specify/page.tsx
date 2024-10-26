@@ -5,7 +5,7 @@
  */
 import NotifyAllChipInput from "@/components/profile/notifyAllChipInput"
 import ProfileChipsList from "@/components/profile/profileChipsLists"
-import Link from "next/link"
+import SaveChangesButton from "@/components/saveChangesButton"
 
 export default function Page() {
   return (
@@ -35,12 +35,7 @@ export default function Page() {
         <ProfileChipsList></ProfileChipsList>
       </div>
       <div className="sticky bottom-4 mt-auto flex after:absolute after:-bottom-4 after:left-0 after:z-0 after:h-[calc(100%+2rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
-        <Link
-          href="specify"
-          className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center dark:bg-blue-600"
-        >
-          Save changes
-        </Link>
+        <SaveChangesButton></SaveChangesButton>
       </div>
     </main>
   )
