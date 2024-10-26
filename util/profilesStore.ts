@@ -38,6 +38,7 @@ export const useProfilesStore = create(
   combine(
     {
       fetching: false,
+      allSelected: true,
       profiles: new Map<string, Profile>(),
       selected: new Set<string>(),
       notifyPosts: new Set<string>(),
@@ -59,7 +60,9 @@ export const useProfilesStore = create(
             cursor: response?.data.cursor,
           })
 
+          // TODO allSelected could be wrong
           set(({ profiles: oldProfiles }) => ({
+            allSelected: false,
             profiles: new Map([
               ...oldProfiles.entries(),
               ...response!.data.follows.map(
@@ -69,10 +72,15 @@ export const useProfilesStore = create(
           }))
         } while (response.data.cursor)
 
-        set({ fetching: false })
+        set(({ profiles, selected }) => ({
+          allSelected:
+            selected.size >= profiles.size &&
+            new Set(profiles.keys()).symmetricDifference(selected).size === 0,
+          fetching: false,
+        }))
       },
       setSelected: (did: string, value?: boolean) =>
-        set(({ selected }) => {
+        set(({ selected, profiles }) => {
           const current = selected.has(did)
           if (value === current) {
             return {}
@@ -83,11 +91,21 @@ export const useProfilesStore = create(
           }
 
           if (value) {
-            return { selected: new Set(selected).add(did) }
+            const newSelected = new Set(selected).add(did)
+            return {
+              selected: newSelected,
+              allSelected:
+                newSelected.size >= profiles.size &&
+                new Set(profiles.keys()).symmetricDifference(newSelected)
+                  .size === 0,
+            }
           }
 
           selected.delete(did)
-          return { selected: new Set(selected) }
+          return {
+            selected: new Set(selected),
+            allSelected: profiles.size === 0,
+          }
         }),
       setNotifyPosts: (did: string, value?: boolean) =>
         set(({ notifyPosts }) => {
@@ -142,6 +160,15 @@ export const useProfilesStore = create(
 
           notifyReplies.delete(did)
           return { notifyReplies: new Set(notifyReplies) }
+        }),
+      toggleSelectAll: () =>
+        set(({ profiles, selected }) => {
+          const all = new Set(profiles.keys())
+          if (all.symmetricDifference(selected).size === 0) {
+            return { selected: new Set(), allSelected: false }
+          }
+
+          return { selected: all, allSelected: true }
         }),
     }),
   ),
