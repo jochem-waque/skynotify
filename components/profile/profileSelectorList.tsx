@@ -6,7 +6,8 @@
 "use client"
 
 import { useProfilesStore } from "../../util/profilesStore"
-import SelectableProfile from "./selectableProfile"
+import Profile from "./profile"
+import SelectableProfileInput from "./selectableProfileInput"
 
 export default function ProfileSelectorList() {
   const profiles = useProfilesStore((state) => state.profiles)
@@ -14,13 +15,17 @@ export default function ProfileSelectorList() {
   return (
     <>
       {[...profiles.entries()].map(([did, profile]) => (
-        <SelectableProfile
-          avatar={profile.avatar}
-          displayName={profile.displayName}
-          handle={profile.handle}
+        <label
           key={did}
-          did={did}
-        ></SelectableProfile>
+          className="flex cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:opacity-75 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600"
+        >
+          <Profile
+            avatar={profile.avatar}
+            displayName={profile.displayName}
+            handle={profile.handle}
+          ></Profile>
+          <SelectableProfileInput did={did}></SelectableProfileInput>
+        </label>
       ))}
     </>
   )
