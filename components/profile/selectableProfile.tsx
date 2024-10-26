@@ -14,7 +14,7 @@ export default function SelectableProfile({
   did,
 }: Pick<ProfileView, "avatar" | "displayName" | "handle" | "did">) {
   return (
-    <label className="flex cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:opacity-75 dark:bg-neutral-800 has-[:checked]:dark:bg-blue-600">
+    <label className="flex cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:opacity-75 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
       <Profile
         avatar={avatar}
         displayName={displayName}

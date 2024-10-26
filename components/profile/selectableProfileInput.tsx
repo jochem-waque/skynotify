@@ -26,6 +26,7 @@ export default function SelectableProfileInput({
 
   return (
     <input
+      className="h-0 w-0"
       onChange={change}
       checked={selected.has(did)}
       name={did}
