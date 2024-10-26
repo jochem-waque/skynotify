@@ -12,10 +12,7 @@ export default function SelectableProfile({
   displayName,
   handle,
   did,
-  defaultChecked,
-}: Pick<ProfileView, "avatar" | "displayName" | "handle" | "did"> & {
-  defaultChecked: boolean
-}) {
+}: Pick<ProfileView, "avatar" | "displayName" | "handle" | "did">) {
   return (
     <label className="flex cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:opacity-75 dark:bg-neutral-800 has-[:checked]:dark:bg-blue-600">
       <Profile
@@ -23,10 +20,7 @@ export default function SelectableProfile({
         displayName={displayName}
         handle={handle}
       ></Profile>
-      <SelectableProfileInput
-        did={did}
-        defaultChecked={defaultChecked}
-      ></SelectableProfileInput>
+      <SelectableProfileInput did={did}></SelectableProfileInput>
     </label>
   )
 }

@@ -11,7 +11,7 @@ export default function NoFollowing() {
   const fetching = useProfilesStore((state) => state.fetching)
   const profiles = useProfilesStore((state) => state.profiles)
 
-  if (fetching || profiles.length) {
+  if (fetching || profiles.size > 0) {
     return null
   }
 

@@ -13,14 +13,13 @@ export default function ProfileSelectorList() {
 
   return (
     <>
-      {profiles.map((profile) => (
+      {[...profiles.entries()].map(([did, profile]) => (
         <SelectableProfile
           avatar={profile.avatar}
           displayName={profile.displayName}
           handle={profile.handle}
-          key={profile.did}
-          did={profile.did}
-          defaultChecked={profile.selected}
+          key={did}
+          did={did}
         ></SelectableProfile>
       ))}
     </>

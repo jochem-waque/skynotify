@@ -9,20 +9,25 @@ import { useProfilesStore } from "@/util/profilesStore"
 import { ChangeEvent } from "react"
 
 export default function NotificationChipInput({
-  checked,
   name,
   did,
 }: {
-  checked: boolean
   name: "reposts" | "replies" | "posts"
   did: string
 }) {
+  const checked = useProfilesStore((state) =>
+    name === "posts"
+      ? state.notifyPosts
+      : name === "reposts"
+        ? state.notifyReposts
+        : state.notifyReplies,
+  )
   const setPreference = useProfilesStore((state) =>
-    name === "reposts"
-      ? state.setNotifyReposts
-      : name === "replies"
-        ? state.setNotifyReplies
-        : state.setNotifyPosts,
+    name === "posts"
+      ? state.setNotifyPosts
+      : name === "reposts"
+        ? state.setNotifyReposts
+        : state.setNotifyReplies,
   )
 
   function change(event: ChangeEvent<HTMLInputElement>) {
@@ -31,7 +36,7 @@ export default function NotificationChipInput({
 
   return (
     <input
-      checked={checked}
+      checked={checked.has(did)}
       className="h-0 w-0"
       type="checkbox"
       onChange={change}

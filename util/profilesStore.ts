@@ -11,59 +11,43 @@ import { create } from "zustand"
 import { combine } from "zustand/middleware"
 
 type Profile = {
-  did: string
   handle: string
   displayName?: string
   description?: string
   avatar?: string
-} & {
-  selected: boolean
-} & NotificationPreferences
-
-type NotificationPreferences = {
-  notifyPosts: boolean
-  notifyReplies: boolean
-  notifyReposts: boolean
 }
 
 export function pickProfile({
-  did,
   handle,
   displayName,
   description,
   avatar,
 }: Pick<
   ProfileView,
-  "did" | "handle" | "displayName" | "description" | "avatar"
+  "handle" | "displayName" | "description" | "avatar"
 >): Profile {
   return {
-    did,
     handle,
     displayName,
     description,
     avatar,
-    selected: false,
-    notifyPosts: false,
-    notifyReplies: false,
-    notifyReposts: false,
   }
 }
 
-// TODO consider moving tempX to separate store
 export const useProfilesStore = create(
   combine(
     {
       fetching: false,
-      profiles: [] as Profile[],
-      tempSelected: new Set<string>(),
-      tempNotifyPosts: new Set<string>(),
-      tempNotifyReplies: new Set<string>(),
-      tempNotifyReposts: new Set<string>(),
+      profiles: new Map<string, Profile>(),
+      selected: new Set<string>(),
+      notifyPosts: new Set<string>(),
+      notifyReposts: new Set<string>(),
+      notifyReplies: new Set<string>(),
     },
     (set) => ({
-      setFetching: (fetching: boolean) => set({ fetching }),
+      setFetching: (value: boolean) => set({ fetching: value }),
       fetchProfiles: async (actor: string) => {
-        set({ fetching: true, profiles: [] })
+        set({ fetching: true })
 
         const agent = new AtpAgent({ service: "https://public.api.bsky.app/" })
 
@@ -76,76 +60,89 @@ export const useProfilesStore = create(
           })
 
           set(({ profiles: oldProfiles }) => ({
-            profiles: [
-              ...oldProfiles,
-              ...response!.data.follows.map(pickProfile),
-            ],
+            profiles: new Map([
+              ...oldProfiles.entries(),
+              ...response!.data.follows.map(
+                (follow) => [follow.did, pickProfile(follow)] as const,
+              ),
+            ]),
           }))
         } while (response.data.cursor)
 
         set({ fetching: false })
       },
-
-      setSelected: (did: string, selected: boolean) =>
-        set(({ tempSelected }) => {
-          if (selected) {
-            return { tempSelected: new Set(tempSelected).add(did) }
+      setSelected: (did: string, value?: boolean) =>
+        set(({ selected }) => {
+          const current = selected.has(did)
+          if (value === current) {
+            return {}
           }
 
-          tempSelected.delete(did)
-          return { tempSelected: new Set(tempSelected) }
-        }),
-      syncSelected: () =>
-        set(({ profiles, tempSelected }) => ({
-          profiles: profiles.map((profile) => ({
-            ...profile,
-            selected: tempSelected.has(profile.did),
-          })),
-        })),
-
-      setNotifyPosts: (did: string, notify: boolean) =>
-        set(({ tempNotifyPosts }) => {
-          if (notify) {
-            return { tempNotifyPosts: new Set(tempNotifyPosts).add(did) }
+          if (value === undefined) {
+            value = !current
           }
 
-          tempNotifyPosts.delete(did)
-          return { tempNotifyPosts: new Set(tempNotifyPosts) }
-        }),
-      setNotifyReposts: (did: string, notify: boolean) =>
-        set(({ tempNotifyReposts }) => {
-          if (notify) {
-            return { tempNotifyReposts: new Set(tempNotifyReposts).add(did) }
+          if (value) {
+            return { selected: new Set(selected).add(did) }
           }
 
-          tempNotifyReposts.delete(did)
-          return { tempNotifyReposts: new Set(tempNotifyReposts) }
+          selected.delete(did)
+          return { selected: new Set(selected) }
         }),
-      setNotifyReplies: (did: string, notify: boolean) =>
-        set(({ tempNotifyReplies }) => {
-          if (notify) {
-            return { tempNotifyReplies: new Set(tempNotifyReplies).add(did) }
+      setNotifyPosts: (did: string, value?: boolean) =>
+        set(({ notifyPosts }) => {
+          const current = notifyPosts.has(did)
+          if (value === current) {
+            return {}
           }
 
-          tempNotifyReplies.delete(did)
-          return { tempNotifyReplies: new Set(tempNotifyReplies) }
+          if (value === undefined) {
+            value = !current
+          }
+
+          if (value) {
+            return { notifyPosts: new Set(notifyPosts).add(did) }
+          }
+
+          notifyPosts.delete(did)
+          return { notifyPosts: new Set(notifyPosts) }
         }),
-      syncNotificationPreferences: () =>
-        set(
-          ({
-            profiles,
-            tempNotifyPosts,
-            tempNotifyReplies,
-            tempNotifyReposts,
-          }) => ({
-            profiles: profiles.map((profile) => ({
-              ...profile,
-              notifyPosts: tempNotifyPosts.has(profile.did),
-              notifyReplies: tempNotifyReplies.has(profile.did),
-              notifyReposts: tempNotifyReposts.has(profile.did),
-            })),
-          }),
-        ),
+      setNotifyReposts: (did: string, value?: boolean) =>
+        set(({ notifyReposts }) => {
+          const current = notifyReposts.has(did)
+          if (value === current) {
+            return {}
+          }
+
+          if (value === undefined) {
+            value = !current
+          }
+
+          if (value) {
+            return { notifyReposts: new Set(notifyReposts).add(did) }
+          }
+
+          notifyReposts.delete(did)
+          return { notifyReposts: new Set(notifyReposts) }
+        }),
+      setNotifyReplies: (did: string, value?: boolean) =>
+        set(({ notifyReplies }) => {
+          const current = notifyReplies.has(did)
+          if (value === current) {
+            return {}
+          }
+
+          if (value === undefined) {
+            value = !current
+          }
+
+          if (value) {
+            return { notifyReplies: new Set(notifyReplies).add(did) }
+          }
+
+          notifyReplies.delete(did)
+          return { notifyReplies: new Set(notifyReplies) }
+        }),
     }),
   ),
 )

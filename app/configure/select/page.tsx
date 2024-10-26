@@ -5,14 +5,12 @@
  */
 import NoFollowing from "@/components/noFollowing"
 import ProfileSelectorList from "@/components/profile/profileSelectorList"
-import SyncNotificationPreferences from "@/components/profile/syncNotificationPreferences"
 import Link from "next/link"
 
 export default function Page() {
   // TODO get rid of double bottom padding
   return (
     <main className="flex w-full max-w-lg grow flex-col gap-4">
-      <SyncNotificationPreferences></SyncNotificationPreferences>
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl">Select</h1>
         <p>

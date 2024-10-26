@@ -4,7 +4,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import ProfileChipsList from "@/components/profile/profileChipsLists"
-import SyncSelected from "@/components/profile/syncSelected"
 import Link from "next/link"
 
 export default function Page() {
@@ -28,7 +27,6 @@ export default function Page() {
           Save changes
         </Link>
       </div>
-      <SyncSelected></SyncSelected>
     </main>
   )
 }

@@ -11,10 +11,8 @@ import { ChangeEvent } from "react"
 
 export default function SelectableProfileInput({
   did,
-  defaultChecked,
-}: Pick<ProfileView, "did"> & {
-  defaultChecked: boolean
-}) {
+}: Pick<ProfileView, "did">) {
+  const selected = useProfilesStore((state) => state.selected)
   const setSelected = useProfilesStore((state) => state.setSelected)
 
   function change(event: ChangeEvent<HTMLInputElement>) {
@@ -24,7 +22,7 @@ export default function SelectableProfileInput({
   return (
     <input
       onChange={change}
-      defaultChecked={defaultChecked}
+      checked={selected.has(did)}
       name={did}
       type="checkbox"
     ></input>

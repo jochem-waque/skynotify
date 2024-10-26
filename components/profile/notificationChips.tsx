@@ -5,32 +5,17 @@
  */
 import NotificationChipInput from "./notificationChipInput"
 
-export default function NotificationChips({
-  did,
-  notifyPosts,
-  notifyReposts,
-  notifyReplies,
-}: {
-  did: string
-  notifyPosts: boolean
-  notifyReposts: boolean
-  notifyReplies: boolean
-}) {
+export default function NotificationChips({ did }: { did: string }) {
   return (
     <form className="flex flex-wrap gap-2">
       <label className="flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-700 dark:outline-white has-[:checked]:dark:bg-blue-600">
         <span className="select-none">Posts</span>
-        <NotificationChipInput
-          did={did}
-          checked={notifyPosts}
-          name={"posts"}
-        ></NotificationChipInput>
+        <NotificationChipInput did={did} name={"posts"}></NotificationChipInput>
       </label>
       <label className="flex items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-700 dark:outline-white has-[:checked]:dark:bg-blue-600">
         <span className="select-none">Reposts</span>
         <NotificationChipInput
           did={did}
-          checked={notifyReposts}
           name={"reposts"}
         ></NotificationChipInput>
       </label>
@@ -38,7 +23,6 @@ export default function NotificationChips({
         <span className="select-none">Replies</span>
         <NotificationChipInput
           did={did}
-          checked={notifyReplies}
           name={"replies"}
         ></NotificationChipInput>
       </label>

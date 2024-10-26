@@ -8,34 +8,24 @@
 import NotificationChips from "@/components/profile/notificationChips"
 import Profile from "@/components/profile/profile"
 import { useProfilesStore } from "@/util/profilesStore"
-import { useEffect } from "react"
 
 export default function ProfileChipsList() {
   const profiles = useProfilesStore((state) => state.profiles)
-  const syncSelected = useProfilesStore((state) => state.syncSelected)
+  const selected = useProfilesStore((state) => state.selected)
 
-  useEffect(() => {
-    syncSelected()
-  }, [syncSelected])
-
-  return profiles
-    .filter((profile) => profile.selected)
-    .map((profile) => (
+  return [...profiles.entries()]
+    .filter(([did]) => selected.has(did))
+    .map(([did, profile]) => (
       <div
         className="flex flex-col gap-2 rounded-lg bg-neutral-100 p-2 dark:bg-neutral-800"
-        key={profile.did}
+        key={did}
       >
         <Profile
           avatar={profile.avatar}
           handle={profile.handle}
           displayName={profile.displayName}
         ></Profile>
-        <NotificationChips
-          did={profile.did}
-          notifyPosts={profile.notifyPosts}
-          notifyReplies={profile.notifyReplies}
-          notifyReposts={profile.notifyReposts}
-        ></NotificationChips>
+        <NotificationChips did={did}></NotificationChips>
       </div>
     ))
 }
