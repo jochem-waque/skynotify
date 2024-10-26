@@ -47,7 +47,7 @@ export const useProfilesStore = create(
     (set) => ({
       setFetching: (value: boolean) => set({ fetching: value }),
       fetchProfiles: async (actor: string) => {
-        set({ fetching: true })
+        set({ fetching: true, profiles: new Map(), allSelected: true })
 
         const agent = new AtpAgent({ service: "https://public.api.bsky.app/" })
 
