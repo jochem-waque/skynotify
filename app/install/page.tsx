@@ -3,8 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import PlatformInstructions from "@/components/platform/platformInstructions"
-import PlatformSelect from "@/components/platform/platformSelect"
+import InstallationContent from "@/components/installation/installationContent"
 import RedirectOnInstall from "@/components/redirectOnInstall"
 import { Browser, OS, Platform, simplifyPlatform } from "@/util/platform"
 import { headers } from "next/headers"
@@ -62,16 +61,8 @@ export default async function Page() {
 
   return (
     <main className="container flex max-w-lg grow flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl">Installation</h1>
-        First, let&apos;s get this app installed on your device.
-        <div className="flex flex-wrap items-center gap-2 text-xl">
-          <h2>Install for </h2>{" "}
-          <PlatformSelect platform={platform}></PlatformSelect>
-        </div>
-      </div>
-      <PlatformInstructions></PlatformInstructions>
-      <div className="sticky bottom-4 mt-auto flex after:absolute after:-bottom-4 after:z-0 after:h-[calc(100%+2rem)] after:w-full after:bg-white after:dark:bg-black">
+      <InstallationContent defaultPlatform={platform}></InstallationContent>
+      <div className="sticky bottom-4 mt-auto flex after:absolute after:-bottom-4 after:z-0 after:h-[calc(100%+2rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
         <Link
           href={"configure/import"}
           className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
