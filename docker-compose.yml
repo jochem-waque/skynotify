@@ -1,12 +1,5 @@
 services:
   app:
     container_name: bpn-app
-    build: .
+    build: app
     restart: unless-stopped
-    networks:
-      - caddy_caddy
-      - default
-
-networks:
-  caddy_caddy:
-    external: true
