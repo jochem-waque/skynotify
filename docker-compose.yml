@@ -3,6 +3,8 @@ services:
     container_name: bpn-app
     build: app
     restart: unless-stopped
+    depends_on:
+      - db
     environment:
       NEXT_PUBLIC_FIREBASE_API_KEY: "${FIREBASE_API_KEY}"
       NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "${FIREBASE_AUTH_DOMAIN}"
