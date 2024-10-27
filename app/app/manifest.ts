@@ -8,7 +8,7 @@ import { MetadataRoute } from "next"
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Bluesky Post Notifications",
-    short_name: "BPN",
+    short_name: "Bluesky Notifications", // TODO
     description: "A Progressive Web App for Bluesky post notifications",
     id: "/",
     scope: "/",

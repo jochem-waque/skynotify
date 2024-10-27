@@ -1,6 +1,6 @@
 services:
   app:
-    container_name: bpn-app
+    container_name: blue-app
     build: app
     restart: unless-stopped
     depends_on:
@@ -13,15 +13,15 @@ services:
       NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "${FIREBASE_MESSAGING_SENDER_ID}"
       NEXT_PUBLIC_FIREBASE_APP_ID: "${FIREBASE_APP_ID}"
       NEXT_PUBLIC_VAPID_KEY: "${PUBLIC_VAPID_KEY}"
-      DATABASE_URL: "postgres://bpn:${POSTGRES_PASSWORD}@db/bpn"
+      DATABASE_URL: "postgres://blue:${POSTGRES_PASSWORD}@db/blue"
       HOSTNAME: "${HOSTNAME}"
   db:
     image: postgres:17
     environment:
-      POSTGRES_USER: "bpn"
+      POSTGRES_USER: "blue"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     volumes:
-      - bpn-data:/var/lib/postgresql/data
+      - blue-data:/var/lib/postgresql/data
 
 volumes:
-  bpn-data:
+  blue-data:
