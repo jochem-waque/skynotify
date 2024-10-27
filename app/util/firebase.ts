@@ -5,15 +5,13 @@
  */
 import { initializeApp } from "firebase/app"
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAIdjBQRjp2IdFpEE72Mi54sqPJNwdrPI8",
-  authDomain: "bluesky-post-notifications.firebaseapp.com",
-  projectId: "bluesky-post-notifications",
-  storageBucket: "bluesky-post-notifications.appspot.com",
-  messagingSenderId: "392747462422",
-  appId: "1:392747462422:web:5cd8afba9a75e483bb2a37",
-}
-
-const FirebaseApp = initializeApp(firebaseConfig)
+const FirebaseApp = initializeApp({
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+})
 
 export default FirebaseApp
