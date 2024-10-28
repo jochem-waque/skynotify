@@ -14,7 +14,6 @@ import (
 	"os"
 	"slices"
 	"strings"
-	"sync"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
@@ -24,29 +23,10 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/ipfs/go-cid"
 	"github.com/ipld/go-car/v2/storage"
-	"github.com/ipld/go-ipld-prime/codec/dagcbor"
-	"github.com/ipld/go-ipld-prime/datamodel"
-	"github.com/ipld/go-ipld-prime/node/basicnode"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lpernett/godotenv"
 	"google.golang.org/api/option"
 )
-
-type user struct {
-	displayName string
-	avatar      string
-}
-
-type postData struct {
-	text     string
-	imageRef string
-	reply    bool
-}
-
-var users = struct {
-	sync.RWMutex
-	m map[string]user
-}{m: make(map[string]user)}
 
 var env = struct {
 	hostname    string
@@ -120,6 +100,12 @@ func main() {
 				return nil
 			}
 
+			user, err := getOrFetchUser(evt.Repo)
+			if err != nil {
+				fmt.Println(err)
+				user.Did = evt.Repo
+			}
+
 			var car storage.ReadableCar
 			messages := []messaging.MulticastMessage{}
 
@@ -151,7 +137,7 @@ func main() {
 					}
 				}
 
-				message, err := makeMessage(evt.Repo, op, data)
+				message, err := makeMessage(user, op, data)
 				if err != nil {
 					fmt.Println(err)
 					return nil
@@ -184,7 +170,7 @@ func main() {
 	events.HandleRepoStream(context.Background(), con, sched)
 }
 
-func makeMessage(did string, op *atproto.SyncSubscribeRepos_RepoOp, data postData) (messaging.MulticastMessage, error) {
+func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData) (messaging.MulticastMessage, error) {
 	message := messaging.MulticastMessage{}
 
 	_, pid, found := strings.Cut(op.Path, "/")
@@ -193,128 +179,23 @@ func makeMessage(did string, op *atproto.SyncSubscribeRepos_RepoOp, data postDat
 	}
 
 	message.Notification = &messaging.Notification{
-		// TODO
-		// Title: entry.DisplayName,
-		Body: data.text,
+		Title: user.DisplayName,
+		Body:  data.text,
 	}
 	message.Webpush = &messaging.WebpushConfig{
 		Notification: &messaging.WebpushNotification{
 			Badge: "/badge.png",
-			// TODO
-			// Icon:  entry.Avatar,
-			Tag: op.Path,
+			Icon:  user.Avatar,
+			Tag:   op.Path,
 		},
 		FCMOptions: &messaging.WebpushFCMOptions{
-			Link: fmt.Sprintf("https://%s/profile/%s/post/%s", env.hostname, did, pid),
+			Link: fmt.Sprintf("https://%s/profile/%s/post/%s", env.hostname, user.Did, pid),
 		},
 	}
 
 	if data.imageRef != "" {
-		message.Notification.ImageURL = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, data.imageRef)
+		message.Notification.ImageURL = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, data.imageRef)
 	}
 
 	return message, nil
-}
-
-func getPostData(car storage.ReadableCar, cid string) (postData, error) {
-	data := postData{}
-
-	blk, err := car.Get(context.Background(), cid)
-	if err != nil {
-		return data, err
-	}
-
-	reader := bytes.NewReader(blk)
-
-	nb := basicnode.Prototype.Any.NewBuilder()
-	err = dagcbor.Decode(nb, reader)
-	if err != nil {
-		return data, err
-	}
-
-	n := nb.Build()
-	text, err := extractText(n)
-	if err != nil {
-		return data, err
-	}
-
-	data.text = text
-	data.reply = isReply(n)
-
-	imageRef, err := extractImage(n)
-	if err != nil {
-		return data, err
-	}
-
-	data.imageRef = imageRef
-
-	return data, nil
-}
-
-func extractText(node datamodel.Node) (string, error) {
-	text, err := node.LookupByString("text")
-	// TODO: figure out how to check if it's ErrNotExists
-	if err != nil {
-		return "", err
-	}
-
-	textstr, err := text.AsString()
-	if err != nil {
-		return "", err
-	}
-
-	return textstr, nil
-}
-
-func isReply(node datamodel.Node) bool {
-	// TODO: figure out how to check if it's ErrNotExists
-	_, err := node.LookupByString("reply")
-	return err == nil
-}
-
-func extractImage(node datamodel.Node) (string, error) {
-	embed, err := node.LookupByString("embed")
-	// TODO: figure out how to check if it's ErrNotExists
-	if err != nil {
-		return "", nil
-	}
-
-	images, err := embed.LookupByString("images")
-	// TODO: figure out how to check if it's ErrNotExists
-	// TODO: support other embed types
-	if err != nil {
-		return "", nil
-	}
-
-	it := images.ListIterator()
-	if it == nil {
-		return "", datamodel.ErrWrongKind{
-			TypeName:        "",
-			MethodName:      "ListIterator",
-			AppropriateKind: datamodel.KindSet{datamodel.Kind_List},
-			ActualKind:      images.Kind(),
-		}
-	}
-
-	_, entry, err := it.Next()
-	if err != nil {
-		return "", err
-	}
-
-	image, err := entry.LookupByString("image")
-	if err != nil {
-		return "", err
-	}
-
-	ref, err := image.LookupByString("ref")
-	if err != nil {
-		return "", err
-	}
-
-	linkNode, err := ref.AsLink()
-	if err != nil {
-		return "", err
-	}
-
-	return linkNode.String(), nil
 }
