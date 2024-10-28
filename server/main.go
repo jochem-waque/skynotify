@@ -112,7 +112,8 @@ func main() {
 		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
 			rows, err := querier.GetSubscriptions(context.Background(), evt.Repo)
 			if err != nil {
-				return err
+				fmt.Println(err)
+				return nil
 			}
 
 			if len(rows) == 0 {
@@ -132,13 +133,15 @@ func main() {
 					reader := bytes.NewReader(evt.Blocks)
 					car, err = storage.OpenReadable(reader)
 					if err != nil {
-						return err
+						fmt.Println(err)
+						return nil
 					}
 				}
 
 				data, err := getPostData(car, cid.MustParse(op.Cid.String()).KeyString())
 				if err != nil {
-					return err
+					fmt.Println(err)
+					return nil
 				}
 
 				tokens := []string{}
@@ -150,7 +153,8 @@ func main() {
 
 				message, err := makeMessage(evt.Repo, op, data)
 				if err != nil {
-					return err
+					fmt.Println(err)
+					return nil
 				}
 
 				for chunk := range slices.Chunk(tokens, 500) {
