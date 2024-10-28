@@ -122,6 +122,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 
 	for _, op := range evt.Ops {
 		// TODO support reposts
+		// TODO support profile updates
 		if op.Action != "create" || !strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
 			continue
 		}
