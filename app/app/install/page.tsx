@@ -60,7 +60,7 @@ export default async function Page() {
   const platform = await parseUserAgent()
 
   return (
-    <main className="container flex max-w-lg grow flex-col gap-4">
+    <main className="container flex grow flex-col gap-4">
       <InstallationContent defaultPlatform={platform}></InstallationContent>
       <div className="sticky bottom-4 mt-auto flex after:absolute after:-bottom-4 after:left-0 after:z-0 after:h-[calc(100%+2rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
         <Link

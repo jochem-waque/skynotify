@@ -31,7 +31,7 @@ export default function RootLayout({
   // TODO: h-0??
   return (
     <html lang="en" className={`${font.variable} ${mono.variable} font-sans`}>
-      <body className="relative flex min-h-[100svh] flex-col items-center p-4">
+      <body className="relative mx-auto box-content flex min-h-[100svh] max-w-xl flex-col items-center p-4">
         {children}
         <OpenBackgroundNotifications></OpenBackgroundNotifications>
       </body>

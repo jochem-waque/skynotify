@@ -10,7 +10,7 @@ import Link from "next/link"
 
 export default function Page() {
   return (
-    <main className="flex w-full max-w-lg grow flex-col items-start gap-4">
+    <main className="flex w-full grow flex-col items-start gap-4">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl">Select profiles</h1>
         <p>

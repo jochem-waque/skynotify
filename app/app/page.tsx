@@ -10,7 +10,7 @@ export default async function Page() {
   const account = await getCurrentAccount()
 
   return (
-    <main className="my-auto flex max-w-lg grow flex-col justify-center">
+    <main className="my-auto flex grow flex-col justify-center">
       <div className="text-center">
         <h1 className="text-4xl">Bluesky Post Notifications</h1>
         <span>by jochem.cc</span>

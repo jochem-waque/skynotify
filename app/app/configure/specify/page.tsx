@@ -9,7 +9,7 @@ import SaveChangesButton from "@/components/saveChangesButton"
 
 export default function Page() {
   return (
-    <main className="flex w-full max-w-lg grow flex-col gap-4">
+    <main className="flex w-full grow flex-col gap-4">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl">Set notifications</h1>
         <p>

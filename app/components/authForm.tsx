@@ -14,7 +14,7 @@ export default function AuthForm({ installed }: { installed: boolean }) {
   return (
     <form
       action={authAction}
-      className="container flex h-full max-w-lg flex-col items-center justify-center gap-48"
+      className="container flex h-full flex-col items-center justify-center gap-48"
     >
       <div className="flex w-full flex-col items-center gap-2">
         <label className="w-full max-w-[36ch]" htmlFor="password">
