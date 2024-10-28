@@ -238,7 +238,6 @@ const storage: PersistStorage<StateFromCombine<typeof combined>> = {
     return parse(str)
   },
   setItem: (name, value) => {
-    console.log(value)
     localStorage.setItem(name, stringify(value))
   },
   removeItem: (name) => localStorage.removeItem(name),
