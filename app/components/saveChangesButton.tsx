@@ -18,6 +18,7 @@ export default function SaveChangesButton() {
   const notifyReplies = useProfilesStore((state) => state.notifyReplies)
 
   async function click() {
+    await subscribeToPush()
     await save(
       [...notifyPosts.union(notifyReposts).union(notifyReplies)].map((did) => ({
         target: did,
@@ -26,7 +27,6 @@ export default function SaveChangesButton() {
         replies: notifyReplies.has(did),
       })),
     )
-    await subscribeToPush()
   }
 
   async function subscribeToPush() {
