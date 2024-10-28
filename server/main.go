@@ -183,12 +183,10 @@ func main() {
 func makeMessage(did string, op *atproto.SyncSubscribeRepos_RepoOp, data postData) (messaging.MulticastMessage, error) {
 	message := messaging.MulticastMessage{}
 
-	split := strings.SplitN(op.Path, "/", 1)
-	if len(split) != 2 {
+	_, pid, found := strings.Cut(op.Path, "/")
+	if !found {
 		return message, fmt.Errorf("couldn't split post ID from %s", op.Path)
 	}
-
-	pid := split[2]
 
 	message.Notification = &messaging.Notification{
 		// TODO
