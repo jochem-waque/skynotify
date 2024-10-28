@@ -14,4 +14,4 @@ WORKDIR /app
 COPY --from=build /usr/local/bin/app .
 COPY firebase.json .
 
-CMD ["app"]
+CMD ["./app"]
