@@ -6,7 +6,11 @@
 "use client"
 
 import { save } from "@/actions/save"
+import { putToken } from "@/actions/token"
+import FirebaseApp from "@/util/firebase"
 import { useProfilesStore } from "@/util/profilesStore"
+import { FirebaseError } from "firebase/app"
+import { getMessaging, getToken } from "firebase/messaging"
 
 export default function SaveChangesButton() {
   const notifyPosts = useProfilesStore((state) => state.notifyPosts)
@@ -22,6 +26,35 @@ export default function SaveChangesButton() {
         replies: notifyReplies.has(did),
       })),
     )
+    await subscribeToPush()
+  }
+
+  async function subscribeToPush() {
+    const registration = await navigator.serviceWorker.getRegistration()
+    if (!registration) {
+      return // TODO this shouldn't be possible
+    }
+
+    const messaging = getMessaging(FirebaseApp)
+    let token
+    try {
+      token = await getToken(messaging, {
+        serviceWorkerRegistration: registration,
+        vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+      })
+    } catch (err) {
+      if (
+        !(err instanceof FirebaseError) ||
+        err.code !== "messaging/permission-blocked"
+      ) {
+        // TODO: other error
+        return
+      }
+
+      return
+    }
+
+    await putToken(token)
   }
 
   return (
