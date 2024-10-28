@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -17,8 +18,8 @@ var client *http.Client = &http.Client{Timeout: time.Second * 10}
 
 type User struct {
 	Did         string `json:"did"`
-	DisplayName string `json:"displayName"`
-	Avatar      string `json:"avatar"`
+	DisplayName string `json:"displayName,omitempty"`
+	Avatar      string `json:"avatar,omitempty"`
 }
 
 var users = struct {
@@ -44,6 +45,16 @@ func getOrFetchUser(did string) (User, error) {
 	err = json.NewDecoder(response.Body).Decode(&user)
 	if err != nil {
 		return user, err
+	}
+
+	if user.Avatar != "" {
+		slash := strings.LastIndex(user.Avatar, "/")
+		if slash != -1 {
+			at := strings.LastIndex(user.Avatar, "@")
+			if at != -1 {
+				user.Avatar = user.Avatar[slash+1 : at]
+			}
+		}
 	}
 
 	users.Lock()
