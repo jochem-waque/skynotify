@@ -202,7 +202,7 @@ func makeMessage(did string, op *atproto.SyncSubscribeRepos_RepoOp, data postDat
 			Badge: "/badge.png",
 			// TODO
 			// Icon:  entry.Avatar,
-			// Tag: cidstr,
+			Tag: op.Path,
 		},
 		FCMOptions: &messaging.WebpushFCMOptions{
 			Link: fmt.Sprintf("https://%s/profile/%s/post/%s", env.hostname, did, pid),
