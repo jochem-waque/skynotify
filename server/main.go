@@ -89,77 +89,7 @@ func main() {
 	}
 
 	rsc := &events.RepoStreamCallbacks{
-		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
-			rows, err := querier.GetSubscriptions(context.Background(), evt.Repo)
-			if err != nil {
-				fmt.Println(err)
-				return nil
-			}
-
-			if len(rows) == 0 {
-				return nil
-			}
-
-			user, err := getOrFetchUser(evt.Repo)
-			if err != nil {
-				fmt.Println(err)
-				user.Did = evt.Repo
-			}
-
-			var car storage.ReadableCar
-			messages := []messaging.MulticastMessage{}
-
-			for _, op := range evt.Ops {
-				// TODO support reposts
-				if op.Action != "create" || !strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
-					continue
-				}
-
-				if car == nil {
-					reader := bytes.NewReader(evt.Blocks)
-					car, err = storage.OpenReadable(reader)
-					if err != nil {
-						fmt.Println(err)
-						return nil
-					}
-				}
-
-				data, err := getPostData(car, cid.MustParse(op.Cid.String()).KeyString())
-				if err != nil {
-					fmt.Println(err)
-					return nil
-				}
-
-				tokens := []string{}
-				for _, row := range rows {
-					if data.reply && *row.Replies || !data.reply && *row.Posts {
-						tokens = append(tokens, *row.Token)
-					}
-				}
-
-				message, err := makeMessage(user, op, data)
-				if err != nil {
-					fmt.Println(err)
-					return nil
-				}
-
-				for chunk := range slices.Chunk(tokens, 500) {
-					message.Tokens = chunk
-					messages = append(messages, message)
-				}
-			}
-
-			for _, message := range messages {
-				responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
-				for _, response := range responses.Responses {
-					if !response.Success {
-						fmt.Println(response.Error)
-					}
-				}
-			}
-
-			return nil
-		},
+		RepoCommit: processCommit,
 		Error: func(evt *events.ErrorFrame) error {
 			fmt.Printf("ERROR: %s (%s)\n", evt.Error, evt.Message)
 			return nil
@@ -168,6 +98,78 @@ func main() {
 
 	sched := sequential.NewScheduler("firehose", rsc.EventHandler)
 	events.HandleRepoStream(context.Background(), con, sched)
+}
+
+func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
+	rows, err := querier.GetSubscriptions(context.Background(), evt.Repo)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	if len(rows) == 0 {
+		return nil
+	}
+
+	user, err := getOrFetchUser(evt.Repo)
+	if err != nil {
+		fmt.Println(err)
+		user.Did = evt.Repo
+	}
+
+	var car storage.ReadableCar
+	messages := []messaging.MulticastMessage{}
+
+	for _, op := range evt.Ops {
+		// TODO support reposts
+		if op.Action != "create" || !strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
+			continue
+		}
+
+		if car == nil {
+			reader := bytes.NewReader(evt.Blocks)
+			car, err = storage.OpenReadable(reader)
+			if err != nil {
+				fmt.Println(err)
+				return nil
+			}
+		}
+
+		data, err := getPostData(car, cid.MustParse(op.Cid.String()).KeyString())
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
+
+		tokens := []string{}
+		for _, row := range rows {
+			if data.reply && *row.Replies || !data.reply && *row.Posts {
+				tokens = append(tokens, *row.Token)
+			}
+		}
+
+		message, err := makeMessage(user, op, data)
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
+
+		for chunk := range slices.Chunk(tokens, 500) {
+			message.Tokens = chunk
+			messages = append(messages, message)
+		}
+	}
+
+	for _, message := range messages {
+		responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
+		for _, response := range responses.Responses {
+			if !response.Success {
+				fmt.Println(response.Error)
+			}
+		}
+	}
+
+	return nil
 }
 
 func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData) (messaging.MulticastMessage, error) {
