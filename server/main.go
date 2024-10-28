@@ -179,13 +179,12 @@ func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData
 	}
 
 	message.Notification = &messaging.Notification{
-		Title: user.DisplayName,
+		Title: user.Did,
 		Body:  data.text,
 	}
 	message.Webpush = &messaging.WebpushConfig{
 		Notification: &messaging.WebpushNotification{
 			Badge: "/badge.png",
-			Icon:  user.Avatar,
 			Tag:   op.Path,
 		},
 		FCMOptions: &messaging.WebpushFCMOptions{
@@ -195,6 +194,14 @@ func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData
 
 	if data.imageRef != "" {
 		message.Notification.ImageURL = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, data.imageRef)
+	}
+
+	if user.DisplayName != "" {
+		message.Notification.Title = user.DisplayName
+	}
+
+	if user.Avatar != "" {
+		message.Webpush.Notification.Icon = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
 	}
 
 	return message, nil
