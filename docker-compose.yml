@@ -22,6 +22,14 @@ services:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     volumes:
       - blue-data:/var/lib/postgresql/data
+  server:
+    build: server
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      HOSTNAME: "${HOSTNAME}"
+      DATABASE_URL: "postgres://blue:${POSTGRES_PASSWORD}@db/blue"
 
 volumes:
   blue-data:
