@@ -11,7 +11,7 @@ RUN go build -v -o /usr/local/bin/app ./...
 FROM golang:1.23
 WORKDIR /app
 
-COPY --from=builder /usr/local/bin/app .
+COPY --from=build /usr/local/bin/app .
 COPY firebase.json .
 
 CMD ["app"]
