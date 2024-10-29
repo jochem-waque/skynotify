@@ -32,6 +32,8 @@ export default function RedirectForSetup() {
       case "completed":
         router.replace("success")
         break
+      default:
+        break
     }
   }, [router, hasHydrated, setupState])
 

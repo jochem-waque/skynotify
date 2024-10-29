@@ -89,7 +89,8 @@ const combined = combine(
     notifyPosts: new Set<string>(),
     notifyReposts: new Set<string>(),
     notifyReplies: new Set<string>(),
-    setupState: "installation" as
+    setupState: null as
+      | null
       | "installation"
       | "authentication"
       | "import"
@@ -233,7 +234,12 @@ const combined = combine(
         return { notifyReplies: new Set(selected), allnotifyReplies: true }
       }),
     setSetupState: (
-      setupState: "installation" | "authentication" | "import" | "completed",
+      setupState:
+        | null
+        | "installation"
+        | "authentication"
+        | "import"
+        | "completed",
     ) => set({ setupState }),
   }),
 )
