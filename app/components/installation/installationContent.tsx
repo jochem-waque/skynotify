@@ -7,6 +7,7 @@
 
 import PlatformInstructions from "@/components/installation/platformInstructions"
 import { Platform } from "@/util/platform"
+import { useDataStore } from "@/util/store"
 import { useEffect, useRef, useState } from "react"
 
 export default function InstallationContent({
@@ -15,6 +16,7 @@ export default function InstallationContent({
   defaultPlatform: Platform
 }) {
   const [platform, setPlatform] = useState<Platform>(defaultPlatform)
+  const setSetupState = useDataStore((state) => state.setSetupState)
   const ref = useRef<HTMLSelectElement>(null)
 
   useEffect(() => {
@@ -22,6 +24,10 @@ export default function InstallationContent({
       setPlatform(ref.current.value as Platform)
     }
   }, [])
+
+  useEffect(() => {
+    setSetupState("installation")
+  }, [setSetupState])
 
   return (
     <>
