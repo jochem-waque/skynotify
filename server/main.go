@@ -29,7 +29,6 @@ import (
 )
 
 var env = struct {
-	hostname    string
 	databaseUrl string
 }{}
 
@@ -44,11 +43,6 @@ func loadEnv() {
 		if err != nil {
 			log.Fatalln(err)
 		}
-	}
-
-	env.hostname = os.Getenv("HOSTNAME")
-	if env.hostname == "" {
-		log.Fatalln("Environment variable HOSTNAME is not set")
 	}
 
 	env.databaseUrl = os.Getenv("DATABASE_URL")
@@ -191,7 +185,7 @@ func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData
 			Tag:   op.Path,
 		},
 		FCMOptions: &messaging.WebpushFCMOptions{
-			Link: fmt.Sprintf("https://%s/profile/%s/post/%s", env.hostname, user.Did, pid),
+			Link: fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid),
 		},
 	}
 
