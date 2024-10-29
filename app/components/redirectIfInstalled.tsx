@@ -5,17 +5,22 @@
  */
 "use client"
 
+import { useDataStore } from "@/util/store"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
-export default function RedirectIfInstalled({ url }: { url: string }) {
+export default function RedirectIfInstalled() {
+  const setSetupState = useDataStore((state) => state.setSetupState)
   const router = useRouter()
 
   useEffect(() => {
     function listener(event: MediaQueryListEvent | MediaQueryList) {
-      if (event.matches) {
-        router.replace(url)
+      if (!event.matches) {
+        return
       }
+
+      setSetupState("authentication")
+      router.replace("auth")
     }
 
     const mql = window.matchMedia("(display-mode: standalone)")
@@ -23,7 +28,7 @@ export default function RedirectIfInstalled({ url }: { url: string }) {
     mql.addEventListener("change", listener)
 
     return () => mql.removeEventListener("change", listener)
-  }, [router, url])
+  }, [router, setSetupState])
 
   return null
 }

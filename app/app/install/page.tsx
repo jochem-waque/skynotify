@@ -61,7 +61,7 @@ export default async function Page() {
 
   return (
     <>
-      <RedirectIfInstalled url="auth"></RedirectIfInstalled>
+      <RedirectIfInstalled></RedirectIfInstalled>
       <header className="text-3xl">Bluesky Post Notifications</header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="installation">

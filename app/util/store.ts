@@ -77,6 +77,7 @@ type StateFromCombine<T> =
 
 const combined = combine(
   {
+    hasHydrated: false,
     actor: null as string | null,
     fetching: false,
     allSelected: false,
@@ -88,8 +89,14 @@ const combined = combine(
     notifyPosts: new Set<string>(),
     notifyReposts: new Set<string>(),
     notifyReplies: new Set<string>(),
+    setupState: "installation" as
+      | "installation"
+      | "authentication"
+      | "import"
+      | "completed",
   },
   (set) => ({
+    setHasHydrated: (hasHydrated: boolean) => set({ hasHydrated }),
     setActor: (actor: string) => set({ actor }),
     setFetching: (value: boolean) => set({ fetching: value }),
     fetchProfiles: async (actor: string) => {
@@ -225,6 +232,9 @@ const combined = combine(
 
         return { notifyReplies: new Set(selected), allnotifyReplies: true }
       }),
+    setSetupState: (
+      setupState: "installation" | "authentication" | "import" | "completed",
+    ) => set({ setupState }),
   }),
 )
 
@@ -254,6 +264,10 @@ export const useDataStore = create(
       notifyPosts: state.notifyPosts,
       notifyReplies: state.notifyReplies,
       notifyReposts: state.notifyReposts,
+      setupState: state.setupState,
     }),
+    onRehydrateStorage: (state) => {
+      return () => state.setHasHydrated(true)
+    },
   }),
 )

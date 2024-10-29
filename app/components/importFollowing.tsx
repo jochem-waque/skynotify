@@ -7,7 +7,7 @@
 
 import { useDataStore } from "../util/store"
 import { useRouter } from "next/navigation"
-import { KeyboardEvent, MouseEvent } from "react"
+import { KeyboardEvent, MouseEvent, useEffect } from "react"
 
 export default function ImportFollowing() {
   const fetchProfiles = useDataStore((state) => state.fetchProfiles)
@@ -15,6 +15,11 @@ export default function ImportFollowing() {
   const setActor = useDataStore((state) => state.setActor)
   const router = useRouter()
   const actor = useDataStore((state) => state.actor)
+  const setSetupState = useDataStore((state) => state.setSetupState)
+
+  useEffect(() => {
+    setSetupState("import")
+  }, [setSetupState])
 
   function getFollowing(actor: string) {
     setActor(actor)

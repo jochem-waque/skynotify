@@ -4,10 +4,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import GetStarted from "@/components/getStarted"
+import RedirectForSetup from "@/components/redirectForSetup"
 
 export default async function Page() {
   return (
     <main className="my-auto flex grow flex-col justify-center">
+      <RedirectForSetup></RedirectForSetup>
       <div className="text-center">
         <h1 className="text-4xl">Bluesky Post Notifications</h1>
         <span>by jochem.cc</span>
