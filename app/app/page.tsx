@@ -4,11 +4,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import GetStarted from "@/components/getStarted"
-import { getCurrentAccount } from "@/util/auth"
 
 export default async function Page() {
-  const account = await getCurrentAccount()
-
   return (
     <main className="my-auto flex grow flex-col justify-center">
       <div className="text-center">
@@ -16,7 +13,7 @@ export default async function Page() {
         <span>by jochem.cc</span>
       </div>
       <div className="max-h-16 grow"></div>
-      <GetStarted authenticated={!!account}></GetStarted>
+      <GetStarted></GetStarted>
     </main>
   )
 }

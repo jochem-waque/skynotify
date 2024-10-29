@@ -5,6 +5,8 @@
 @layer base {
   :root {
     color-scheme: light dark;
+    /* TODO wait until this works on Safari */
+    /* interpolate-size: allow-keywords; */
   }
 
   @media (prefers-color-scheme: dark) {

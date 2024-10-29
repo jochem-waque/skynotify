@@ -25,46 +25,43 @@ export default function InstallationContent({
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl">Installation</h1>
-        First, let&apos;s get this app installed on your device.
-        <div className="flex flex-wrap items-center gap-2 text-xl">
-          <h2>Install for </h2>{" "}
-          <select
-            ref={ref}
-            className="inline border-b bg-transparent dark:border-white"
-            onChange={(event) =>
-              setPlatform(event.currentTarget.value as Platform)
-            }
-            defaultValue={defaultPlatform}
-            name="platform"
+      First, let&apos;s get this app installed on your device.
+      <div className="flex flex-wrap items-center gap-2 text-lg">
+        <h3>Install for </h3>{" "}
+        <select
+          ref={ref}
+          className="inline border-b bg-transparent dark:border-white"
+          onChange={(event) =>
+            setPlatform(event.currentTarget.value as Platform)
+          }
+          defaultValue={defaultPlatform}
+          name="platform"
+        >
+          <option className="text-base dark:bg-neutral-900" value="android">
+            Android
+          </option>
+          <option
+            className="text-base dark:bg-neutral-900"
+            value="desktop-chromium"
           >
-            <option className="text-base dark:bg-neutral-900" value="android">
-              Android
-            </option>
-            <option
-              className="text-base dark:bg-neutral-900"
-              value="desktop-chromium"
-            >
-              Chrome on desktops
-            </option>
-            <option
-              className="text-base dark:bg-neutral-900"
-              value="macos-safari"
-            >
-              Safari on MacOS
-            </option>
-            <option className="text-base dark:bg-neutral-900" value="ios">
-              iOS
-            </option>
-            <option className="text-base dark:bg-neutral-900" value="firefox">
-              Firefox
-            </option>
-            <option className="text-base dark:bg-neutral-900" value="unknown">
-              Other
-            </option>
-          </select>
-        </div>
+            Chrome on desktops
+          </option>
+          <option
+            className="text-base dark:bg-neutral-900"
+            value="macos-safari"
+          >
+            Safari on MacOS
+          </option>
+          <option className="text-base dark:bg-neutral-900" value="ios">
+            iOS
+          </option>
+          <option className="text-base dark:bg-neutral-900" value="firefox">
+            Firefox
+          </option>
+          <option className="text-base dark:bg-neutral-900" value="unknown">
+            Other
+          </option>
+        </select>
       </div>
       <PlatformInstructions platform={platform}></PlatformInstructions>
     </>

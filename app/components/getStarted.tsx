@@ -15,13 +15,8 @@ import { useEffect, useState } from "react"
  * query parameter indicating installation status. Otherwise, redirect to
  * install or import depending on installation status.
  */
-export default function GetStarted({
-  authenticated,
-}: {
-  authenticated: boolean
-}) {
+export default function GetStarted() {
   const router = useRouter()
-  const [installed, setInstalled] = useState(false)
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent>()
 
   useEffect(() => {
@@ -34,35 +29,9 @@ export default function GetStarted({
     return () => window.removeEventListener("beforeinstallprompt", listener)
   }, [])
 
-  useEffect(() => {
-    async function checkInstalledApps() {
-      if (!navigator.getInstalledRelatedApps) {
-        return
-      }
-
-      const apps = await navigator.getInstalledRelatedApps()
-      setInstalled(
-        apps.some(
-          (app) =>
-            app.platform === "webapp" &&
-            app.url &&
-            new URL(app.url).hostname === location.hostname,
-        ),
-      )
-    }
-
-    checkInstalledApps()
-  }, [])
-
   async function promptAndRedirect() {
-    const result = await installEvent?.prompt()
-    const accepted = result?.outcome === "accepted"
-    if (!authenticated) {
-      router.push(`auth?installed=${accepted}`)
-      return
-    }
-
-    router.push(accepted || installed ? "configure/import" : "install")
+    await installEvent?.prompt()
+    router.push("install", { scroll: true })
   }
 
   if (installEvent) {
@@ -80,13 +49,7 @@ export default function GetStarted({
   return (
     <Link
       className="rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
-      href={
-        installed && authenticated
-          ? "config/import"
-          : authenticated
-            ? "install"
-            : `auth?installed=${installed}`
-      }
+      href={"install"}
     >
       Get started
     </Link>

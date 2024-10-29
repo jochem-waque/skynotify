@@ -28,11 +28,6 @@ export default function PlatformInstructions({
               Click <span className="font-bold">Install</span>
             </li>
           </ol>
-          <p>
-            If you&apos;ve previously installed the app and want to
-            automatically skip this page, open the app using the icon on your
-            home screen or from the list of installed apps.
-          </p>
         </div>
       )
     case "desktop-chromium":
@@ -48,11 +43,6 @@ export default function PlatformInstructions({
             an <span className="font-bold">Install</span> option, sometimes
             inside of an <span className="font-bold">Apps</span> or{" "}
             <span className="font-bold">Share</span> dropdown.
-          </p>
-          <p>
-            If you&apos;ve previously installed the app and want to
-            automatically skip this page, open the app using the icon on your
-            desktop or from the list of installed apps.
           </p>
         </div>
       )
@@ -78,11 +68,6 @@ export default function PlatformInstructions({
               <span className="font-bold">Add to Home Screen</span> on iPadOS
             </li>
           </ol>
-          <p>
-            If you&apos;ve previously installed the app and want to
-            automatically skip this page, open the app using the icon on your
-            desktop or from the list of installed apps.
-          </p>
         </div>
       )
     case "ios":
@@ -106,11 +91,6 @@ export default function PlatformInstructions({
               Click <span className="font-bold">Add to Home Screen</span>
             </li>
           </ol>
-          <p>
-            If you&apos;ve previously installed the app and want to
-            automatically skip this page, open the app using the icon on your
-            home screen or from the list of installed apps.
-          </p>
         </div>
       )
     case "unknown":

@@ -18,7 +18,6 @@ export async function auth(
   data: FormData,
 ): Promise<AuthError> {
   const accountId = data.get("password")
-  const installed = data.get("installed")
   if (typeof accountId !== "string") {
     return "invalid_input"
   }
@@ -34,5 +33,5 @@ export async function auth(
   const cookiesResult = await cookies()
   cookiesResult.set("account", accountId)
 
-  redirect(installed ? "/configure/import" : "/install")
+  redirect("/import")
 }

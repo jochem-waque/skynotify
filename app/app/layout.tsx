@@ -28,11 +28,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  // TODO: h-0??
   return (
-    <html lang="en" className={`${font.variable} ${mono.variable} font-sans`}>
-      <body className="relative mx-auto box-content flex min-h-[100svh] max-w-xl flex-col items-center p-4">
-        {children}
+    <html
+      lang="en"
+      className={`${font.variable} ${mono.variable} snap-y snap-mandatory scroll-smooth font-sans`}
+    >
+      <body className="mx-auto flex min-h-[100svh] flex-col items-center p-4">
+        <div className="container flex max-w-xl grow flex-col gap-4">
+          {children}
+        </div>
         <OpenBackgroundNotifications></OpenBackgroundNotifications>
       </body>
     </html>

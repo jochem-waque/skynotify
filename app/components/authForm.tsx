@@ -8,13 +8,13 @@
 import { auth } from "@/actions/auth"
 import { useActionState } from "react"
 
-export default function AuthForm({ installed }: { installed: boolean }) {
+export default function AuthForm() {
   const [, authAction] = useActionState(auth, "none")
 
   return (
     <form
       action={authAction}
-      className="container flex h-full flex-col items-center justify-center gap-48"
+      className="flex flex-col items-center justify-center gap-4"
     >
       <div className="flex w-full flex-col items-center gap-2">
         <label className="w-full max-w-[36ch]" htmlFor="password">
@@ -31,9 +31,6 @@ export default function AuthForm({ installed }: { installed: boolean }) {
           placeholder="________-____-____-____-____________"
           pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
         ></input>
-        {installed && (
-          <input type="hidden" name="installed" value="true"></input>
-        )}
       </div>
       <button
         className="w-full rounded-lg bg-blue-400 p-4 dark:bg-blue-600"
