@@ -36,7 +36,7 @@ export function pickProfile({
 }
 
 export function updateAllSelected() {
-  useProfilesStore.setState(({ selected, profiles }) => ({
+  useDataStore.setState(({ selected, profiles }) => ({
     allSelected:
       selected.size >= profiles.size &&
       new Set(profiles.keys()).symmetricDifference(selected).size === 0,
@@ -44,7 +44,7 @@ export function updateAllSelected() {
 }
 
 export function updateAllNotifyPosts() {
-  useProfilesStore.setState(({ notifyPosts, selected }) => ({
+  useDataStore.setState(({ notifyPosts, selected }) => ({
     allNotifyPosts:
       notifyPosts.size >= selected.size &&
       selected.symmetricDifference(notifyPosts).size === 0,
@@ -52,7 +52,7 @@ export function updateAllNotifyPosts() {
 }
 
 export function updateAllNotifyReposts() {
-  useProfilesStore.setState(({ notifyReposts, selected }) => ({
+  useDataStore.setState(({ notifyReposts, selected }) => ({
     allNotifyReposts:
       notifyReposts.size >= selected.size &&
       selected.symmetricDifference(notifyReposts).size === 0,
@@ -60,7 +60,7 @@ export function updateAllNotifyReposts() {
 }
 
 export function updateAllNotifyReplies() {
-  useProfilesStore.setState(({ notifyReplies, selected }) => ({
+  useDataStore.setState(({ notifyReplies, selected }) => ({
     allNotifyReplies:
       notifyReplies.size >= selected.size &&
       selected.symmetricDifference(notifyReplies).size === 0,
@@ -243,7 +243,7 @@ const storage: PersistStorage<StateFromCombine<typeof combined>> = {
   removeItem: (name) => localStorage.removeItem(name),
 }
 
-export const useProfilesStore = create(
+export const useDataStore = create(
   persist(combined, {
     name: "preferences",
     // TODO indexedDB?

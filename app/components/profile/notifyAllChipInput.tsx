@@ -9,22 +9,22 @@ import {
   updateAllNotifyPosts,
   updateAllNotifyReplies,
   updateAllNotifyReposts,
-  useProfilesStore,
-} from "@/util/profilesStore"
+  useDataStore,
+} from "@/util/store"
 
 export default function NotifyAllChipInput({
   type,
 }: {
   type: "posts" | "reposts" | "replies"
 }) {
-  const checked = useProfilesStore((state) =>
+  const checked = useDataStore((state) =>
     type === "posts"
       ? state.allNotifyPosts
       : type === "reposts"
         ? state.allNotifyReposts
         : state.allNotifyReplies,
   )
-  const toggleAll = useProfilesStore((state) =>
+  const toggleAll = useDataStore((state) =>
     type === "posts"
       ? state.toggleNotifyPostsAll
       : type === "reposts"

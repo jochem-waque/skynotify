@@ -5,16 +5,16 @@
  */
 "use client"
 
-import { useProfilesStore } from "../util/profilesStore"
+import { useDataStore } from "../util/store"
 import { useRouter } from "next/navigation"
 import { KeyboardEvent, MouseEvent } from "react"
 
 export default function ImportFollowing() {
-  const fetchProfiles = useProfilesStore((state) => state.fetchProfiles)
-  const setFetching = useProfilesStore((state) => state.setFetching)
-  const setActor = useProfilesStore((state) => state.setActor)
+  const fetchProfiles = useDataStore((state) => state.fetchProfiles)
+  const setFetching = useDataStore((state) => state.setFetching)
+  const setActor = useDataStore((state) => state.setActor)
   const router = useRouter()
-  const actor = useProfilesStore((state) => state.actor)
+  const actor = useDataStore((state) => state.actor)
 
   function getFollowing(actor: string) {
     setActor(actor)

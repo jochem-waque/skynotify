@@ -5,12 +5,12 @@
  */
 "use client"
 
-import { useProfilesStore } from "../../util/profilesStore"
+import { useDataStore } from "../../util/store"
 import Profile from "./profile"
 import SelectableProfileInput from "./selectableProfileInput"
 
 export default function ProfileSelectorList() {
-  const profiles = useProfilesStore((state) => state.profiles)
+  const profiles = useDataStore((state) => state.profiles)
 
   return (
     <>

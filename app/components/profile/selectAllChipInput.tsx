@@ -5,11 +5,11 @@
  */
 "use client"
 
-import { useProfilesStore } from "@/util/profilesStore"
+import { useDataStore } from "@/util/store"
 
 export default function SelectAllChipInput() {
-  const allSelected = useProfilesStore((state) => state.allSelected)
-  const toggleSelectAll = useProfilesStore((state) => state.toggleSelectAll)
+  const allSelected = useDataStore((state) => state.allSelected)
+  const toggleSelectAll = useDataStore((state) => state.toggleSelectAll)
 
   function change() {
     toggleSelectAll()

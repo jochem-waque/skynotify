@@ -7,11 +7,11 @@
 
 import NotificationChipInput from "./notificationChipInput"
 import Profile from "@/components/profile/profile"
-import { useProfilesStore } from "@/util/profilesStore"
+import { useDataStore } from "@/util/store"
 
 export default function ProfileChipsList() {
-  const profiles = useProfilesStore((state) => state.profiles)
-  const selected = useProfilesStore((state) => state.selected)
+  const profiles = useDataStore((state) => state.profiles)
+  const selected = useDataStore((state) => state.selected)
 
   return [...profiles.entries()]
     .filter(([did]) => selected.has(did))

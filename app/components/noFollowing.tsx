@@ -5,11 +5,11 @@
  */
 "use client"
 
-import { useProfilesStore } from "../util/profilesStore"
+import { useDataStore } from "../util/store"
 
 export default function NoFollowing() {
-  const fetching = useProfilesStore((state) => state.fetching)
-  const profiles = useProfilesStore((state) => state.profiles)
+  const fetching = useDataStore((state) => state.fetching)
+  const profiles = useDataStore((state) => state.profiles)
 
   if (fetching || profiles.size > 0) {
     return null

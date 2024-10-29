@@ -8,14 +8,14 @@
 import { save } from "@/actions/save"
 import { putToken } from "@/actions/token"
 import FirebaseApp from "@/util/firebase"
-import { useProfilesStore } from "@/util/profilesStore"
+import { useDataStore } from "@/util/store"
 import { FirebaseError } from "firebase/app"
 import { getMessaging, getToken } from "firebase/messaging"
 
 export default function SaveChangesButton() {
-  const notifyPosts = useProfilesStore((state) => state.notifyPosts)
-  const notifyReposts = useProfilesStore((state) => state.notifyReposts)
-  const notifyReplies = useProfilesStore((state) => state.notifyReplies)
+  const notifyPosts = useDataStore((state) => state.notifyPosts)
+  const notifyReposts = useDataStore((state) => state.notifyReposts)
+  const notifyReplies = useDataStore((state) => state.notifyReplies)
 
   async function click() {
     await subscribeToPush()

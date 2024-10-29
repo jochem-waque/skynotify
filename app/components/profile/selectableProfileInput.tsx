@@ -5,15 +5,15 @@
  */
 "use client"
 
-import { updateAllSelected, useProfilesStore } from "../../util/profilesStore"
+import { updateAllSelected, useDataStore } from "../../util/store"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { ChangeEvent, useEffect } from "react"
 
 export default function SelectableProfileInput({
   did,
 }: Pick<ProfileView, "did">) {
-  const selected = useProfilesStore((state) => state.selected)
-  const setSelected = useProfilesStore((state) => state.setSelected)
+  const selected = useDataStore((state) => state.selected)
+  const setSelected = useDataStore((state) => state.setSelected)
 
   useEffect(() => {
     updateAllSelected()

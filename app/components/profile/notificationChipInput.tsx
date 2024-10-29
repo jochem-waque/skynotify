@@ -9,8 +9,8 @@ import {
   updateAllNotifyPosts,
   updateAllNotifyReplies,
   updateAllNotifyReposts,
-  useProfilesStore,
-} from "@/util/profilesStore"
+  useDataStore,
+} from "@/util/store"
 import { ChangeEvent, useEffect } from "react"
 
 export default function NotificationChipInput({
@@ -20,14 +20,14 @@ export default function NotificationChipInput({
   type: "reposts" | "replies" | "posts"
   did: string
 }) {
-  const checked = useProfilesStore((state) =>
+  const checked = useDataStore((state) =>
     type === "posts"
       ? state.notifyPosts
       : type === "reposts"
         ? state.notifyReposts
         : state.notifyReplies,
   )
-  const setPreference = useProfilesStore((state) =>
+  const setPreference = useDataStore((state) =>
     type === "posts"
       ? state.setNotifyPosts
       : type === "reposts"

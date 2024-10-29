@@ -14,7 +14,7 @@ export default function RedirectIfInstalled({ url }: { url: string }) {
   useEffect(() => {
     function listener(event: MediaQueryListEvent | MediaQueryList) {
       if (event.matches) {
-        router.push(url)
+        router.replace(url)
       }
     }
 
