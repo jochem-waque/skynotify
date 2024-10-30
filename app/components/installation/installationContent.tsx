@@ -31,7 +31,7 @@ export default function InstallationContent({
         return
       }
 
-      router.replace("auth")
+      router.push("auth")
     }
 
     const mql = window.matchMedia("(display-mode: standalone)")
