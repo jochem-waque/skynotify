@@ -3,6 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import Footer from "@/components/footer"
 import InstructionList from "@/components/instructionList"
 import NotifyAllChipInput from "@/components/profile/notifyAllChipInput"
 import ProfileChipsList from "@/components/profile/profileChipsLists"
@@ -42,7 +43,7 @@ export default function Page() {
           </div>
         </InstructionList>
       </main>
-      <footer>Footer stuff</footer>
+      <Footer></Footer>
     </>
   )
 }

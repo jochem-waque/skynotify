@@ -34,7 +34,7 @@ export default function RootLayout({
       className={`${font.variable} ${mono.variable} snap-y snap-mandatory scroll-smooth font-sans`}
     >
       <body className="mx-auto flex min-h-[100svh] flex-col items-center p-4">
-        <div className="container flex max-w-xl grow flex-col gap-4">
+        <div className="container relative flex max-w-xl grow flex-col gap-4">
           {children}
         </div>
         <OpenBackgroundNotifications></OpenBackgroundNotifications>

@@ -3,6 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import Footer from "@/components/footer"
 import InstallationContent from "@/components/installation/installationContent"
 import InstructionList from "@/components/instructionList"
 import SetSetupState from "@/components/setSetupState"
@@ -72,7 +73,7 @@ export default async function Page() {
           </p>
         </InstructionList>
       </main>
-      <footer>Footer stuff</footer>
+      <Footer></Footer>
     </>
   )
 }

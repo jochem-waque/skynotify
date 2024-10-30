@@ -4,6 +4,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import AuthForm from "@/components/authForm"
+import Footer from "@/components/footer"
 import InstructionList from "@/components/instructionList"
 import SetSetupState from "@/components/setSetupState"
 import { getCurrentAccount } from "@/util/auth"
@@ -24,7 +25,7 @@ export default async function Page() {
           <AuthForm></AuthForm>
         </InstructionList>
       </main>
-      <footer>Footer stuff</footer>
+      <Footer></Footer>
     </>
   )
 }

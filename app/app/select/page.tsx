@@ -3,6 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import Footer from "@/components/footer"
 import InstructionList from "@/components/instructionList"
 import NoFollowing from "@/components/noFollowing"
 import ProfileSelectorList from "@/components/profile/profileSelectorList"
@@ -43,7 +44,7 @@ export default function Page() {
           </div>
         </InstructionList>
       </main>
-      <footer>Footer stuff</footer>
+      <Footer></Footer>
     </>
   )
 }
