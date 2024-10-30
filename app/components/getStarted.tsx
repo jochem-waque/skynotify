@@ -31,7 +31,7 @@ export default function GetStarted() {
 
   async function promptAndRedirect() {
     await installEvent?.prompt()
-    router.push("install", { scroll: true })
+    router.push("install")
   }
 
   if (installEvent) {
