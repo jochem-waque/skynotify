@@ -5,6 +5,8 @@
  */
 "use client"
 
+import FirebaseApp from "@/util/firebase"
+import { getMessaging, onMessage } from "firebase/messaging"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
@@ -23,6 +25,11 @@ export default function OpenBackgroundNotifications() {
       navigator.serviceWorker.removeEventListener("message", listener)
     }
   }, [router])
+
+  useEffect(() => {
+    const messaging = getMessaging(FirebaseApp)
+    return onMessage(messaging, () => console.log)
+  })
 
   return null
 }
