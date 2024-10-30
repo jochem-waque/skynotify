@@ -240,7 +240,10 @@ const combined = combine(
         | "authentication"
         | "import"
         | "completed",
-    ) => set({ setupState }),
+    ) =>
+      set(({ setupState: oldSetupState }) =>
+        oldSetupState === "completed" ? {} : { setupState },
+      ),
   }),
 )
 
