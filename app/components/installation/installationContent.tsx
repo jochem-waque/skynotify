@@ -31,7 +31,6 @@ export default function InstallationContent({
 
   return (
     <>
-      First, let&apos;s get this app installed on your device.
       <div className="flex flex-wrap items-center gap-2 text-lg">
         <h3>Install for </h3>{" "}
         <select

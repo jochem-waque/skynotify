@@ -65,6 +65,7 @@ export default async function Page() {
       <header className="text-3xl">Bluesky Post Notifications</header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="installation">
+          <p>First, let&apos;s get this app installed on your device.</p>
           <InstallationContent defaultPlatform={platform}></InstallationContent>
           <p className="underline">
             To continue, please open the installed app.
