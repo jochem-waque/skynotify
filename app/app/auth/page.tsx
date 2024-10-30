@@ -5,6 +5,7 @@
  */
 import AuthForm from "@/components/authForm"
 import InstructionList from "@/components/instructionList"
+import SetSetupState from "@/components/setSetupState"
 import { getCurrentAccount } from "@/util/auth"
 import { redirect } from "next/navigation"
 
@@ -16,6 +17,7 @@ export default async function Page() {
 
   return (
     <>
+      <SetSetupState setupState={"authentication"}></SetSetupState>
       <header className="text-3xl">Bluesky Post Notifications</header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="authentication">

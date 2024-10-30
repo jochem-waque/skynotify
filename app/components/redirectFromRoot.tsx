@@ -9,12 +9,20 @@ import { useDataStore } from "@/util/store"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
-export default function RedirectForSetup() {
+export default function RedirectFromRoot() {
   const router = useRouter()
   const hasHydrated = useDataStore((state) => state.hasHydrated)
   const setupState = useDataStore((state) => state.setupState)
 
   useEffect(() => {
+    function listener(event: MediaQueryListEvent | MediaQueryList) {
+      if (!event.matches) {
+        return
+      }
+
+      router.replace("auth")
+    }
+
     if (!hasHydrated) {
       return
     }
@@ -22,18 +30,22 @@ export default function RedirectForSetup() {
     switch (setupState) {
       case "installation":
         router.replace("install")
-        break
+        return
       case "authentication":
         router.replace("auth")
-        break
+        return
       case "import":
         router.replace("import")
-        break
+        return
       case "completed":
         router.replace("success")
-        break
+        return
       default:
-        break
+        const mql = window.matchMedia("(display-mode: standalone)")
+        listener(mql)
+        mql.addEventListener("change", listener)
+
+        return () => mql.removeEventListener("change", listener)
     }
   }, [router, hasHydrated, setupState])
 

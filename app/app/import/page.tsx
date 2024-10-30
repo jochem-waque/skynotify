@@ -5,10 +5,12 @@
  */
 import ImportFollowing from "@/components/importFollowing"
 import InstructionList from "@/components/instructionList"
+import SetSetupState from "@/components/setSetupState"
 
 export default function Page() {
   return (
     <>
+      <SetSetupState setupState={"import"}></SetSetupState>
       <header className="text-3xl">Bluesky Post Notifications</header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="import">

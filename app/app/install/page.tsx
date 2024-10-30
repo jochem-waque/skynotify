@@ -5,7 +5,7 @@
  */
 import InstallationContent from "@/components/installation/installationContent"
 import InstructionList from "@/components/instructionList"
-import RedirectIfInstalled from "@/components/redirectIfInstalled"
+import SetSetupState from "@/components/setSetupState"
 import { Browser, OS, Platform, simplifyPlatform } from "@/util/platform"
 import { headers } from "next/headers"
 import UAParser from "ua-parser-js"
@@ -61,7 +61,7 @@ export default async function Page() {
 
   return (
     <>
-      <RedirectIfInstalled></RedirectIfInstalled>
+      <SetSetupState setupState={"installation"}></SetSetupState>
       <header className="text-3xl">Bluesky Post Notifications</header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="installation">

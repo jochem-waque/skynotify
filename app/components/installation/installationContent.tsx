@@ -7,7 +7,7 @@
 
 import PlatformInstructions from "@/components/installation/platformInstructions"
 import { Platform } from "@/util/platform"
-import { useDataStore } from "@/util/store"
+import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
 export default function InstallationContent({
@@ -16,8 +16,8 @@ export default function InstallationContent({
   defaultPlatform: Platform
 }) {
   const [platform, setPlatform] = useState<Platform>(defaultPlatform)
-  const setSetupState = useDataStore((state) => state.setSetupState)
   const ref = useRef<HTMLSelectElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     if (ref.current) {
@@ -26,8 +26,20 @@ export default function InstallationContent({
   }, [])
 
   useEffect(() => {
-    setSetupState("installation")
-  }, [setSetupState])
+    function listener(event: MediaQueryListEvent | MediaQueryList) {
+      if (!event.matches) {
+        return
+      }
+
+      router.replace("auth")
+    }
+
+    const mql = window.matchMedia("(display-mode: standalone)")
+    listener(mql)
+    mql.addEventListener("change", listener)
+
+    return () => mql.removeEventListener("change", listener)
+  }, [router])
 
   return (
     <>
