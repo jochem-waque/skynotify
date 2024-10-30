@@ -10,11 +10,11 @@ import RedirectFromRoot from "@/components/redirectFromRoot"
 export default async function Page() {
   return (
     <>
-    <main className="my-auto flex grow flex-col justify-center">
+      <main className="flex grow flex-col items-center justify-center">
         <RedirectFromRoot></RedirectFromRoot>
         <div className="text-center">
           <h1 className="text-4xl">Bluesky Post Notifications</h1>
-        <span>by {process.env.AUTHOR}</span>
+          <span>by {process.env.AUTHOR}</span>
         </div>
         <div className="max-h-16 grow"></div>
         <GetStarted></GetStarted>
