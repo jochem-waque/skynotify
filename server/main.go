@@ -182,23 +182,23 @@ func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData
 		return message, err
 	}
 
-	messageData := make(map[string]string)
-	messageData["title"] = user.Did
-	messageData["body"] = data.text
-	messageData["tag"] = op.Path
-	messageData["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid)
-	messageData["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
+	message.Data = make(map[string]string)
+	message.Data["title"] = user.Did
+	message.Data["body"] = data.text
+	message.Data["tag"] = op.Path
+	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid)
+	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
 	if data.imageRef != "" {
-		messageData["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, data.imageRef)
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, data.imageRef)
 	}
 
 	if user.DisplayName != "" {
-		messageData["title"] = user.DisplayName
+		message.Data["title"] = user.DisplayName
 	}
 
 	if user.Avatar != "" {
-		messageData["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
+		message.Data["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
 	}
 
 	return message, nil
