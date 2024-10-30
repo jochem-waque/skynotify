@@ -5,8 +5,15 @@
  */
 import AuthForm from "@/components/authForm"
 import InstructionList from "@/components/instructionList"
+import { getCurrentAccount } from "@/util/auth"
+import { redirect } from "next/navigation"
 
 export default async function Page() {
+  const account = await getCurrentAccount()
+  if (account) {
+    redirect("import")
+  }
+
   return (
     <>
       <header className="text-3xl">Bluesky Post Notifications</header>
