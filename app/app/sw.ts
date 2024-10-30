@@ -49,7 +49,7 @@ onBackgroundMessage(messaging, (payload) => {
     return
   }
 
-  const { title, body, icon, image, tag, url } = payload.data
+  const { title, body, icon, image, tag, timestamp, url } = payload.data
   if (!title) {
     return
   }
@@ -62,6 +62,7 @@ onBackgroundMessage(messaging, (payload) => {
     image,
     silent: true,
     tag,
+    timestamp: Number(timestamp),
   })
 })
 

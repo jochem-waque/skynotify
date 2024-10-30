@@ -16,9 +16,10 @@ import (
 )
 
 type postData struct {
-	text     string
-	imageRef string
-	reply    bool
+	text      string
+	imageRef  string
+	reply     bool
+	createdAt string
 }
 
 func getPostData(car storage.ReadableCar, cid string) (postData, error) {
@@ -53,6 +54,13 @@ func getPostData(car storage.ReadableCar, cid string) (postData, error) {
 
 	data.imageRef = imageRef
 
+	createdAt, err := extractCreatedAt(n)
+	if err != nil {
+		return data, err
+	}
+
+	data.createdAt = createdAt
+
 	return data, nil
 }
 
@@ -69,6 +77,21 @@ func extractText(node datamodel.Node) (string, error) {
 	}
 
 	return textstr, nil
+}
+
+func extractCreatedAt(node datamodel.Node) (string, error) {
+	createdAt, err := node.LookupByString("createdAt")
+	// TODO: figure out how to check if it's ErrNotExists
+	if err != nil {
+		return "", err
+	}
+
+	createdAtStr, err := createdAt.AsString()
+	if err != nil {
+		return "", err
+	}
+
+	return createdAtStr, nil
 }
 
 func isReply(node datamodel.Node) bool {

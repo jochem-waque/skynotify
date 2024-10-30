@@ -13,7 +13,9 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"strconv"
 	"strings"
+	"time"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
@@ -175,11 +177,17 @@ func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData
 		return message, fmt.Errorf("couldn't split post ID from %s", op.Path)
 	}
 
+	timestamp, err := time.Parse(time.RFC3339, data.createdAt)
+	if err != nil {
+		return message, err
+	}
+
 	messageData := make(map[string]string)
 	messageData["title"] = user.Did
 	messageData["body"] = data.text
 	messageData["tag"] = op.Path
 	messageData["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid)
+	messageData["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
 	if data.imageRef != "" {
 		messageData["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, data.imageRef)
