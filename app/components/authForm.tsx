@@ -9,34 +9,35 @@ import { auth } from "@/actions/auth"
 import { useActionState } from "react"
 
 export default function AuthForm() {
-  const [, authAction] = useActionState(auth, "none")
+  const [error, authAction] = useActionState(auth, "none")
 
   return (
-    <form
-      action={authAction}
-      className="flex flex-col items-center justify-center gap-4"
-    >
-      <div className="flex w-full flex-col items-center gap-2">
-        <label className="w-full max-w-[36ch]" htmlFor="password">
-          Account ID
+    <form action={authAction} className="flex flex-col justify-center gap-4">
+      <div className="flex w-full flex-col gap-2">
+        <label className="w-full" htmlFor="password">
+          Next, enter your invite code. This service is currently in a closed
+          beta, which is why an invite code is required.
         </label>
         <input
           autoComplete="password"
           maxLength={36}
           required={true}
-          className="box-content w-full max-w-[36ch] rounded-lg p-2 font-mono"
+          className="w-full rounded-lg p-2 font-mono"
           id="password"
           name="password"
           type="password"
-          placeholder="________-____-____-____-____________"
+          placeholder="Invite code"
           pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
         ></input>
       </div>
+      {error !== "none" && (
+        <p className="text-center text-red-500">Invalid invite code.</p>
+      )}
       <button
         className="w-full rounded-lg bg-blue-400 p-4 dark:bg-blue-600"
         type="submit"
       >
-        Authenticate
+        Continue
       </button>
     </form>
   )

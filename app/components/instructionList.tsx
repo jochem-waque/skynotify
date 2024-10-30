@@ -32,7 +32,7 @@ export default function InstructionList({
         className={`${step === "authentication" ? "snap-start snap-always" : "opacity-50"} flex flex-col gap-2 overflow-hidden after:my-1 after:w-full after:border-b`}
       >
         <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-200 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
-          <h2 className="text-xl">Authentication</h2>
+          <h2 className="text-xl">Invite code</h2>
         </div>
         <div
           className={`${step === "authentication" ? "animate-expand" : "grid-rows-[0fr]"} grid duration-500`}
