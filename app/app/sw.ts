@@ -5,7 +5,7 @@
  */
 import FirebaseApp from "@/util/firebase"
 import { defaultCache } from "@serwist/next/worker"
-import { getMessaging } from "firebase/messaging/sw"
+import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw"
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist"
 import { Serwist } from "serwist"
 
@@ -42,6 +42,27 @@ self.addEventListener("notificationclick", (event) => {
   return event.waitUntil(self.clients.openWindow(url))
 })
 
-getMessaging(FirebaseApp)
+const messaging = getMessaging(FirebaseApp)
+
+onBackgroundMessage(messaging, (payload) => {
+  if (!payload.data) {
+    return
+  }
+
+  const { title, body, icon, image, tag, url } = payload.data
+  if (!title) {
+    return
+  }
+
+  self.registration.showNotification(title, {
+    badge: "/badge.png",
+    body,
+    data: { FCM_MSG: { notification: { click_action: url } } },
+    icon,
+    image,
+    silent: true,
+    tag,
+  })
+})
 
 serwist.addEventListeners()

@@ -29,6 +29,23 @@ declare global {
       }[]
     >
   }
+
+  interface NotificationOptions {
+    actions?: { action: string; title: string; icon?: string }[]
+    badge?: string
+    body?: string
+    data?: unknown
+    dir?: NotificationDirection
+    icon?: string
+    image?: string
+    lang?: string
+    renotify?: boolean
+    requireInteraction?: boolean
+    silent?: boolean | null
+    tag?: string
+    timestamp?: number
+    vibrate?: number[]
+  }
 }
 
 export {}

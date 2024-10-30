@@ -175,30 +175,22 @@ func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData
 		return message, fmt.Errorf("couldn't split post ID from %s", op.Path)
 	}
 
-	message.Notification = &messaging.Notification{
-		Title: user.Did,
-		Body:  data.text,
-	}
-	message.Webpush = &messaging.WebpushConfig{
-		Notification: &messaging.WebpushNotification{
-			Badge: "/badge.png",
-			Tag:   op.Path,
-		},
-		FCMOptions: &messaging.WebpushFCMOptions{
-			Link: fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid),
-		},
-	}
+	messageData := make(map[string]string)
+	messageData["title"] = user.Did
+	messageData["body"] = data.text
+	messageData["tag"] = op.Path
+	messageData["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid)
 
 	if data.imageRef != "" {
-		message.Notification.ImageURL = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, data.imageRef)
+		messageData["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, data.imageRef)
 	}
 
 	if user.DisplayName != "" {
-		message.Notification.Title = user.DisplayName
+		messageData["title"] = user.DisplayName
 	}
 
 	if user.Avatar != "" {
-		message.Webpush.Notification.Icon = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
+		messageData["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
 	}
 
 	return message, nil
