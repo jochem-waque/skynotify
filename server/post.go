@@ -62,6 +62,7 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		return message, false, err
 	}
 
+	message.Data = make(map[string]string)
 	message.Data["title"] = user.Handle
 	message.Data["body"] = text
 	message.Data["tag"] = path
