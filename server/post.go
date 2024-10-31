@@ -201,7 +201,7 @@ func getParentHandle(uri string) (string, error) {
 		return "", err
 	}
 
-	jsonResponse := Response{}
+	jsonResponse := PostsResponse{}
 	err = json.NewDecoder(response.Body).Decode(&jsonResponse)
 	if err != nil {
 		return "", err

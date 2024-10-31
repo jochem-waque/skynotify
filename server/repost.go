@@ -21,32 +21,22 @@ import (
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-type Response struct {
-	Posts []Post `json:"posts"`
-}
-
-type Post struct {
-	Uri    string `json:"uri"`
-	Author Author `json:"author"`
-	Record Record `json:"record"`
-	Embed  Embed  `json:"embed,omitempty"`
-}
-
-type Author struct {
-	Did    string `json:"did"`
-	Handle string `json:"handle"`
-}
-
-type Record struct {
-	Text string `json:"text,omitempty"`
-}
-
-type Embed struct {
-	Images []Image `json:"images,omitempty"`
-}
-
-type Image struct {
-	Thumb string `json:"thumb"`
+type PostsResponse struct {
+	Posts []struct {
+		Uri    string `json:"uri"`
+		Author struct {
+			Did    string `json:"did"`
+			Handle string `json:"handle"`
+		} `json:"author"`
+		Record struct {
+			Text string `json:"text,omitempty"`
+		} `json:"record"`
+		Embed struct {
+			Images []struct {
+				Thumb string `json:"thumb"`
+			} `json:"images,omitempty"`
+		} `json:"embed,omitempty"`
+	} `json:"posts"`
 }
 
 type repostData struct {
@@ -67,7 +57,7 @@ func makeRepostMessage(car storage.ReadableCar, cid string, path string, user Us
 		return message, err
 	}
 
-	jsonResponse := Response{}
+	jsonResponse := PostsResponse{}
 	err = json.NewDecoder(response.Body).Decode(&jsonResponse)
 	if err != nil {
 		return message, err
