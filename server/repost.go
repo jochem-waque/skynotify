@@ -21,6 +21,10 @@ import (
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
+type Response struct {
+	Posts []Post `json:"posts"`
+}
+
 type Post struct {
 	Uri    string `json:"uri"`
 	Author Author `json:"author"`
@@ -67,11 +71,17 @@ func makeRepostMessage(car storage.ReadableCar, cid string, path string, user Us
 		return message, err
 	}
 
-	post := Post{}
-	err = json.NewDecoder(response.Body).Decode(&post)
+	jsonResponse := Response{}
+	err = json.NewDecoder(response.Body).Decode(&jsonResponse)
 	if err != nil {
 		return message, err
 	}
+
+	if len(jsonResponse.Posts) == 0 {
+		return message, fmt.Errorf("no posts for uri %s", data.uri)
+	}
+
+	post := jsonResponse.Posts[0]
 
 	slash := strings.LastIndex(post.Uri, "/")
 	if slash == -1 {
