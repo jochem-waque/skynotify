@@ -45,6 +45,12 @@ export default function Page() {
             service, whether directly or indirectly.
           </p>
         </div>
+<div className="flex flex-col gap-1">
+          <h3 className="text-xl">Affiliation</h3>
+          <p>
+            Neither me, nor this service, have any affiliation with Bluesky.
+          </p>
+        </div>
       </main>
       <Footer></Footer>
     </>
