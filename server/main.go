@@ -210,7 +210,7 @@ func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData
 	}
 
 	message.Data = make(map[string]string)
-	message.Data["title"] = user.Did
+	message.Data["title"] = user.Handle
 	message.Data["body"] = data.text
 	message.Data["tag"] = op.Path
 	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid)
