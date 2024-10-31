@@ -74,6 +74,10 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		message.Data["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
 	}
 
+	if user.DisplayName != "" {
+		message.Data["title"] = user.DisplayName
+	}
+
 	reply := isReply(n)
 	if reply {
 		// TODO add handle to body
