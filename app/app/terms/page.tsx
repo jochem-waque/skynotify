@@ -9,7 +9,7 @@ import Link from "next/link"
 export default function Page() {
   return (
     <>
-      <header>
+      <header className="text-center">
         <h1 className="text-3xl">Bsky Post Notifications</h1>
       </header>
       <main className="flex grow flex-col gap-4">
@@ -45,7 +45,7 @@ export default function Page() {
             service, whether directly or indirectly.
           </p>
         </div>
-<div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1">
           <h3 className="text-xl">Affiliation</h3>
           <p>
             Neither me, nor this service, have any affiliation with Bluesky.
