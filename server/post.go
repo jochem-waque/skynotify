@@ -8,6 +8,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -78,10 +79,20 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		message.Data["title"] = user.DisplayName
 	}
 
-	reply := isReply(n)
+	parent, err := extractParent(n)
+	if err != nil {
+		return message, false, err
+	}
+
+	reply := parent != ""
 	if reply {
-		// TODO add handle to body
+		handle, err := getParentHandle(parent)
+		if err != nil {
+			return message, reply, err
+		}
+
 		message.Data["title"] += " replied"
+		message.Data["body"] = fmt.Sprintf("@%s %s", handle, message.Data["body"])
 	}
 
 	return message, reply, nil
@@ -117,10 +128,24 @@ func extractCreatedAt(node datamodel.Node) (string, error) {
 	return createdAtStr, nil
 }
 
-func isReply(node datamodel.Node) bool {
+func extractParent(node datamodel.Node) (string, error) {
 	// TODO: figure out how to check if it's ErrNotExists
-	_, err := node.LookupByString("reply")
-	return err == nil
+	reply, err := node.LookupByString("reply")
+	if err != nil {
+		return "", nil
+	}
+
+	parent, err := reply.LookupByString("parent")
+	if err != nil {
+		return "", err
+	}
+
+	uri, err := parent.LookupByString("uri")
+	if err != nil {
+		return "", err
+	}
+
+	return uri.AsString()
 }
 
 func extractImage(node datamodel.Node) (string, error) {
@@ -168,4 +193,25 @@ func extractImage(node datamodel.Node) (string, error) {
 	}
 
 	return linkNode.String(), nil
+}
+
+func getParentHandle(uri string) (string, error) {
+	response, err := httpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts?uris=%s", uri))
+	if err != nil {
+		return "", err
+	}
+
+	jsonResponse := Response{}
+	err = json.NewDecoder(response.Body).Decode(&jsonResponse)
+	if err != nil {
+		return "", err
+	}
+
+	if len(jsonResponse.Posts) == 0 {
+		return "", fmt.Errorf("no posts for uri %s", uri)
+	}
+
+	post := jsonResponse.Posts[0]
+
+	return post.Author.Handle, nil
 }
