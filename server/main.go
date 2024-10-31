@@ -119,41 +119,15 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 	for _, op := range evt.Ops {
 		// TODO support reposts
 		// TODO support profile updates
-		if op.Action != "create" || !strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
-			continue
-		}
-
-		if car == nil {
-			reader := bytes.NewReader(evt.Blocks)
-			car, err = storage.OpenReadable(reader)
+		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
+			err := openCar(&car, evt)
 			if err != nil {
 				fmt.Println(err)
 				return nil
 			}
-		}
 
-		data, err := getPostData(car, cid.MustParse(op.Cid.String()).KeyString())
-		if err != nil {
-			fmt.Println(err)
-			return nil
-		}
-
-		tokens := []string{}
-		for _, row := range rows {
-			if data.reply && *row.Replies || !data.reply && *row.Posts {
-				tokens = append(tokens, *row.Token)
-			}
-		}
-
-		message, err := makeMessage(user, op, data)
-		if err != nil {
-			fmt.Println(err)
-			return nil
-		}
-
-		for chunk := range slices.Chunk(tokens, 500) {
-			message.Tokens = chunk
-			messages = append(messages, message)
+			processPost(&messages, rows, user, car, op)
+			continue
 		}
 	}
 
@@ -164,6 +138,49 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 				fmt.Println(response.Error)
 			}
 		}
+	}
+
+	return nil
+}
+
+func openCar(car *storage.ReadableCar, evt *atproto.SyncSubscribeRepos_Commit) error {
+	if *car != nil {
+		return nil
+	}
+
+	reader := bytes.NewReader(evt.Blocks)
+	newCar, err := storage.OpenReadable(reader)
+	if err != nil {
+		return err
+	}
+
+	*car = newCar
+	return nil
+}
+
+func processPost(messages *[]messaging.MulticastMessage, rows []GetSubscriptionsRow, user User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
+	data, err := getPostData(car, cid.MustParse(op.Cid.String()).KeyString())
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	tokens := []string{}
+	for _, row := range rows {
+		if data.reply && *row.Replies || !data.reply && *row.Posts {
+			tokens = append(tokens, *row.Token)
+		}
+	}
+
+	message, err := makeMessage(user, op, data)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	for chunk := range slices.Chunk(tokens, 500) {
+		message.Tokens = chunk
+		*messages = append(*messages, message)
 	}
 
 	return nil
