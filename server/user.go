@@ -25,6 +25,7 @@ var client *http.Client = &http.Client{Timeout: time.Second * 10}
 
 type User struct {
 	Did         string `json:"did"`
+	Handle      string `json:"handle"`
 	DisplayName string `json:"displayName,omitempty"`
 	Avatar      string `json:"avatar,omitempty"`
 }
@@ -72,6 +73,14 @@ func getOrFetchUser(did string) (User, error) {
 }
 
 func updateUser(did string, car storage.ReadableCar, cid string) error {
+	users.RLock()
+	user := users.m[did]
+	users.RUnlock()
+
+	if user.Handle == "" {
+		return nil
+	}
+
 	blk, err := car.Get(context.Background(), cid)
 	if err != nil {
 		return err
@@ -95,10 +104,6 @@ func updateUser(did string, car storage.ReadableCar, cid string) error {
 	if err != nil {
 		return err
 	}
-
-	users.RLock()
-	user := users.m[did]
-	users.RUnlock()
 
 	if displayName != "" {
 		user.DisplayName = displayName
