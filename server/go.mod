@@ -4,7 +4,7 @@ go 1.23.2
 
 require (
 	firebase.google.com/go/v4 v4.15.0
-	github.com/bluesky-social/indigo v0.0.0-20241008040750-06bacb465af7
+	github.com/bluesky-social/indigo v0.0.0-20241030014352-983ce4a481a3
 	github.com/gorilla/websocket v1.5.3
 	github.com/ipfs/go-cid v0.4.1
 	github.com/ipld/go-car/v2 v2.14.2
@@ -18,8 +18,8 @@ require (
 require (
 	cel.dev/expr v0.18.0 // indirect
 	cloud.google.com/go v0.116.0 // indirect
-	cloud.google.com/go/auth v0.9.9 // indirect
-	cloud.google.com/go/auth/oauth2adapt v0.2.4 // indirect
+	cloud.google.com/go/auth v0.10.0 // indirect
+	cloud.google.com/go/auth/oauth2adapt v0.2.5 // indirect
 	cloud.google.com/go/compute/metadata v0.5.2 // indirect
 	cloud.google.com/go/firestore v1.17.0 // indirect
 	cloud.google.com/go/iam v1.2.2 // indirect
