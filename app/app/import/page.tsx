@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <>
       <SetSetupState setupState={"import"}></SetSetupState>
-      <header className="text-3xl">Bluesky Post Notifications</header>
+      <header className="text-3xl">Bsky Post Notifications</header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="import">
           <p>Next, let&apos;s import your Bluesky following.</p>

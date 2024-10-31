@@ -12,7 +12,7 @@ import SaveChangesButton from "@/components/saveChangesButton"
 export default function Page() {
   return (
     <>
-      <header className="text-3xl">Bluesky Post Notifications</header>
+      <header className="text-3xl">Bsky Post Notifications</header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="set">
           <div className="flex flex-col gap-2">

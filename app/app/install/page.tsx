@@ -63,7 +63,7 @@ export default async function Page() {
   return (
     <>
       <SetSetupState setupState={"installation"}></SetSetupState>
-      <header className="text-3xl">Bluesky Post Notifications</header>
+      <header className="text-3xl">Bsky Post Notifications</header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="installation">
           <p>First, let&apos;s get this app installed on your device.</p>

@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <>
       <header>
-        <h1 className="text-3xl">Bluesky Post Notifications</h1>
+        <h1 className="text-3xl">Bsky Post Notifications</h1>
       </header>
       <main className="flex grow flex-col gap-4">
         <h2 className="text-2xl">Terms of Use</h2>
