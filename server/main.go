@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"os"
 	"slices"
-	"strconv"
 	"strings"
 	"time"
 
@@ -37,6 +36,8 @@ var env = struct {
 var messagingClient *messaging.Client
 
 var querier *DBQuerier
+
+var httpClient *http.Client = &http.Client{Timeout: time.Second * 10}
 
 func loadEnv() {
 	_, err := os.Stat(".env")
@@ -128,7 +129,17 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			continue
 		}
 
-		// TODO support reposts
+		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") {
+			err := openCar(&car, evt)
+			if err != nil {
+				fmt.Println(err)
+				return nil
+			}
+
+			processRepost(&messages, rows, user, car, op)
+			continue
+		}
+
 		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
 			err := openCar(&car, evt)
 			if err != nil {
@@ -169,7 +180,7 @@ func openCar(car *storage.ReadableCar, evt *atproto.SyncSubscribeRepos_Commit) e
 }
 
 func processPost(messages *[]messaging.MulticastMessage, rows []GetSubscriptionsRow, user User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
-	data, err := getPostData(car, cid.MustParse(op.Cid.String()).KeyString())
+	message, reply, err := makePostMessage(car, cid.MustParse(op.Cid.String()).KeyString(), op.Path, user)
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -177,15 +188,9 @@ func processPost(messages *[]messaging.MulticastMessage, rows []GetSubscriptions
 
 	tokens := []string{}
 	for _, row := range rows {
-		if data.reply && *row.Replies || !data.reply && *row.Posts {
+		if reply && *row.Replies || !reply && *row.Posts {
 			tokens = append(tokens, *row.Token)
 		}
-	}
-
-	message, err := makeMessage(user, op, data)
-	if err != nil {
-		fmt.Println(err)
-		return nil
 	}
 
 	for chunk := range slices.Chunk(tokens, 500) {
@@ -196,37 +201,24 @@ func processPost(messages *[]messaging.MulticastMessage, rows []GetSubscriptions
 	return nil
 }
 
-func makeMessage(user User, op *atproto.SyncSubscribeRepos_RepoOp, data postData) (messaging.MulticastMessage, error) {
-	message := messaging.MulticastMessage{}
-
-	_, pid, found := strings.Cut(op.Path, "/")
-	if !found {
-		return message, fmt.Errorf("couldn't split post ID from %s", op.Path)
-	}
-
-	timestamp, err := time.Parse(time.RFC3339, data.createdAt)
+func processRepost(messages *[]messaging.MulticastMessage, rows []GetSubscriptionsRow, user User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
+	message, err := makeRepostMessage(car, cid.MustParse(op.Cid.String()).KeyString(), op.Path, user)
 	if err != nil {
-		return message, err
+		fmt.Println(err)
+		return nil
 	}
 
-	message.Data = make(map[string]string)
-	message.Data["title"] = user.Handle
-	message.Data["body"] = data.text
-	message.Data["tag"] = op.Path
-	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid)
-	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
-
-	if data.imageRef != "" {
-		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, data.imageRef)
+	tokens := []string{}
+	for _, row := range rows {
+		if *row.Reposts {
+			tokens = append(tokens, *row.Token)
+		}
 	}
 
-	if user.DisplayName != "" {
-		message.Data["title"] = user.DisplayName
+	for chunk := range slices.Chunk(tokens, 500) {
+		message.Tokens = chunk
+		*messages = append(*messages, message)
 	}
 
-	if user.Avatar != "" {
-		message.Data["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
-	}
-
-	return message, nil
+	return nil
 }

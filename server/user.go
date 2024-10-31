@@ -10,18 +10,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/ipld/go-car/v2/storage"
 	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/datamodel"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
-
-var client *http.Client = &http.Client{Timeout: time.Second * 10}
 
 type User struct {
 	Did         string `json:"did"`
@@ -44,7 +40,7 @@ func getOrFetchUser(did string) (User, error) {
 		return user, nil
 	}
 
-	response, err := client.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=%s", did))
+	response, err := httpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=%s", did))
 	if err != nil {
 		return user, err
 	}

@@ -8,26 +8,29 @@ package main
 import (
 	"bytes"
 	"context"
+	"fmt"
+	"strconv"
+	"strings"
+	"time"
 
+	"firebase.google.com/go/v4/messaging"
 	"github.com/ipld/go-car/v2/storage"
 	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/datamodel"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-type postData struct {
-	text      string
-	imageRef  string
-	reply     bool
-	createdAt string
-}
+func makePostMessage(car storage.ReadableCar, cid string, path string, user User) (messaging.MulticastMessage, bool, error) {
+	message := messaging.MulticastMessage{}
 
-func getPostData(car storage.ReadableCar, cid string) (postData, error) {
-	data := postData{}
+	_, pid, found := strings.Cut(path, "/")
+	if !found {
+		return message, false, fmt.Errorf("couldn't cut pid from %s", path)
+	}
 
 	blk, err := car.Get(context.Background(), cid)
 	if err != nil {
-		return data, err
+		return message, false, err
 	}
 
 	reader := bytes.NewReader(blk)
@@ -35,33 +38,42 @@ func getPostData(car storage.ReadableCar, cid string) (postData, error) {
 	nb := basicnode.Prototype.Any.NewBuilder()
 	err = dagcbor.Decode(nb, reader)
 	if err != nil {
-		return data, err
+		return message, false, err
 	}
 
 	n := nb.Build()
 	text, err := extractText(n)
 	if err != nil {
-		return data, err
+		return message, false, err
 	}
-
-	data.text = text
-	data.reply = isReply(n)
 
 	imageRef, err := extractImage(n)
 	if err != nil {
-		return data, err
+		return message, false, err
 	}
-
-	data.imageRef = imageRef
 
 	createdAt, err := extractCreatedAt(n)
 	if err != nil {
-		return data, err
+		return message, false, err
 	}
 
-	data.createdAt = createdAt
+	timestamp, err := time.Parse(time.RFC3339, createdAt)
+	if err != nil {
+		return message, false, err
+	}
 
-	return data, nil
+	message.Data["title"] = user.Handle
+	message.Data["body"] = text
+	message.Data["tag"] = path
+	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid)
+	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
+	message.Data["image"] = imageRef
+
+	if user.Avatar != "" {
+		message.Data["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
+	}
+
+	return message, isReply(n), nil
 }
 
 func extractText(node datamodel.Node) (string, error) {
