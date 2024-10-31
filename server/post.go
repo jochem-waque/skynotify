@@ -73,7 +73,13 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		message.Data["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
 	}
 
-	return message, isReply(n), nil
+	reply := isReply(n)
+	if reply {
+		// TODO add handle to body
+		message.Data["title"] += " replied"
+	}
+
+	return message, reply, nil
 }
 
 func extractText(node datamodel.Node) (string, error) {

@@ -104,6 +104,8 @@ func makeRepostMessage(car storage.ReadableCar, cid string, path string, user Us
 		message.Data["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
 	}
 
+	message.Data["title"] += " reposted"
+
 	return message, nil
 }
 
