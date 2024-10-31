@@ -117,8 +117,18 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 	messages := []messaging.MulticastMessage{}
 
 	for _, op := range evt.Ops {
+		if op.Action == "update" && op.Path == "app.bsky.actor.profile/self" {
+			err := openCar(&car, evt)
+			if err != nil {
+				fmt.Println(err)
+				return nil
+			}
+
+			updateUser(evt.Repo, car, cid.MustParse(op.Cid.String()).KeyString())
+			continue
+		}
+
 		// TODO support reposts
-		// TODO support profile updates
 		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
 			err := openCar(&car, evt)
 			if err != nil {

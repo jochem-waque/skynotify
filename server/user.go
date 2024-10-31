@@ -6,12 +6,19 @@
 package main
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/ipld/go-car/v2/storage"
+	"github.com/ipld/go-ipld-prime/codec/dagcbor"
+	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
 var client *http.Client = &http.Client{Timeout: time.Second * 10}
@@ -62,4 +69,82 @@ func getOrFetchUser(did string) (User, error) {
 	users.Unlock()
 
 	return user, nil
+}
+
+func updateUser(did string, car storage.ReadableCar, cid string) error {
+	blk, err := car.Get(context.Background(), cid)
+	if err != nil {
+		return err
+	}
+
+	reader := bytes.NewReader(blk)
+
+	nb := basicnode.Prototype.Any.NewBuilder()
+	err = dagcbor.Decode(nb, reader)
+	if err != nil {
+		return err
+	}
+
+	n := nb.Build()
+	displayName, err := extractDisplayName(n)
+	if err != nil {
+		return err
+	}
+
+	avatar, err := extractAvatar(n)
+	if err != nil {
+		return err
+	}
+
+	users.RLock()
+	user := users.m[did]
+	users.RUnlock()
+
+	if displayName != "" {
+		user.DisplayName = displayName
+	}
+
+	if avatar != "" {
+		user.Avatar = avatar
+	}
+
+	users.Lock()
+	users.m[did] = user
+	users.Unlock()
+
+	return nil
+}
+
+func extractAvatar(node datamodel.Node) (string, error) {
+	avatar, err := node.LookupByString("avatar")
+	if err != nil {
+		return "", nil
+	}
+
+	ref, err := avatar.LookupByString("ref")
+	if err != nil {
+		return "", err
+	}
+
+	linkNode, err := ref.AsLink()
+	if err != nil {
+		return "", err
+	}
+
+	return linkNode.String(), nil
+}
+
+func extractDisplayName(node datamodel.Node) (string, error) {
+	displayName, err := node.LookupByString("displayName")
+	// TODO: figure out how to check if it's ErrNotExists
+	if err != nil {
+		return "", nil
+	}
+
+	displayNameStr, err := displayName.AsString()
+	if err != nil {
+		return "", err
+	}
+
+	return displayNameStr, nil
 }
