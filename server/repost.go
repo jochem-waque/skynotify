@@ -42,10 +42,6 @@ type Record struct {
 }
 
 type Embed struct {
-	Media Media `json:"media,omitempty"`
-}
-
-type Media struct {
 	Images []Image `json:"images,omitempty"`
 }
 
@@ -102,8 +98,9 @@ func makeRepostMessage(car storage.ReadableCar, cid string, path string, user Us
 	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", post.Author.Did, pid)
 	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
-	if len(post.Embed.Media.Images) > 0 {
-		message.Data["image"] = post.Embed.Media.Images[0].Thumb
+	// TODO support other embeds
+	if len(post.Embed.Images) > 0 {
+		message.Data["image"] = post.Embed.Images[0].Thumb
 	}
 
 	if user.DisplayName != "" {
