@@ -89,12 +89,7 @@ const combined = combine(
     notifyPosts: new Set<string>(),
     notifyReposts: new Set<string>(),
     notifyReplies: new Set<string>(),
-    setupState: null as
-      | null
-      | "installation"
-      | "authentication"
-      | "import"
-      | "completed",
+    setupState: null as null | "installation" | "import" | "completed",
   },
   (set) => ({
     setHasHydrated: (hasHydrated: boolean) => set({ hasHydrated }),
@@ -234,12 +229,7 @@ const combined = combine(
         return { notifyReplies: new Set(selected), allnotifyReplies: true }
       }),
     setSetupState: (
-      setupState:
-        | null
-        | "installation"
-        | "authentication"
-        | "import"
-        | "completed",
+      setupState: null | "installation" | "import" | "completed",
     ) =>
       set(({ setupState: oldSetupState }) =>
         oldSetupState === "completed" ? {} : { setupState },

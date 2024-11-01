@@ -6,7 +6,6 @@
 "use client"
 
 import { save } from "@/actions/save"
-import { putToken } from "@/actions/token"
 import FirebaseApp from "@/util/firebase"
 import { useDataStore } from "@/util/store"
 import { FirebaseError } from "firebase/app"
@@ -18,8 +17,14 @@ export default function SaveChangesButton() {
   const notifyReplies = useDataStore((state) => state.notifyReplies)
 
   async function click() {
-    await subscribeToPush()
+    const token = await subscribeToPush()
+    if (!token) {
+      // TODO
+      return
+    }
+
     await save(
+      token,
       [...notifyPosts.union(notifyReposts).union(notifyReplies)].map((did) => ({
         target: did,
         posts: notifyPosts.has(did),
@@ -32,7 +37,7 @@ export default function SaveChangesButton() {
   async function subscribeToPush() {
     const registration = await navigator.serviceWorker.getRegistration()
     if (!registration) {
-      return // TODO this shouldn't be possible
+      return null
     }
 
     const messaging = getMessaging(FirebaseApp)
@@ -48,13 +53,13 @@ export default function SaveChangesButton() {
         err.code !== "messaging/permission-blocked"
       ) {
         // TODO: other error
-        return
+        return null
       }
 
-      return
+      return null
     }
 
-    await putToken(token)
+    return token
   }
 
   return (

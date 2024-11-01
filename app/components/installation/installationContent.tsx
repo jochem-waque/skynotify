@@ -27,11 +27,9 @@ export default function InstallationContent({
 
   useEffect(() => {
     function listener(event: MediaQueryListEvent | MediaQueryList) {
-      if (!event.matches) {
-        return
+      if (event.matches) {
+        router.push("import")
       }
-
-      router.push("auth")
     }
 
     const mql = window.matchMedia("(display-mode: standalone)")

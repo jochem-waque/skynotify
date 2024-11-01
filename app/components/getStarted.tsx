@@ -10,11 +10,6 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-/*
- * If possible, prompt to install. If not authenticated, redirect to auth with
- * query parameter indicating installation status. Otherwise, redirect to
- * install or import depending on installation status.
- */
 export default function GetStarted() {
   const router = useRouter()
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent>()

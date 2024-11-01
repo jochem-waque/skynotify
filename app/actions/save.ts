@@ -5,29 +5,20 @@
  */
 "use server"
 
-import { getCurrentAccount } from "@/util/auth"
 import Drizzle from "@/util/db"
 import { subscriptionTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
 export async function save(
-  data: Omit<typeof subscriptionTable.$inferInsert, "account">[],
+  token: string,
+  subscriptions: Omit<typeof subscriptionTable.$inferInsert, "token">[],
 ) {
-  const account = await getCurrentAccount()
-  if (!account) {
-    redirect("/auth?installed=true")
-  }
-
   await Drizzle.transaction(async (tx) => {
-    await tx
-      .delete(subscriptionTable)
-      .where(eq(subscriptionTable.account, account.id))
+    await tx.delete(subscriptionTable).where(eq(subscriptionTable.token, token))
     return await tx
       .insert(subscriptionTable)
-      .values(
-        data.map((subscription) => ({ ...subscription, account: account.id })),
-      )
+      .values(subscriptions.map((subscription) => ({ ...subscription, token })))
       .onConflictDoNothing()
   })
 

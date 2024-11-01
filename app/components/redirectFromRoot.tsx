@@ -16,11 +16,9 @@ export default function RedirectFromRoot() {
 
   useEffect(() => {
     function listener(event: MediaQueryListEvent | MediaQueryList) {
-      if (!event.matches) {
-        return
+      if (event.matches) {
+        router.replace("import")
       }
-
-      router.replace("auth")
     }
 
     if (!hasHydrated) {
@@ -30,9 +28,6 @@ export default function RedirectFromRoot() {
     switch (setupState) {
       case "installation":
         router.replace("install")
-        return
-      case "authentication":
-        router.replace("auth")
         return
       case "import":
         router.replace("import")
