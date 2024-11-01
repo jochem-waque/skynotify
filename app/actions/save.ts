@@ -18,7 +18,11 @@ export async function save(
     await tx.delete(subscriptionTable).where(eq(subscriptionTable.token, token))
     return await tx
       .insert(subscriptionTable)
-      .values(subscriptions.map((subscription) => ({ ...subscription, token })))
+      .values(
+        subscriptions
+          .slice(0, 50)
+          .map((subscription) => ({ ...subscription, token })),
+      )
       .onConflictDoNothing()
   })
 
