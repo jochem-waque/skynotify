@@ -32,7 +32,7 @@ export default async function Page() {
             className="underline transition-opacity hover:opacity-75"
             href="terms"
           >
-            Terms of Use
+            Liability Disclaimer
           </Link>
         </p>
       </main>

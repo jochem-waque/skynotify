@@ -21,9 +21,9 @@ export default function Footer({ absolute }: { absolute?: boolean }) {
       <span className="border-r border-current"></span>
       <Link
         className="underline transition-opacity hover:opacity-75"
-        href="/terms"
+        href="/liability"
       >
-        Terms of Use
+        Liability Disclaimer
       </Link>
     </footer>
   )
