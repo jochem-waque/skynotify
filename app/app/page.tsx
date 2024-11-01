@@ -30,7 +30,7 @@ export default async function Page() {
           and{" "}
           <Link
             className="underline transition-opacity hover:opacity-75"
-            href="terms"
+            href="liability"
           >
             Liability Disclaimer
           </Link>
