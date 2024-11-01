@@ -148,6 +148,8 @@ func extractParent(node datamodel.Node) (string, error) {
 	return uri.AsString()
 }
 
+// TODO: figure out how to check if it's ErrNotExists
+// TODO: support other embed types
 func extractImage(node datamodel.Node) (string, error) {
 	embed, err := node.LookupByString("embed")
 	// TODO: figure out how to check if it's ErrNotExists
@@ -156,10 +158,16 @@ func extractImage(node datamodel.Node) (string, error) {
 	}
 
 	images, err := embed.LookupByString("images")
-	// TODO: figure out how to check if it's ErrNotExists
-	// TODO: support other embed types
 	if err != nil {
-		return "", nil
+		media, err := embed.LookupByString("media")
+		if err != nil {
+			return "", nil
+		}
+
+		images, err = media.LookupByString("images")
+		if err != nil {
+			return "", nil
+		}
 	}
 
 	it := images.ListIterator()

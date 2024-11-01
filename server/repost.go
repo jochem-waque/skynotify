@@ -32,6 +32,11 @@ type PostsResponse struct {
 			Text string `json:"text,omitempty"`
 		} `json:"record"`
 		Embed struct {
+			Media struct {
+				Images []struct {
+					Thumb string `json:"thumb"`
+				} `json:"images,omitempty"`
+			} `json:"media,omitempty"`
 			Images []struct {
 				Thumb string `json:"thumb"`
 			} `json:"images,omitempty"`
@@ -91,6 +96,8 @@ func makeRepostMessage(car storage.ReadableCar, cid string, path string, user Us
 	// TODO support other embeds
 	if len(post.Embed.Images) > 0 {
 		message.Data["image"] = post.Embed.Images[0].Thumb
+	} else if len(post.Embed.Media.Images) > 0 {
+		message.Data["image"] = post.Embed.Media.Images[0].Thumb
 	}
 
 	if user.DisplayName != "" {
