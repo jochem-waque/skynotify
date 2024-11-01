@@ -6,6 +6,7 @@
 "use server"
 
 import Drizzle from "@/util/db"
+import { SubscriptionLimit } from "@/util/env"
 import { subscriptionTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
@@ -20,7 +21,7 @@ export async function save(
       .insert(subscriptionTable)
       .values(
         subscriptions
-          .slice(0, 50)
+          .slice(0, SubscriptionLimit)
           .map((subscription) => ({ ...subscription, token })),
       )
       .onConflictDoNothing()

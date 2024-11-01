@@ -7,7 +7,7 @@ import Footer from "@/components/footer"
 import InstructionList from "@/components/instructionList"
 import NoFollowing from "@/components/noFollowing"
 import ProfileSelectorList from "@/components/profile/profileSelectorList"
-import SelectAllChipInput from "@/components/profile/selectAllChipInput"
+import { SubscriptionLimit } from "@/util/env"
 import Link from "next/link"
 
 export default function Page() {
@@ -18,18 +18,19 @@ export default function Page() {
         <InstructionList step="select">
           <div className="flex flex-col gap-2">
             <p>
-              Now, select the profiles you&apos;d like to receive notifications
-              for. You&apos;ll be able to specify the kinds of notifications
-              you&apos;d like to receive from each profile later.
+              Now, select up to {SubscriptionLimit} profiles you&apos;d like to
+              receive notifications for. You&apos;ll be able to specify the
+              kinds of notifications you&apos;d like to receive from each
+              profile later.
             </p>
           </div>
-          <label className="flex items-center self-start rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
+          {/* <label className="flex items-center self-start rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
             <SelectAllChipInput></SelectAllChipInput>
             <span className="select-none peer-checked:hidden">Select all</span>
             <span className="hidden select-none peer-checked:inline">
               Deselect all
             </span>
-          </label>
+          </label> */}
           <div className="flex w-full flex-col gap-2 overflow-y-scroll">
             <NoFollowing></NoFollowing>
             <ProfileSelectorList></ProfileSelectorList>

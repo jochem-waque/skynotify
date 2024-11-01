@@ -5,30 +5,33 @@
  */
 "use client"
 
-import { updateAllSelected, useDataStore } from "../../util/store"
+import { useDataStore } from "../../util/store"
+import { SubscriptionLimit } from "@/util/env"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
-import { ChangeEvent, useEffect } from "react"
+import { ChangeEvent } from "react"
 
 export default function SelectableProfileInput({
   did,
 }: Pick<ProfileView, "did">) {
   const selected = useDataStore((state) => state.selected)
   const setSelected = useDataStore((state) => state.setSelected)
+  const isSelected = selected.has(did)
 
-  useEffect(() => {
-    updateAllSelected()
-  }, [])
+  // useEffect(() => {
+  //   updateAllSelected()
+  // }, [])
 
   function change(event: ChangeEvent<HTMLInputElement>) {
     setSelected(event.currentTarget.name, event.currentTarget.checked)
-    updateAllSelected()
+    // updateAllSelected()
   }
 
   return (
     <input
+      disabled={selected.size >= SubscriptionLimit && !isSelected}
       className="h-0 w-0"
       onChange={change}
-      checked={selected.has(did)}
+      checked={isSelected}
       name={did}
       type="checkbox"
     ></input>
