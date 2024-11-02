@@ -15,7 +15,7 @@ export default async function Page() {
         <RedirectFromRoot></RedirectFromRoot>
         <div className="text-center">
           <h1 className="text-4xl">Bsky Post Notifications</h1>
-          <span>by {process.env.AUTHOR}</span>
+          <span>by {process.env.NEXT_PUBLIC_AUTHOR}</span>
         </div>
         <div className="max-h-16 grow"></div>
         <GetStarted></GetStarted>

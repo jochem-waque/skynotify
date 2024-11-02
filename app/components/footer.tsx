@@ -10,7 +10,7 @@ export default function Footer({ absolute }: { absolute?: boolean }) {
     <footer
       className={`${absolute ? "absolute bottom-0" : ""} flex w-full justify-center gap-2`}
     >
-      <p>&copy; {process.env.AUTHOR} 2024</p>
+      <p>&copy; {process.env.NEXT_PUBLIC_AUTHOR} 2024</p>
       <span className="border-r border-current"></span>
       <Link
         className="underline transition-opacity hover:opacity-75"
