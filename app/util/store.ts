@@ -232,18 +232,16 @@ const combined = combine(
         return { notifyReplies: new Set(selected), allnotifyReplies: true }
       }),
     saveCurrent: () =>
-      set(({ notifyPosts, notifyReposts, notifyReplies }) => ({
+      set(({ notifyPosts, notifyReposts, notifyReplies, selected }) => ({
         savedConfiguration: new Map(
-          [...notifyPosts.union(notifyReposts).union(notifyReplies)].map(
-            (did) => [
-              did,
-              {
-                posts: notifyPosts.has(did),
-                reposts: notifyReposts.has(did),
-                replies: notifyReplies.has(did),
-              },
-            ],
-          ),
+          [...selected.values()].map((did) => [
+            did,
+            {
+              posts: notifyPosts.has(did),
+              reposts: notifyReposts.has(did),
+              replies: notifyReplies.has(did),
+            },
+          ]),
         ),
       })),
     loadSaved: () =>
