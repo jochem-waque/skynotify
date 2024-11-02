@@ -16,12 +16,12 @@ export default function Page() {
         <div className="flex flex-col gap-1">
           <h3 className="text-xl">Cookies and local data storage</h3>
           <p>
-            To effectively provide this service, the use of cookies and other
-            forms of local browser storage is required, henceforth collectively
-            referred to as &quot;cookies&quot;. Cookies are used exclusively for
-            the provision of this service, and are not used for any other
-            purposes, such as tracking. Cookies are exclusively placed by this
-            service, and not by any third party.
+            To provide this service, the use of cookies and other forms of local
+            browser storage is required, henceforth collectively referred to as
+            &quot;cookies&quot;. Cookies are used exclusively for the provision
+            of this service, and are not used for any other purposes, such as
+            tracking. Cookies are exclusively placed by this service, and not by
+            any third party.
           </p>
         </div>
         <div className="flex flex-col gap-1">
@@ -42,15 +42,8 @@ export default function Page() {
             service, with the intention of improving performance.
           </p>
           <p>
-            To enable the sending and receiving of push notifications, some data
-            is processed by Firebase. As such, the{" "}
-            <Link
-              className="text-blue-500 underline transition-opacity hover:opacity-75"
-              href="https://firebase.google.com/support/privacy"
-            >
-              Privacy and Security in Firebase
-            </Link>{" "}
-            document applies.
+            To enable the sending and receiving of push notifications, some user
+            data is processed by Google Firebase.
           </p>
           <p>
             Additionally, any data that the user enters, or any data that the
@@ -61,11 +54,11 @@ export default function Page() {
         <div className="flex flex-col gap-1">
           <h3 className="text-xl">Remote data storage</h3>
           <p>
-            To provide this service, the user&apos;s data needs to be stored.
-            This data consists of Firebase Cloud Messaging tokens, Bluesky
-            account identifiers, and Boolean values indicating notification
-            preferences. This data is anonymous, and cannot be traced back to
-            any individual user.
+            To provide this service, the user&apos;s data needs to be stored
+            remotely. This data consists of Google Firebase Cloud Messaging
+            tokens, Bluesky account identifiers, and Boolean values indicating
+            notification preferences. This data is anonymous, and cannot be
+            traced back to any individual user.
           </p>
           <p>
             Additionally, the user&apos;s data might also be stored by third
@@ -75,15 +68,8 @@ export default function Page() {
               href="https://www.cloudflare.com/privacypolicy/"
             >
               Cloudflare Privacy Policy
-            </Link>{" "}
-            and the{" "}
-            <Link
-              className="text-blue-500 underline transition-opacity hover:opacity-75"
-              href="https://firebase.google.com/support/privacy"
-            >
-              Privacy and Security in Firebase
-            </Link>{" "}
-            document.
+            </Link>
+            .
           </p>
         </div>
         <div className="flex flex-col gap-1">
@@ -95,16 +81,8 @@ export default function Page() {
               href="https://www.cloudflare.com/privacypolicy/"
             >
               Cloudflare Privacy Policy
-            </Link>{" "}
-            and the{" "}
-            <Link
-              className="text-blue-500 underline transition-opacity hover:opacity-75"
-              href="https://firebase.google.com/support/privacy"
-            >
-              Privacy and Security in Firebase
-            </Link>{" "}
-            document, this service does not make use of any personal data at any
-            point.
+            </Link>
+            , this service does not make use of any personal data at any point.
           </p>
         </div>
       </main>
