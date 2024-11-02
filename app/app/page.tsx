@@ -11,7 +11,7 @@ import Link from "next/link"
 export default async function Page() {
   return (
     <>
-      <main className="flex grow flex-col items-center justify-center gap-1">
+      <main className="flex grow flex-col items-center justify-center gap-2">
         <RedirectFromRoot></RedirectFromRoot>
         <div className="text-center">
           <h1 className="text-4xl">Bsky Post Notifications</h1>
@@ -19,8 +19,9 @@ export default async function Page() {
         </div>
         <div className="max-h-16 grow"></div>
         <GetStarted></GetStarted>
-        <p className="text-center text-xs opacity-50">
-          By clicking this button, you agree to the{" "}
+        <p className="max-w-[60ch] text-center text-xs opacity-50">
+          By clicking this button, you acknowledge that you have read and agree
+          to the{" "}
           <Link
             className="underline transition-opacity hover:opacity-75"
             href="privacy"
