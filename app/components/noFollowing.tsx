@@ -6,14 +6,20 @@
 "use client"
 
 import { useDataStore } from "../util/store"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function NoFollowing() {
+  const router = useRouter()
+
   const fetching = useDataStore((state) => state.fetching)
   const profiles = useDataStore((state) => state.profiles)
 
-  if (fetching || profiles.size > 0) {
-    return null
-  }
+  useEffect(() => {
+    if (!fetching && profiles.size === 0) {
+      router.push("import")
+    }
+  }, [fetching, profiles, router])
 
-  return <p>It appears that you don&apos;t follow anyone on Bluesky</p>
+  return null
 }

@@ -6,7 +6,6 @@
 "use client"
 
 import { useDataStore } from "../../util/store"
-import NoFollowing from "../noFollowing"
 import Observable from "../observable"
 import Profile from "./profile"
 import SelectableProfileInput from "./selectableProfileInput"
@@ -87,7 +86,6 @@ export default function ProfileSelectorList({ query }: { query: string }) {
       style={{ minHeight: `${filteredProfiles.length * 4.5 - 0.5}rem` }}
       className="relative w-full grow"
     >
-      <NoFollowing></NoFollowing>
       {filteredProfiles.slice(lower, upper).map(([did, profile], i) => (
         <Fragment key={did}>
           {(i + lower) % 10 === 0 && (

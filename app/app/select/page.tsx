@@ -6,6 +6,7 @@
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import InstructionList from "@/components/instructionList"
+import NoFollowing from "@/components/noFollowing"
 import SearchableProfileSelectorList from "@/components/profile/searchableProfileSelectorList"
 import ProgressBar from "@/components/progressBar"
 import Link from "next/link"
@@ -13,6 +14,7 @@ import Link from "next/link"
 export default function Page() {
   return (
     <>
+      <NoFollowing></NoFollowing>
       <Header></Header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="select">
