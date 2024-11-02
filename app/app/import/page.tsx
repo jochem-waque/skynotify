@@ -16,8 +16,8 @@ export default function Page() {
       <main className="flex grow flex-col gap-4">
         <InstructionList step="import">
           <p>Next, let&apos;s import your Bluesky following.</p>
-          <ImportFollowing></ImportFollowing>
           <ProgressBar></ProgressBar>
+          <ImportFollowing></ImportFollowing>
         </InstructionList>
       </main>
       <Footer></Footer>
