@@ -9,7 +9,7 @@ import InstructionList from "@/components/instructionList"
 import SetSetupState from "@/components/setSetupState"
 import { Browser, OS, Platform, simplifyPlatform } from "@/util/platform"
 import { headers } from "next/headers"
-import UAParser from "ua-parser-js"
+import { UAParser } from "ua-parser-js"
 
 async function parseUserAgent(): Promise<Platform> {
   const headersResult = await headers()

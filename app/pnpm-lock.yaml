@@ -73,9 +73,6 @@ importers:
       '@types/react-dom':
         specifier: npm:types-react-dom@19.0.0-rc.1
         version: types-react-dom@19.0.0-rc.1
-      '@types/ua-parser-js':
-        specifier: ^0.7.39
-        version: 0.7.39
       drizzle-kit:
         specifier: ^0.27.1
         version: 0.27.1
@@ -1061,9 +1058,6 @@ packages:
 
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
-
-  '@types/ua-parser-js@0.7.39':
-    resolution: {integrity: sha512-P/oDfpofrdtF5xw433SPALpdSchtJmY7nsJItf8h3KXqOslkbySh8zq4dSWXH2oTjRvJ5PczVEoCZPow6GicLg==}
 
   '@typescript-eslint/eslint-plugin@8.12.2':
     resolution: {integrity: sha512-gQxbxM8mcxBwaEmWdtLCIGLfixBMHhQjBqR8sVWNTPpcj45WlYL2IObS/DNMLH1DBP0n8qz+aiiLTGfopPEebw==}
@@ -3687,8 +3681,6 @@ snapshots:
       undici-types: 6.19.8
 
   '@types/trusted-types@2.0.7': {}
-
-  '@types/ua-parser-js@0.7.39': {}
 
   '@typescript-eslint/eslint-plugin@8.12.2(@typescript-eslint/parser@8.12.2(eslint@9.14.0(jiti@1.21.6))(typescript@5.6.3))(eslint@9.14.0(jiti@1.21.6))(typescript@5.6.3)':
     dependencies:
