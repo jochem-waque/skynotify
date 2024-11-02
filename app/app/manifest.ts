@@ -24,7 +24,7 @@ export default function manifest(): MetadataRoute.Manifest {
     related_applications: [
       {
         platform: "webapp",
-        url: `https://${process.env.HOSTNAME}/manifest.webmanifest`,
+        url: `https://${process.env.NEXT_PUBLIC_HOSTNAME}/manifest.webmanifest`,
       },
     ],
     icons: [
