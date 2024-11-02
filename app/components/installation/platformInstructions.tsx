@@ -53,13 +53,13 @@ export default function PlatformInstructions({
             <li>
               Click the{" "}
               <svg
-                viewBox="0 0 387.94 512"
-                className="relative top-0.5 inline w-4 fill-white align-baseline"
-                role="img"
+                className="relative top-0.5 inline w-4 fill-current align-baseline"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="12 5.6 26 34.4"
               >
-                <polyline points="273.69 118.96 193.97 39.24 114.25 118.96 94.64 99.33 193.97 0 293.29 99.33 273.69 118.96" />
-                <polygon points="179.05 19.62 208.89 19.62 208.89 332.95 179.05 332.95 179.05 19.62" />
-                <path d="M343.17,512H44.76c-24.68,0-44.76-20.08-44.76-44.76V198.67c0-24.68,20.08-44.76,44.76-44.76h104.44v29.84H44.76c-8.24,0-14.92,6.7-14.92,14.92v268.57c0,8.22,6.68,14.92,14.92,14.92h298.41c8.24,0,14.92-6.7,14.92-14.92V198.67c0-8.22-6.68-14.92-14.92-14.92h-104.44v-29.84h104.44c24.68,0,44.76,20.08,44.76,44.76v268.57c0,24.68-20.08,44.76-44.76,44.76" />
+                <path d="M30.3 13.7L25 8.4l-5.3 5.3-1.4-1.4L25 5.6l6.7 6.7z"></path>{" "}
+                <path d="M24 7h2v21h-2z"></path>{" "}
+                <path d="M35 40H15c-1.7 0-3-1.3-3-3V19c0-1.7 1.3-3 3-3h7v2h-7c-.6 0-1 .4-1 1v18c0 .6.4 1 1 1h20c.6 0 1-.4 1-1V19c0-.6-.4-1-1-1h-7v-2h7c1.7 0 3 1.3 3 3v18c0 1.7-1.3 3-3 3z"></path>{" "}
               </svg>{" "}
               button in the browser navigation bar
             </li>
@@ -77,13 +77,13 @@ export default function PlatformInstructions({
             <li>
               Click the{" "}
               <svg
-                viewBox="0 0 387.94 512"
-                className="relative top-0.5 inline w-4 fill-white align-baseline"
-                role="img"
+                className="relative top-0.5 inline w-4 fill-current align-baseline"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="12 5.6 26 34.4"
               >
-                <polyline points="273.69 118.96 193.97 39.24 114.25 118.96 94.64 99.33 193.97 0 293.29 99.33 273.69 118.96" />
-                <polygon points="179.05 19.62 208.89 19.62 208.89 332.95 179.05 332.95 179.05 19.62" />
-                <path d="M343.17,512H44.76c-24.68,0-44.76-20.08-44.76-44.76V198.67c0-24.68,20.08-44.76,44.76-44.76h104.44v29.84H44.76c-8.24,0-14.92,6.7-14.92,14.92v268.57c0,8.22,6.68,14.92,14.92,14.92h298.41c8.24,0,14.92-6.7,14.92-14.92V198.67c0-8.22-6.68-14.92-14.92-14.92h-104.44v-29.84h104.44c24.68,0,44.76,20.08,44.76,44.76v268.57c0,24.68-20.08,44.76-44.76,44.76" />
+                <path d="M30.3 13.7L25 8.4l-5.3 5.3-1.4-1.4L25 5.6l6.7 6.7z"></path>{" "}
+                <path d="M24 7h2v21h-2z"></path>{" "}
+                <path d="M35 40H15c-1.7 0-3-1.3-3-3V19c0-1.7 1.3-3 3-3h7v2h-7c-.6 0-1 .4-1 1v18c0 .6.4 1 1 1h20c.6 0 1-.4 1-1V19c0-.6-.4-1-1-1h-7v-2h7c1.7 0 3 1.3 3 3v18c0 1.7-1.3 3-3 3z"></path>{" "}
               </svg>{" "}
               button in the browser navigation bar
             </li>
