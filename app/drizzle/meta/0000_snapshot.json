@@ -1,44 +1,15 @@
 {
-  "id": "95577846-20ec-460c-b673-bce852890672",
+  "id": "10eecec5-1cb9-4b58-b362-04ed33f409e5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.account": {
-      "name": "account",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "token": {
-          "name": "token",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
     "public.subscription": {
       "name": "subscription",
       "schema": "",
       "columns": {
-        "account": {
-          "name": "account",
+        "token": {
+          "name": "token",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -48,15 +19,33 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "posts": {
+          "name": "posts",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reposts": {
+          "name": "reposts",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "replies": {
+          "name": "replies",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "subscription_account_target_pk": {
-          "name": "subscription_account_target_pk",
+        "subscription_token_target_pk": {
+          "name": "subscription_token_target_pk",
           "columns": [
-            "account",
+            "token",
             "target"
           ]
         }
