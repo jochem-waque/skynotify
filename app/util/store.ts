@@ -79,6 +79,7 @@ const combined = combine(
   {
     hasHydrated: false,
     actor: null as string | null,
+    followsCount: 0,
     fetching: false,
     allSelected: false,
     allNotifyPosts: false,
@@ -97,6 +98,7 @@ const combined = combine(
   (set) => ({
     setHasHydrated: (hasHydrated: boolean) => set({ hasHydrated }),
     setActor: (actor: string) => set({ actor }),
+    setFollowsCount: (followsCount: number) => set({ followsCount }),
     setFetching: (value: boolean) => set({ fetching: value }),
     fetchProfiles: async (actor: string) => {
       set({ fetching: true, profiles: new Map() })

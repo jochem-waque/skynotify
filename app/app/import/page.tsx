@@ -7,6 +7,7 @@ import Footer from "@/components/footer"
 import Header from "@/components/header"
 import ImportFollowing from "@/components/importFollowing"
 import InstructionList from "@/components/instructionList"
+import ProgressBar from "@/components/progressBar"
 
 export default function Page() {
   return (
@@ -16,6 +17,7 @@ export default function Page() {
         <InstructionList step="import">
           <p>Next, let&apos;s import your Bluesky following.</p>
           <ImportFollowing></ImportFollowing>
+          <ProgressBar></ProgressBar>
         </InstructionList>
       </main>
       <Footer></Footer>

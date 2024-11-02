@@ -6,17 +6,37 @@
 "use client"
 
 import { useDataStore } from "../util/store"
+import { AtpAgent } from "@atproto/api"
 import { useRouter } from "next/navigation"
-import { KeyboardEvent, MouseEvent } from "react"
+import { KeyboardEvent, MouseEvent, useRef } from "react"
 
 export default function ImportFollowing() {
   const fetchProfiles = useDataStore((state) => state.fetchProfiles)
   const setFetching = useDataStore((state) => state.setFetching)
   const setActor = useDataStore((state) => state.setActor)
+  const setFollowsCount = useDataStore((state) => state.setFollowsCount)
   const router = useRouter()
   const actor = useDataStore((state) => state.actor)
+  const fetching = useDataStore((state) => state.fetching)
 
-  function getFollowing(actor: string) {
+  const atpAgent = useRef<AtpAgent>(null)
+
+  async function getFollowing(actor: string) {
+    if (!atpAgent.current) {
+      atpAgent.current = new AtpAgent({
+        service: "https://public.api.bsky.app/",
+      })
+    }
+
+    const response = await atpAgent.current.getProfile({ actor })
+    if (!response.success) {
+      return
+    }
+
+    if (response.data.followsCount) {
+      setFollowsCount(response.data.followsCount)
+    }
+
     setActor(actor)
     setFetching(true)
     fetchProfiles(actor)
@@ -53,6 +73,7 @@ export default function ImportFollowing() {
         className="mt-auto rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600"
         onClick={click}
         type="button"
+        disabled={fetching}
       >
         Import following
       </button>

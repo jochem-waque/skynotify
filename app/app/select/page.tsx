@@ -7,6 +7,7 @@ import Footer from "@/components/footer"
 import Header from "@/components/header"
 import InstructionList from "@/components/instructionList"
 import SearchableProfileSelectorList from "@/components/profile/searchableProfileSelectorList"
+import ProgressBar from "@/components/progressBar"
 import Link from "next/link"
 
 export default function Page() {
@@ -30,6 +31,7 @@ export default function Page() {
               Deselect all
             </span>
           </label> */}
+          <ProgressBar></ProgressBar>
           <SearchableProfileSelectorList></SearchableProfileSelectorList>
           <div className="mt-auto flex w-full">
             <Link
