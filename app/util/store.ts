@@ -125,7 +125,10 @@ const combined = combine(
         }))
       } while (response.data.cursor)
 
-      set(() => ({ fetching: false }))
+      set(({ profiles, selected }) => ({
+        fetching: false,
+        selected: selected.intersection(new Set(profiles.keys())),
+      }))
     },
     setSelected: (did: string, value?: boolean) =>
       set(({ selected }) => {
