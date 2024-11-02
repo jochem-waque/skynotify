@@ -30,7 +30,7 @@ export default function SearchableProfileSelectorList() {
       <div className="flex rounded-lg bg-neutral-200 dark:bg-neutral-800">
         <svg
           onClick={click}
-          className="box-content w-6 cursor-pointer rounded-l-lg fill-current p-2"
+          className="box-content w-5 cursor-pointer rounded-l-lg fill-current p-2"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="10 10 31.66 31.66"
         >
