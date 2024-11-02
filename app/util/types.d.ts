@@ -9,8 +9,8 @@ declare global {
       NEXT_PUBLIC_AUTHOR: string
       NEXT_PUBLIC_SUBSCRIPTION_LIMIT: string
       NEXT_PUBLIC_VAPID_KEY: string
-      HOSTNAME: string
       DATABASE_URL: string
+      HOSTNAME: string
     }
   }
 
