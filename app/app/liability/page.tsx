@@ -4,13 +4,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Footer from "@/components/footer"
+import Header from "@/components/header"
 
 export default function Page() {
   return (
     <>
-      <header className="text-center">
-        <h1 className="text-3xl">Bsky Post Notifications</h1>
-      </header>
+      <Header></Header>
       <main className="flex grow flex-col gap-1">
         <h2 className="text-2xl">Liability Disclaimer</h2>
         <p>

@@ -4,6 +4,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Footer from "@/components/footer"
+import Header from "@/components/header"
 import InstructionList from "@/components/instructionList"
 import NotifyAllChipInput from "@/components/profile/notifyAllChipInput"
 import ProfileChipsList from "@/components/profile/profileChipsLists"
@@ -12,7 +13,7 @@ import SaveChangesButton from "@/components/saveChangesButton"
 export default function Page() {
   return (
     <>
-      <header className="text-3xl">Bsky Post Notifications</header>
+      <Header></Header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="set">
           <div className="flex flex-col gap-2">

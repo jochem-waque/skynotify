@@ -4,6 +4,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Footer from "@/components/footer"
+import Header from "@/components/header"
 import InstructionList from "@/components/instructionList"
 import SearchableProfileSelectorList from "@/components/profile/searchableProfileSelectorList"
 import Link from "next/link"
@@ -11,7 +12,7 @@ import Link from "next/link"
 export default function Page() {
   return (
     <>
-      <header className="text-3xl">Bsky Post Notifications</header>
+      <Header></Header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="select">
           <div className="flex flex-col gap-2">
