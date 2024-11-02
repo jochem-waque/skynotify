@@ -11,6 +11,8 @@ import { parse, stringify } from "superjson"
 import { create, StateCreator } from "zustand"
 import { combine, persist, PersistStorage } from "zustand/middleware"
 
+// TODO allSelected etc. needs to be updated to work properly
+
 type Profile = {
   handle: string
   displayName?: string
