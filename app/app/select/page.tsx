@@ -5,7 +5,6 @@
  */
 import Footer from "@/components/footer"
 import InstructionList from "@/components/instructionList"
-import NoFollowing from "@/components/noFollowing"
 import ProfileSelectorList from "@/components/profile/profileSelectorList"
 import Link from "next/link"
 
@@ -30,8 +29,7 @@ export default function Page() {
               Deselect all
             </span>
           </label> */}
-          <div className="flex w-full flex-col gap-2 overflow-y-scroll">
-            <NoFollowing></NoFollowing>
+          <div className="overflow-y-scroll">
             <ProfileSelectorList></ProfileSelectorList>
           </div>
           <div className="mt-auto flex w-full">
