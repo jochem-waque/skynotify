@@ -12,6 +12,7 @@ import { FirebaseError } from "firebase/app"
 import { getMessaging, getToken } from "firebase/messaging"
 
 export default function SaveChangesButton() {
+  const selected = useDataStore((state) => state.selected)
   const notifyPosts = useDataStore((state) => state.notifyPosts)
   const notifyReposts = useDataStore((state) => state.notifyReposts)
   const notifyReplies = useDataStore((state) => state.notifyReplies)
@@ -25,7 +26,7 @@ export default function SaveChangesButton() {
 
     await save(
       token,
-      [...notifyPosts.union(notifyReposts).union(notifyReplies)].map((did) => ({
+      [...selected.values()].map((did) => ({
         target: did,
         posts: notifyPosts.has(did),
         reposts: notifyReposts.has(did),
