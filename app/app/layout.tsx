@@ -4,6 +4,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import "./globals.css"
+import LoadConfig from "@/components/loadConfig"
 import OpenBackgroundNotifications from "@/components/openBackgroundNotifications"
 import { Viewport } from "next"
 import { Noto_Sans, Noto_Sans_Mono } from "next/font/google"
@@ -38,6 +39,7 @@ export default function RootLayout({
           {children}
         </div>
         <OpenBackgroundNotifications></OpenBackgroundNotifications>
+        <LoadConfig></LoadConfig>
       </body>
     </html>
   )

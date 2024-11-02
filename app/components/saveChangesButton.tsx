@@ -16,6 +16,7 @@ export default function SaveChangesButton() {
   const notifyPosts = useDataStore((state) => state.notifyPosts)
   const notifyReposts = useDataStore((state) => state.notifyReposts)
   const notifyReplies = useDataStore((state) => state.notifyReplies)
+  const saveCurrent = useDataStore((state) => state.saveCurrent)
 
   async function click() {
     const token = await subscribeToPush()
@@ -24,6 +25,7 @@ export default function SaveChangesButton() {
       return
     }
 
+    saveCurrent()
     await save(
       token,
       [...selected.values()].map((did) => ({

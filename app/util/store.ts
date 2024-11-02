@@ -89,6 +89,10 @@ const combined = combine(
     notifyPosts: new Set<string>(),
     notifyReposts: new Set<string>(),
     notifyReplies: new Set<string>(),
+    savedConfiguration: new Map<
+      string,
+      { posts: boolean; replies: boolean; reposts: boolean }
+    >(),
   },
   (set) => ({
     setHasHydrated: (hasHydrated: boolean) => set({ hasHydrated }),
@@ -227,6 +231,40 @@ const combined = combine(
 
         return { notifyReplies: new Set(selected), allnotifyReplies: true }
       }),
+    saveCurrent: () =>
+      set(({ notifyPosts, notifyReposts, notifyReplies }) => ({
+        savedConfiguration: new Map(
+          [...notifyPosts.union(notifyReposts).union(notifyReplies)].map(
+            (did) => [
+              did,
+              {
+                posts: notifyPosts.has(did),
+                reposts: notifyReposts.has(did),
+                replies: notifyReplies.has(did),
+              },
+            ],
+          ),
+        ),
+      })),
+    loadSaved: () =>
+      set(({ savedConfiguration }) => ({
+        selected: new Set(savedConfiguration.keys()),
+        notifyPosts: new Set(
+          [...savedConfiguration.entries()]
+            .filter(([, { posts }]) => posts)
+            .map(([did]) => did),
+        ),
+        notifyReplies: new Set(
+          [...savedConfiguration.entries()]
+            .filter(([, { replies }]) => replies)
+            .map(([did]) => did),
+        ),
+        notifyReposts: new Set(
+          [...savedConfiguration.entries()]
+            .filter(([, { reposts }]) => reposts)
+            .map(([did]) => did),
+        ),
+      })),
   }),
 )
 
@@ -252,10 +290,7 @@ export const useDataStore = create(
     storage,
     partialize: (state) => ({
       actor: state.actor,
-      selected: state.selected,
-      notifyPosts: state.notifyPosts,
-      notifyReplies: state.notifyReplies,
-      notifyReposts: state.notifyReposts,
+      savedConfiguration: state.savedConfiguration,
     }),
     onRehydrateStorage: (state) => {
       return () => state.setHasHydrated(true)
