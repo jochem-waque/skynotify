@@ -48,12 +48,13 @@ export default function ImportFollowing() {
       return
     }
 
-    setError("")
-
-    if (response.data.followsCount) {
-      setFollowsCount(response.data.followsCount)
+    if (!response.data.followsCount) {
+      setError("This account doesn't follow anyone")
+      return
     }
 
+    setError("")
+    setFollowsCount(response.data.followsCount)
     setActor(actor)
     setFetching(true)
     fetchProfiles(actor)
