@@ -17,6 +17,7 @@ import (
 	"time"
 
 	firebase "firebase.google.com/go/v4"
+	"firebase.google.com/go/v4/errorutils"
 	"firebase.google.com/go/v4/messaging"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/events"
@@ -154,9 +155,19 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 
 	for _, message := range messages {
 		responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
-		for _, response := range responses.Responses {
-			if !response.Success {
+		for i, response := range responses.Responses {
+			if response.Success {
+				continue
+			}
+
+			if !errorutils.IsNotFound(response.Error) {
 				fmt.Println(response.Error)
+				continue
+			}
+
+			_, err := querier.DeleteToken(context.Background(), message.Tokens[i])
+			if err != nil {
+				fmt.Println(err)
 			}
 		}
 	}
@@ -188,8 +199,8 @@ func processPost(messages *[]messaging.MulticastMessage, rows []GetSubscriptions
 
 	tokens := []string{}
 	for _, row := range rows {
-		if reply && *row.Replies || !reply && *row.Posts {
-			tokens = append(tokens, *row.Token)
+		if reply && row.Replies || !reply && row.Posts {
+			tokens = append(tokens, row.Token)
 		}
 	}
 
@@ -210,8 +221,8 @@ func processRepost(messages *[]messaging.MulticastMessage, rows []GetSubscriptio
 
 	tokens := []string{}
 	for _, row := range rows {
-		if *row.Reposts {
-			tokens = append(tokens, *row.Token)
+		if row.Reposts {
+			tokens = append(tokens, row.Token)
 		}
 	}
 

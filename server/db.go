@@ -19,7 +19,7 @@ import (
 type Querier interface {
 	GetSubscriptions(ctx context.Context, did string) ([]GetSubscriptionsRow, error)
 
-	ClearToken(ctx context.Context, id string) (pgconn.CommandTag, error)
+	DeleteToken(ctx context.Context, token string) (pgconn.CommandTag, error)
 }
 
 var _ Querier = &DBQuerier{}
@@ -70,13 +70,13 @@ func (tr *typeResolver) setValue(vt pgtype.ValueTranscoder, val interface{}) pgt
 	return vt
 }
 
-const getSubscriptionsSQL = `SELECT account.token, subscription.posts, subscription.reposts, subscription.replies FROM subscription INNER JOIN account ON subscription.account = account.id WHERE account.token IS NOT NULL AND subscription.target = $1;`
+const getSubscriptionsSQL = `SELECT token, posts, reposts, replies FROM subscription WHERE target = $1;`
 
 type GetSubscriptionsRow struct {
-	Token   *string `json:"token"`
-	Posts   *bool   `json:"posts"`
-	Reposts *bool   `json:"reposts"`
-	Replies *bool   `json:"replies"`
+	Token   string `json:"token"`
+	Posts   bool   `json:"posts"`
+	Reposts bool   `json:"reposts"`
+	Replies bool   `json:"replies"`
 }
 
 // GetSubscriptions implements Querier.GetSubscriptions.
@@ -101,14 +101,14 @@ func (q *DBQuerier) GetSubscriptions(ctx context.Context, did string) ([]GetSubs
 	return items, err
 }
 
-const clearTokenSQL = `UPDATE account SET token = NULL where id = $1;`
+const deleteTokenSQL = `DELETE FROM subscription WHERE token = $1;`
 
-// ClearToken implements Querier.ClearToken.
-func (q *DBQuerier) ClearToken(ctx context.Context, id string) (pgconn.CommandTag, error) {
-	ctx = context.WithValue(ctx, "pggen_query_name", "ClearToken")
-	cmdTag, err := q.conn.Exec(ctx, clearTokenSQL, id)
+// DeleteToken implements Querier.DeleteToken.
+func (q *DBQuerier) DeleteToken(ctx context.Context, token string) (pgconn.CommandTag, error) {
+	ctx = context.WithValue(ctx, "pggen_query_name", "DeleteToken")
+	cmdTag, err := q.conn.Exec(ctx, deleteTokenSQL, token)
 	if err != nil {
-		return cmdTag, fmt.Errorf("exec query ClearToken: %w", err)
+		return cmdTag, fmt.Errorf("exec query DeleteToken: %w", err)
 	}
 	return cmdTag, err
 }
