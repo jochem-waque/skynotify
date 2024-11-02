@@ -51,6 +51,7 @@ type repostData struct {
 
 func makeRepostMessage(car storage.ReadableCar, cid string, path string, user User) (messaging.MulticastMessage, error) {
 	message := messaging.MulticastMessage{}
+	message.FCMOptions.AnalyticsLabel = "repost"
 
 	data, err := parseRepostOp(car, cid)
 	if err != nil {
