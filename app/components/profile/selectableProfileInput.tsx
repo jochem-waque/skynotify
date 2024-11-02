@@ -6,9 +6,10 @@
 "use client"
 
 import { useDataStore } from "../../util/store"
-import { SubscriptionLimit } from "@/util/env"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { ChangeEvent } from "react"
+
+const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
 
 export default function SelectableProfileInput({
   did,
@@ -28,7 +29,7 @@ export default function SelectableProfileInput({
 
   return (
     <input
-      disabled={selected.size >= SubscriptionLimit && !isSelected}
+      disabled={selected.size >= limit && !isSelected}
       className="h-0 w-0"
       onChange={change}
       checked={isSelected}
