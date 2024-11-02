@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@atproto/api": "^0.13.14",
+    "@atproto/xrpc": "^0.6.3",
     "@serwist/next": "^9.0.9",
     "camelcase-keys": "^9.1.3",
     "drizzle-orm": "^0.36.0",

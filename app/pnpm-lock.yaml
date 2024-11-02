@@ -15,6 +15,9 @@ importers:
       '@atproto/api':
         specifier: ^0.13.14
         version: 0.13.14
+      '@atproto/xrpc':
+        specifier: ^0.6.3
+        version: 0.6.3
       '@serwist/next':
         specifier: ^9.0.9
         version: 9.0.9(next@15.0.2(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028))(typescript@5.6.3)
