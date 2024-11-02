@@ -47,7 +47,7 @@ export function updateAllNotifyPosts() {
   useDataStore.setState(({ notifyPosts, selected }) => ({
     allNotifyPosts:
       notifyPosts.size >= selected.size &&
-      selected.symmetricDifference(notifyPosts).size === 0,
+      selected.difference(notifyPosts).size === 0,
   }))
 }
 
@@ -55,7 +55,7 @@ export function updateAllNotifyReposts() {
   useDataStore.setState(({ notifyReposts, selected }) => ({
     allNotifyReposts:
       notifyReposts.size >= selected.size &&
-      selected.symmetricDifference(notifyReposts).size === 0,
+      selected.difference(notifyReposts).size === 0,
   }))
 }
 
@@ -63,7 +63,7 @@ export function updateAllNotifyReplies() {
   useDataStore.setState(({ notifyReplies, selected }) => ({
     allNotifyReplies:
       notifyReplies.size >= selected.size &&
-      selected.symmetricDifference(notifyReplies).size === 0,
+      selected.difference(notifyReplies).size === 0,
   }))
 }
 type Write<T, U> = Omit<T, keyof U> & U
