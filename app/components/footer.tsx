@@ -8,7 +8,7 @@ import Link from "next/link"
 export default function Footer({ absolute }: { absolute?: boolean }) {
   return (
     <footer
-      className={`${absolute ? "absolute bottom-0" : ""} flex w-full justify-center gap-2`}
+      className={`${absolute ? "absolute bottom-0" : ""} flex w-full justify-center gap-2 text-xs opacity-50`}
     >
       <p>&copy; {process.env.NEXT_PUBLIC_AUTHOR} 2024</p>
       <span className="border-r border-current"></span>
