@@ -6,7 +6,6 @@
 import Footer from "@/components/footer"
 import InstallationContent from "@/components/installation/installationContent"
 import InstructionList from "@/components/instructionList"
-import SetSetupState from "@/components/setSetupState"
 import { Browser, OS, Platform, simplifyPlatform } from "@/util/platform"
 import { headers } from "next/headers"
 import { UAParser } from "ua-parser-js"
@@ -62,7 +61,6 @@ export default async function Page() {
 
   return (
     <>
-      <SetSetupState setupState={"installation"}></SetSetupState>
       <header className="text-3xl">Bsky Post Notifications</header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="installation">

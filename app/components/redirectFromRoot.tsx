@@ -12,10 +12,18 @@ import { useEffect } from "react"
 export default function RedirectFromRoot() {
   const router = useRouter()
   const hasHydrated = useDataStore((state) => state.hasHydrated)
-  const setupState = useDataStore((state) => state.setupState)
 
   useEffect(() => {
-    function listener(event: MediaQueryListEvent | MediaQueryList) {
+    async function listener(event: MediaQueryListEvent | MediaQueryList) {
+      await navigator.serviceWorker.ready
+      const registration = await navigator.serviceWorker.getRegistration()
+      const subscription = await registration?.pushManager.getSubscription()
+
+      if (subscription) {
+        router.replace("overview")
+        return
+      }
+
       if (event.matches) {
         router.replace("import")
       }
@@ -25,24 +33,12 @@ export default function RedirectFromRoot() {
       return
     }
 
-    switch (setupState) {
-      case "installation":
-        router.replace("install")
-        return
-      case "import":
-        router.replace("import")
-        return
-      case "completed":
-        router.replace("overview")
-        return
-      default:
-        const mql = window.matchMedia("(display-mode: standalone)")
-        listener(mql)
-        mql.addEventListener("change", listener)
+    const mql = window.matchMedia("(display-mode: standalone)")
+    listener(mql)
+    mql.addEventListener("change", listener)
 
-        return () => mql.removeEventListener("change", listener)
-    }
-  }, [router, hasHydrated, setupState])
+    return () => mql.removeEventListener("change", listener)
+  }, [router, hasHydrated])
 
   return null
 }

@@ -89,7 +89,6 @@ const combined = combine(
     notifyPosts: new Set<string>(),
     notifyReposts: new Set<string>(),
     notifyReplies: new Set<string>(),
-    setupState: null as null | "installation" | "import" | "completed",
   },
   (set) => ({
     setHasHydrated: (hasHydrated: boolean) => set({ hasHydrated }),
@@ -228,12 +227,6 @@ const combined = combine(
 
         return { notifyReplies: new Set(selected), allnotifyReplies: true }
       }),
-    setSetupState: (
-      setupState: null | "installation" | "import" | "completed",
-    ) =>
-      set(({ setupState: oldSetupState }) =>
-        oldSetupState === "completed" ? {} : { setupState },
-      ),
   }),
 )
 
@@ -263,7 +256,6 @@ export const useDataStore = create(
       notifyPosts: state.notifyPosts,
       notifyReplies: state.notifyReplies,
       notifyReposts: state.notifyReposts,
-      setupState: state.setupState,
     }),
     onRehydrateStorage: (state) => {
       return () => state.setHasHydrated(true)
