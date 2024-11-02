@@ -27,5 +27,5 @@ export async function save(
       .onConflictDoNothing()
   })
 
-  redirect("/configure/success")
+  redirect("/overview")
 }

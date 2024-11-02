@@ -33,7 +33,7 @@ export default function RedirectFromRoot() {
         router.replace("import")
         return
       case "completed":
-        router.replace("success")
+        router.replace("overview")
         return
       default:
         const mql = window.matchMedia("(display-mode: standalone)")
