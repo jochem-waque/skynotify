@@ -18,7 +18,7 @@ export default function ProgressBar() {
 
   return (
     <div
-      className={`${fetching ? "mt-0 min-h-1" : "-mt-2 min-h-0"} relative w-full rounded-lg bg-neutral-200 transition-[margin-top,min-height] dark:bg-neutral-800`}
+      className={`${fetching ? "mt-0 min-h-1" : "-mt-2 min-h-0"} relative w-full rounded-lg bg-neutral-100 transition-[margin-top,min-height] dark:bg-neutral-800`}
     >
       <div
         style={{ width: `${percentage}%` }}

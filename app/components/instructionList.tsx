@@ -17,7 +17,7 @@ export default function InstructionList({
       <li
         className={`${step === "installation" ? "snap-start snap-always" : "opacity-50"} flex flex-col gap-2 overflow-hidden after:my-1 after:w-full after:border-b`}
       >
-        <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-200 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
+        <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-100 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
           <h2 className="text-xl">Installation</h2>
         </div>
         <div
@@ -31,7 +31,7 @@ export default function InstructionList({
       <li
         className={`${step === "import" ? "snap-start snap-always" : "opacity-50"} flex flex-col gap-2 overflow-hidden after:my-1 after:w-full after:border-b`}
       >
-        <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-200 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
+        <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-100 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
           <h2 className="text-xl">Import following</h2>
         </div>
         <div
@@ -45,7 +45,7 @@ export default function InstructionList({
       <li
         className={`${step === "select" ? "h-[100svh] snap-start snap-always" : "opacity-50"} flex flex-col gap-2 overflow-hidden after:my-1 after:w-full after:border-b`}
       >
-        <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-200 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
+        <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-100 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
           <h2 className="text-xl">Select accounts</h2>
         </div>
         <div
@@ -59,7 +59,7 @@ export default function InstructionList({
       <li
         className={`${step === "set" ? "h-[100svh] snap-start snap-always" : "opacity-50"} flex flex-col gap-2 overflow-hidden after:my-1 after:w-full after:border-b`}
       >
-        <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-200 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
+        <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-100 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
           <h2 className="text-xl">Set notifications</h2>
         </div>
         <div

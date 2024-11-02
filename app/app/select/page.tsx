@@ -24,7 +24,7 @@ export default function Page() {
               receive from each profile later.
             </p>
           </div>
-          {/* <label className="flex items-center self-start rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
+          {/* <label className="flex items-center self-start rounded-full bg-neutral-100 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
             <SelectAllChipInput></SelectAllChipInput>
             <span className="select-none peer-checked:hidden">Select all</span>
             <span className="hidden select-none peer-checked:inline">
