@@ -10,15 +10,18 @@ import NoFollowing from "../noFollowing"
 import Observable from "../observable"
 import Profile from "./profile"
 import SelectableProfileInput from "./selectableProfileInput"
-import { Fragment, useEffect, useRef, useState } from "react"
+import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 
-export default function ProfileSelectorList() {
+const initialLower = 0
+const initialUpper = 30
+
+export default function ProfileSelectorList({ query }: { query: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const scrollTop = useRef(0)
   const profiles = useDataStore((state) => state.profiles)
   const [observer, setObserver] = useState<IntersectionObserver>()
-  const [lower, setLower] = useState(0)
-  const [upper, setUpper] = useState(30)
+  const [lower, setLower] = useState(initialLower)
+  const [upper, setUpper] = useState(initialUpper)
 
   useEffect(() => {
     function listener(entries: IntersectionObserverEntry[]) {
@@ -61,14 +64,31 @@ export default function ProfileSelectorList() {
     setObserver(new IntersectionObserver(listener))
   }, [])
 
+  useEffect(() => {
+    ref.current?.parentElement?.scrollTo({ top: 0 })
+    setLower(initialLower)
+    setUpper(initialUpper)
+  }, [query])
+
+  const filteredProfiles = useMemo(
+    () =>
+      [...profiles.entries()].filter(
+        ([, profile]) =>
+          (query && profile.displayName?.toLowerCase().includes(query)) ||
+          profile.handle.toLowerCase().includes(query) ||
+          profile.description?.toLowerCase().includes(query),
+      ),
+    [profiles, query],
+  )
+
   return (
     <div
       ref={ref}
-      style={{ minHeight: `${profiles.size * 4.5 - 0.5}rem` }}
-      className="relative w-full"
+      style={{ minHeight: `${filteredProfiles.length * 4.5 - 0.5}rem` }}
+      className="relative w-full grow"
     >
       <NoFollowing></NoFollowing>
-      {[...profiles.entries()].slice(lower, upper).map(([did, profile], i) => (
+      {filteredProfiles.slice(lower, upper).map(([did, profile], i) => (
         <Fragment key={did}>
           {(i + lower) % 10 === 0 && (
             <Observable

@@ -49,7 +49,7 @@ export default function InstructionList({
           <h2 className="text-xl">Select accounts</h2>
         </div>
         <div
-          className={`${step === "select" ? "animate-expand" : "grid-rows-[0fr]"} grid overflow-hidden duration-500`}
+          className={`${step === "select" ? "animate-expand" : "grid-rows-[0fr]"} grid grow overflow-hidden duration-500`}
         >
           <div className="flex flex-col gap-2 overflow-hidden">
             {step === "select" && children}

@@ -5,7 +5,7 @@
  */
 import Footer from "@/components/footer"
 import InstructionList from "@/components/instructionList"
-import ProfileSelectorList from "@/components/profile/profileSelectorList"
+import SearchableProfileSelectorList from "@/components/profile/searchableProfileSelectorList"
 import Link from "next/link"
 
 export default function Page() {
@@ -29,9 +29,7 @@ export default function Page() {
               Deselect all
             </span>
           </label> */}
-          <div className="overflow-y-scroll">
-            <ProfileSelectorList></ProfileSelectorList>
-          </div>
+          <SearchableProfileSelectorList></SearchableProfileSelectorList>
           <div className="mt-auto flex w-full">
             <Link
               href="specify"
