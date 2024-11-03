@@ -6,13 +6,12 @@
 "use client"
 
 import { save } from "@/actions/save"
+import { SubscriptionLimit } from "@/util/env"
 import FirebaseApp from "@/util/firebase"
 import { useDataStore } from "@/util/store"
 import { FirebaseError } from "firebase/app"
 import { getMessaging, getToken } from "firebase/messaging"
 import { useState } from "react"
-
-const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
 
 export default function SaveChangesButton() {
   const selected = useDataStore((state) => state.selected)
@@ -31,7 +30,7 @@ export default function SaveChangesButton() {
     saveCurrent()
     await save(
       token,
-      [...selected.values()].slice(0, limit).map((did) => ({
+      [...selected.values()].slice(0, SubscriptionLimit).map((did) => ({
         target: did,
         posts: notifyPosts.has(did),
         reposts: notifyReposts.has(did),

@@ -6,11 +6,11 @@
 "use server"
 
 import Drizzle from "@/util/db"
+import { SubscriptionLimit } from "@/util/env"
 import { subscriptionTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
-const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
 
 export async function save(
   token: string,
@@ -29,7 +29,7 @@ export async function save(
         .insert(subscriptionTable)
         .values(
           subscriptions
-            .slice(0, limit)
+            .slice(0, SubscriptionLimit)
             .map((subscription) => ({ ...subscription, token })),
         )
         .onConflictDoNothing()

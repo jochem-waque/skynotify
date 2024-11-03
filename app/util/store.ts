@@ -5,6 +5,7 @@
  */
 "use client"
 
+import { SubscriptionLimit } from "./env"
 import { AppBskyGraphGetFollows, AtpAgent } from "@atproto/api"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { parse, stringify } from "superjson"
@@ -34,8 +35,6 @@ export function pickProfile({
     avatar,
   }
 }
-
-const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
 
 export function updateAllNotifyPosts() {
   useDataStore.setState(({ notifyPosts, selected }) => ({
@@ -231,7 +230,7 @@ const combined = combine(
     saveCurrent: () =>
       set(({ notifyPosts, notifyReposts, notifyReplies, selected }) => ({
         savedConfiguration: new Map(
-          [...selected.values()].slice(0, limit).map((did) => [
+          [...selected.values()].slice(0, SubscriptionLimit).map((did) => [
             did,
             {
               posts: notifyPosts.has(did),
