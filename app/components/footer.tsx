@@ -28,7 +28,7 @@ export default function Footer({ absolute }: { absolute?: boolean }) {
         <span className="border-r border-current"></span>
         <Link
           className="underline transition-opacity hover:opacity-75"
-          href="mailto:admin@skynotify.co"
+          href={`mailto:${process.env.EMAIL}`}
         >
           Contact
         </Link>
