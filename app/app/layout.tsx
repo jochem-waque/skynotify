@@ -32,14 +32,14 @@ export const metadata: Metadata = {
     title: "SkyNotify",
     description:
       "Web app that provides real-time background push notifications for Bluesky posts",
-    images: "/icon-128x128.png",
+    images: "/icon-192x192.png",
   },
   twitter: {
     card: "summary",
     title: "SkyNotify",
     description:
       "Web app that provides real-time background push notifications for Bluesky posts",
-    images: "/icon-128x128.png",
+    images: "/icon-192x192.png",
   },
   metadataBase: new URL(`https://${process.env.NEXT_PUBLIC_HOSTNAME}/`),
 }
