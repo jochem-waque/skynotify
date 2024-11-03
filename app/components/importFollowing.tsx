@@ -80,7 +80,7 @@ export default function ImportFollowing() {
     <>
       <input
         defaultValue={actor ?? undefined}
-        className="rounded-lg bg-neutral-100 p-2 font-mono dark:bg-neutral-800"
+        className="w-full rounded-lg bg-neutral-100 p-2 font-mono dark:bg-neutral-800"
         spellCheck={false}
         type="url"
         onKeyDown={keyDown}

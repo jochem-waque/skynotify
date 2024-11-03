@@ -38,7 +38,7 @@ export default function SearchableProfileSelectorList() {
           <path d="M32.682 31.267l8.98 8.98-1.414 1.414-8.98-8.98z"></path>
         </svg>
         <input
-          className="z-10 grow rounded-r-lg bg-neutral-100 bg-transparent p-2 font-mono dark:bg-neutral-800"
+          className="z-10 w-full grow rounded-r-lg bg-neutral-100 bg-transparent p-2 font-mono dark:bg-neutral-800"
           placeholder="Search following"
           onChange={change}
         ></input>
