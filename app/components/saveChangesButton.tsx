@@ -10,6 +10,7 @@ import FirebaseApp from "@/util/firebase"
 import { useDataStore } from "@/util/store"
 import { FirebaseError } from "firebase/app"
 import { getMessaging, getToken } from "firebase/messaging"
+import { useState } from "react"
 
 const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
 
@@ -19,11 +20,11 @@ export default function SaveChangesButton() {
   const notifyReposts = useDataStore((state) => state.notifyReposts)
   const notifyReplies = useDataStore((state) => state.notifyReplies)
   const saveCurrent = useDataStore((state) => state.saveCurrent)
+  const [error, setError] = useState("")
 
   async function click() {
     const token = await subscribeToPush()
     if (!token) {
-      // TODO
       return
     }
 
@@ -57,23 +58,30 @@ export default function SaveChangesButton() {
         !(err instanceof FirebaseError) ||
         err.code !== "messaging/permission-blocked"
       ) {
-        // TODO: other error
+        setError("An unexpected error occurred, please try again later.")
         return null
       }
 
+      setError(
+        "Notification permission was denied. You might need to manually allow access to notifications.",
+      )
       return null
     }
 
+    setError("")
     return token
   }
 
   return (
-    <button
-      onClick={click}
-      type="button"
-      className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center dark:bg-blue-600"
-    >
-      Save changes
-    </button>
+    <>
+      {error && <p className="z-10 text-red-500">{error}</p>}
+      <button
+        onClick={click}
+        type="button"
+        className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center dark:bg-blue-600"
+      >
+        Save changes
+      </button>
+    </>
   )
 }
