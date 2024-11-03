@@ -9,6 +9,7 @@ import NotificationChipInput from "./notificationChipInput"
 import Profile from "@/components/profile/profile"
 import { useDataStore } from "@/util/store"
 
+// TODO in the future, this might need infinite scroll and a searchbar too
 export default function ProfileChipsList() {
   const profiles = useDataStore((state) => state.profiles)
   const selected = useDataStore((state) => state.selected)

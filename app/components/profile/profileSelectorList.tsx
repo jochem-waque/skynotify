@@ -6,68 +6,16 @@
 "use client"
 
 import { useDataStore } from "../../util/store"
-import Observable from "../observable"
 import Profile from "./profile"
 import SelectableProfileInput from "./selectableProfileInput"
 import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 
-const initialLower = 0
-const initialUpper = 30
-
 export default function ProfileSelectorList({ query }: { query: string }) {
   const ref = useRef<HTMLDivElement>(null)
-  const scrollY = useRef(0)
   const profiles = useDataStore((state) => state.profiles)
-  const [observer, setObserver] = useState<IntersectionObserver>()
-  const [lower, setLower] = useState(initialLower)
-  const [upper, setUpper] = useState(initialUpper)
-
-  useEffect(() => {
-    function listener(entries: IntersectionObserverEntry[]) {
-      if (!ref.current?.parentElement) {
-        return
-      }
-
-      const previousScrollY = scrollY.current
-      scrollY.current = window.scrollY
-
-      for (const entry of entries) {
-        if (!entry.target.getAttribute("data-valid")) {
-          entry.target.setAttribute("data-valid", "true")
-          return
-        }
-
-        const indexAttribute = entry.target.getAttribute("data-index")
-        if (!indexAttribute) {
-          return
-        }
-
-        const index = parseInt(indexAttribute)
-
-        if (window.scrollY > previousScrollY) {
-          if (!entry.isIntersecting) {
-            setLower(Math.max(index - 10, 0))
-          } else {
-            setUpper(index + 20)
-          }
-        } else if (window.scrollY < previousScrollY) {
-          if (!entry.isIntersecting) {
-            setUpper(index + 20)
-          } else {
-            setLower(Math.max(index - 10, 0))
-          }
-        }
-      }
-    }
-
-    setObserver(new IntersectionObserver(listener))
-  }, [])
-
-  useEffect(() => {
-    ref.current?.parentElement?.scrollTo({ top: 0 })
-    setLower(initialLower)
-    setUpper(initialUpper)
-  }, [query])
+  const [lower, setLower] = useState(0)
+  const [upper, setUpper] = useState(50)
+  const throttled = useRef(false)
 
   const filteredProfiles = useMemo(
     () =>
@@ -80,6 +28,48 @@ export default function ProfileSelectorList({ query }: { query: string }) {
     [profiles, query],
   )
 
+  const size = useRef(filteredProfiles.length)
+
+  useEffect(() => {
+    size.current = filteredProfiles.length
+  }, [filteredProfiles])
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [query])
+
+  // IntersectionObserver worked, but you could scroll past the observed
+  // elements. This is much simpler. IntersectionObserver also didn't work with
+  // dev tools open for some reason.
+  useEffect(() => {
+    function listener() {
+      if (throttled.current) {
+        return
+      }
+
+      throttled.current = true
+
+      const rect = ref.current?.getBoundingClientRect()
+      window.requestAnimationFrame(() => {
+        if (!rect) {
+          throttled.current = false
+          return
+        }
+
+        const profileHeight = rect.height / size.current
+        const lower = Math.floor(Math.max(0, -rect.y) / profileHeight)
+        setLower(Math.max(0, lower - 10))
+        const upper = lower + Math.floor(window.innerHeight / profileHeight)
+        setUpper(upper + 10)
+        throttled.current = false
+      })
+    }
+
+    document.addEventListener("scroll", listener, { capture: true })
+
+    return document.removeEventListener("scroll", listener)
+  }, [])
+
   return (
     <div
       ref={ref}
@@ -88,13 +78,6 @@ export default function ProfileSelectorList({ query }: { query: string }) {
     >
       {filteredProfiles.slice(lower, upper).map(([did, profile], i) => (
         <Fragment key={did}>
-          {(i + lower) % 10 === 0 && (
-            <Observable
-              index={i + lower}
-              observer={observer}
-              style={{ top: `${(i + lower) * 4.5}rem` }}
-            ></Observable>
-          )}
           <label
             style={{ top: `${(i + lower) * 4.5}rem` }}
             className="absolute flex min-h-16 w-full cursor-pointer select-none items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:disabled]:opacity-75 has-[:focus-visible]:opacity-75 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600"
