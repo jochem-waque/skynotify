@@ -3,13 +3,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import NotifyAllChipInput from "@/app/specify/notifyAllChipInput"
+import SaveChangesButton from "@/app/specify/saveChangesButton"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import InstructionList from "@/components/instructionList"
 import NoFollowing from "@/components/noFollowing"
-import NotifyAllChipInput from "@/components/profile/notifyAllChipInput"
-import ProfileChipsList from "@/components/profile/profileChipsLists"
-import SaveChangesButton from "@/components/saveChangesButton"
+import ProfileListWithChip from "@/components/profileListWithChip"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -44,7 +44,7 @@ export default function Page() {
             </label>
           </div>
           <div className="flex flex-col gap-2">
-            <ProfileChipsList></ProfileChipsList>
+            <ProfileListWithChip></ProfileListWithChip>
           </div>
           <div className="sticky bottom-2 flex w-full flex-col gap-2 after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
             <SaveChangesButton></SaveChangesButton>

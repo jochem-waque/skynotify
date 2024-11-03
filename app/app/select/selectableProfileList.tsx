@@ -5,13 +5,13 @@
  */
 "use client"
 
-import { useDataStore } from "../../util/store"
-import Profile from "./profile"
 import SelectableProfileInput from "./selectableProfileInput"
+import Profile from "@/components/profile"
+import { useDataStore } from "@/util/store"
 import Fuse from "fuse.js"
 import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 
-export default function ProfileSelectorList({ query }: { query: string }) {
+export default function SelectableProfileList({ query }: { query: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const profiles = useDataStore((state) => state.profiles)
   const [lower, setLower] = useState(0)

@@ -5,7 +5,7 @@
  */
 "use client"
 
-import PlatformInstructions from "@/components/installation/platformInstructions"
+import PlatformInstructionList from "@/app/install/platformInstructionList"
 import { Platform } from "@/util/platform"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
@@ -78,7 +78,7 @@ export default function InstallationContent({
           </option>
         </select>
       </div>
-      <PlatformInstructions platform={platform}></PlatformInstructions>
+      <PlatformInstructionList platform={platform}></PlatformInstructionList>
     </>
   )
 }

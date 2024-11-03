@@ -7,7 +7,7 @@ import { Platform } from "@/util/platform"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 
-export default function PlatformInstructions({
+export default function PlatformInstructionList({
   platform,
 }: {
   platform: Platform

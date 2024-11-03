@@ -5,12 +5,12 @@
  */
 "use client"
 
-import NotificationChipInput from "./notificationChipInput"
-import Profile from "@/components/profile/profile"
+import NotificationChipInput from "@/app/specify/notificationChipInput"
+import Profile from "@/components/profile"
 import { useDataStore } from "@/util/store"
 
 // TODO in the future, this might need infinite scroll and a searchbar too
-export default function ProfileChipsList() {
+export default function ProfileListWithChip() {
   const profiles = useDataStore((state) => state.profiles)
   const selected = useDataStore((state) => state.selected)
 

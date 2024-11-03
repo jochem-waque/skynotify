@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useDataStore } from "../util/store"
+import { useDataStore } from "@/util/store"
 import { AtpAgent } from "@atproto/api"
 import { XRPCError } from "@atproto/xrpc"
 import { useRouter } from "next/navigation"

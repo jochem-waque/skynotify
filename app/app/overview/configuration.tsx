@@ -5,8 +5,8 @@
  */
 "use client"
 
-import ImmutableChips from "./profile/immutableChips"
-import Profile from "./profile/profile"
+import ImmutableChipList from "./immutableChipList"
+import Profile from "@/components/profile"
 import { pickProfile, useDataStore, Profile as ProfileType } from "@/util/store"
 import { AtpAgent } from "@atproto/api"
 import { useEffect, useRef, useState } from "react"
@@ -111,7 +111,9 @@ export default function Configuration() {
             ></Profile>
           </div>
           <div className="flex flex-wrap gap-2">
-            <ImmutableChips {...savedConfiguration.get(did)!}></ImmutableChips>
+            <ImmutableChipList
+              {...savedConfiguration.get(did)!}
+            ></ImmutableChipList>
           </div>
         </div>
       ))}

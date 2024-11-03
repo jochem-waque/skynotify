@@ -3,9 +3,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import InstallationContent from "@/app/install/installationContent"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
-import InstallationContent from "@/components/installation/installationContent"
 import InstructionList from "@/components/instructionList"
 import { Browser, OS, Platform, simplifyPlatform } from "@/util/platform"
 import { Metadata } from "next"

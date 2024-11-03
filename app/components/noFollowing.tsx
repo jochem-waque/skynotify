@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useDataStore } from "../util/store"
+import { useDataStore } from "@/util/store"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 

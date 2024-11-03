@@ -3,12 +3,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import DeselectAll from "@/components/deselectAll"
+import DeselectAll from "@/app/select/deselectAll"
+import SearchableProfileList from "@/app/select/searchableProfileList"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import InstructionList from "@/components/instructionList"
 import NoFollowing from "@/components/noFollowing"
-import SearchableProfileSelectorList from "@/components/profile/searchableProfileSelectorList"
 import ProgressBar from "@/components/progressBar"
 import { Metadata } from "next"
 import Link from "next/link"
@@ -41,7 +41,7 @@ export default function Page() {
           </label> */}
           <DeselectAll></DeselectAll>
           <ProgressBar></ProgressBar>
-          <SearchableProfileSelectorList></SearchableProfileSelectorList>
+          <SearchableProfileList></SearchableProfileList>
           <div className="sticky bottom-2 flex w-full after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
             <Link
               href="specify"

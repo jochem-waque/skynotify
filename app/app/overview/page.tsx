@@ -3,10 +3,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Configuration from "@/components/configuration"
+import Configuration from "@/app/overview/configuration"
+import ReturnToSetup from "@/app/overview/returnToSetup"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
-import ReturnToSetup from "@/components/returnToSetup"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {

@@ -5,10 +5,10 @@
  */
 "use client"
 
-import ProfileSelectorList from "./profileSelectorList"
+import SelectableProfileList from "./selectableProfileList"
 import { ChangeEvent, MouseEvent, useRef, useState } from "react"
 
-export default function SearchableProfileSelectorList() {
+export default function SearchableProfileList() {
   const [query, setQuery] = useState("")
   const timeout = useRef<NodeJS.Timeout>(undefined)
 
@@ -43,7 +43,7 @@ export default function SearchableProfileSelectorList() {
           onChange={change}
         ></input>
       </div>
-      <ProfileSelectorList query={query}></ProfileSelectorList>
+      <SelectableProfileList query={query}></SelectableProfileList>
     </>
   )
 }

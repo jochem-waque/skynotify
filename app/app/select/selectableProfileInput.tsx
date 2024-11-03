@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useDataStore } from "../../util/store"
+import { useDataStore } from "@/util/store"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { ChangeEvent } from "react"
 
