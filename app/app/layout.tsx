@@ -24,7 +24,24 @@ const mono = Noto_Sans_Mono({
 // TODO re-evaluate
 export const viewport: Viewport = { interactiveWidget: "resizes-content" }
 
-export const metadata: Metadata = { keywords: ["#nobridge"] }
+export const metadata: Metadata = {
+  keywords: ["#nobridge"],
+  description:
+    "Web app that provides real-time background push notifications for Bluesky posts",
+  openGraph: {
+    title: "SkyNotify",
+    description:
+      "Web app that provides real-time background push notifications for Bluesky posts",
+    images: "/icon-128x128.png",
+  },
+  twitter: {
+    card: "summary",
+    title: "SkyNotify",
+    description:
+      "Web app that provides real-time background push notifications for Bluesky posts",
+    images: "/icon-128x128.png",
+  },
+}
 
 export default function RootLayout({
   children,
