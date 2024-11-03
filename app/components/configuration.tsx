@@ -16,12 +16,15 @@ export default function Configuration() {
   const atpAgent = useRef<AtpAgent>(null)
   const [profiles, setProfiles] = useState<Map<string, ProfileType>>(new Map())
   const fetching = useRef(false)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     async function fetchProfiles() {
       if (fetching.current) {
         return
       }
+
+      setError(false)
 
       fetching.current = true
 
@@ -33,9 +36,16 @@ export default function Configuration() {
 
       const actors = [...savedConfiguration.keys()]
       for (let i = 0; i < actors.length; i += 25) {
-        const response = await atpAgent.current.getProfiles({
-          actors: actors.slice(i, i + 25),
-        })
+        let response
+        try {
+          response = await atpAgent.current.getProfiles({
+            actors: actors.slice(i, i + 25),
+          })
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {
+          setError(true)
+          return
+        }
 
         setProfiles(
           (old) =>
@@ -65,12 +75,18 @@ export default function Configuration() {
 
   return (
     <>
+      {error && (
+        <p className="text-red-500">
+          An error occurred while loading the stored configuration, please try
+          again later.
+        </p>
+      )}
       <div
         className={`${percentage === 100 ? "-mt-2 min-h-0" : "mt-0 min-h-1"} relative w-full rounded-lg bg-neutral-100 transition-[margin-top,min-height] dark:bg-neutral-800`}
       >
         <div
           style={{ width: `${percentage}%` }}
-          className="absolute h-full rounded-lg bg-blue-400 transition-[width] dark:bg-blue-600"
+          className={`${error ? "bg-red-500" : "bg-blue-400 dark:bg-blue-600"} absolute h-full rounded-lg transition-[width]`}
         ></div>
       </div>
       {savedConfiguration.size === 0 && (

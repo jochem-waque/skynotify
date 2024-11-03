@@ -29,15 +29,22 @@ export default function SaveChangesButton() {
     }
 
     saveCurrent()
-    await save(
-      token,
-      [...selected.values()].slice(0, limit).map((did) => ({
-        target: did,
-        posts: notifyPosts.has(did),
-        reposts: notifyReposts.has(did),
-        replies: notifyReplies.has(did),
-      })),
-    )
+    try {
+      await save(
+        token,
+        [...selected.values()].slice(0, limit).map((did) => ({
+          target: did,
+          posts: notifyPosts.has(did),
+          reposts: notifyReposts.has(did),
+          replies: notifyReplies.has(did),
+        })),
+      )
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      setError(
+        "An unexpected error occurred while saving the configuration, please try again later.",
+      )
+    }
   }
 
   async function subscribeToPush() {
