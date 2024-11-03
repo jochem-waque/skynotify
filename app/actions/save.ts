@@ -16,23 +16,28 @@ export async function save(
   token: string,
   subscriptions: Omit<typeof subscriptionTable.$inferInsert, "token">[],
 ) {
-  await Drizzle.transaction(async (tx) => {
-    const deletion = await tx
-      .delete(subscriptionTable)
-      .where(eq(subscriptionTable.token, token))
-    if (subscriptions.length === 0) {
-      return deletion
-    }
+  try {
+    await Drizzle.transaction(async (tx) => {
+      const deletion = await tx
+        .delete(subscriptionTable)
+        .where(eq(subscriptionTable.token, token))
+      if (subscriptions.length === 0) {
+        return deletion
+      }
 
-    return await tx
-      .insert(subscriptionTable)
-      .values(
-        subscriptions
-          .slice(0, limit)
-          .map((subscription) => ({ ...subscription, token })),
-      )
-      .onConflictDoNothing()
-  })
+      return await tx
+        .insert(subscriptionTable)
+        .values(
+          subscriptions
+            .slice(0, limit)
+            .map((subscription) => ({ ...subscription, token })),
+        )
+        .onConflictDoNothing()
+    })
+  } catch (e) {
+    console.error(e)
+    return
+  }
 
   redirect("/overview")
 }
