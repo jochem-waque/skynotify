@@ -38,10 +38,10 @@ export default function Page() {
               <span className="select-none">Replies</span>
             </label>
           </div>
-          <div className="flex flex-col gap-2 overflow-y-scroll">
+          <div className="flex flex-col gap-2">
             <ProfileChipsList></ProfileChipsList>
           </div>
-          <div className="mt-auto flex">
+          <div className="sticky bottom-2 flex w-full after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
             <SaveChangesButton></SaveChangesButton>
           </div>
         </InstructionList>

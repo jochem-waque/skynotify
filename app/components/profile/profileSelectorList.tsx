@@ -16,7 +16,7 @@ const initialUpper = 30
 
 export default function ProfileSelectorList({ query }: { query: string }) {
   const ref = useRef<HTMLDivElement>(null)
-  const scrollTop = useRef(0)
+  const scrollY = useRef(0)
   const profiles = useDataStore((state) => state.profiles)
   const [observer, setObserver] = useState<IntersectionObserver>()
   const [lower, setLower] = useState(initialLower)
@@ -28,8 +28,8 @@ export default function ProfileSelectorList({ query }: { query: string }) {
         return
       }
 
-      const previousScrollTop = scrollTop.current
-      scrollTop.current = ref.current.parentElement.scrollTop
+      const previousScrollY = scrollY.current
+      scrollY.current = window.scrollY
 
       for (const entry of entries) {
         if (!entry.target.getAttribute("data-valid")) {
@@ -44,13 +44,13 @@ export default function ProfileSelectorList({ query }: { query: string }) {
 
         const index = parseInt(indexAttribute)
 
-        if (ref.current.parentElement.scrollTop > previousScrollTop) {
+        if (window.scrollY > previousScrollY) {
           if (!entry.isIntersecting) {
             setLower(Math.max(index - 10, 0))
           } else {
             setUpper(index + 20)
           }
-        } else if (ref.current.parentElement.scrollTop < previousScrollTop) {
+        } else if (window.scrollY < previousScrollY) {
           if (!entry.isIntersecting) {
             setUpper(index + 20)
           } else {

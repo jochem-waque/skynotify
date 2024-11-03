@@ -30,10 +30,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${font.variable} ${mono.variable} snap-y snap-mandatory scroll-smooth font-sans`}
-    >
+    <html lang="en" className={`${font.variable} ${mono.variable} font-sans`}>
       <body className="mx-auto flex min-h-[100svh] flex-col items-center p-4">
         <div className="container relative flex max-w-xl grow flex-col gap-4">
           {children}

@@ -43,9 +43,7 @@ export default function SearchableProfileSelectorList() {
           onChange={change}
         ></input>
       </div>
-      <div className="flex grow flex-col overflow-y-auto">
-        <ProfileSelectorList query={query}></ProfileSelectorList>
-      </div>
+      <ProfileSelectorList query={query}></ProfileSelectorList>
     </>
   )
 }
