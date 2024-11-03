@@ -35,8 +35,7 @@ export default function Footer({ absolute }: { absolute?: boolean }) {
       </div>
       <div className="flex flex-wrap justify-center gap-2">
         <span>
-          Made with{" "}
-          <span className="brightness-0 grayscale dark:invert">❤️</span>
+          Made with <span className="font-mono">&lt;3</span>
         </span>
         <span className="border-r border-current"></span>
         <span>
