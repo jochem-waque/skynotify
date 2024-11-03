@@ -3,6 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import DeselectAll from "@/components/deselectAll"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import InstructionList from "@/components/instructionList"
@@ -33,6 +34,7 @@ export default function Page() {
               Deselect all
             </span>
           </label> */}
+          <DeselectAll></DeselectAll>
           <ProgressBar></ProgressBar>
           <SearchableProfileSelectorList></SearchableProfileSelectorList>
           <div className="sticky bottom-2 flex w-full after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white after:dark:bg-neutral-900">

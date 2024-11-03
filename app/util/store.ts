@@ -205,6 +205,7 @@ const combined = combine(
         notifyReplies.delete(did)
         return { notifyReplies: new Set(notifyReplies) }
       }),
+    deselectAll: () => set(({}) => ({ selected: new Set() })),
     toggleSelectAll: () =>
       set(({ profiles, selected }) => {
         const all = new Set(profiles.keys())
