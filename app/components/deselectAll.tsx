@@ -15,6 +15,7 @@ export default function DeselectAll() {
     <button
       onClick={() => deselectAll()}
       className={`${selected.size > 0 ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-100 dark:bg-neutral-800"} self-start rounded-full px-3 py-1 transition-[opacity,background-color] hover:opacity-75`}
+      type="button"
     >
       Deselect all
     </button>
