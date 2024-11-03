@@ -13,7 +13,7 @@ import { combine, persist, PersistStorage } from "zustand/middleware"
 
 // TODO allSelected etc. needs to be updated to work properly
 
-type Profile = {
+export type Profile = {
   handle: string
   displayName?: string
   description?: string

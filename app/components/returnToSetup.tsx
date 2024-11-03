@@ -19,7 +19,7 @@ export default function ReturnToSetup() {
 
   return (
     <button
-      className="rounded-lg bg-blue-400 p-4 dark:bg-blue-600"
+      className="z-10 rounded-lg bg-blue-400 p-4 dark:bg-blue-600"
       onClick={click}
       type="button"
     >
