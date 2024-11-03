@@ -6,7 +6,7 @@
 import "./globals.css"
 import LoadConfig from "@/components/loadConfig"
 import OpenBackgroundNotifications from "@/components/openBackgroundNotifications"
-import { Metadata, Viewport } from "next"
+import { Metadata } from "next"
 import { Noto_Sans, Noto_Sans_Mono } from "next/font/google"
 
 const font = Noto_Sans({
@@ -20,9 +20,6 @@ const mono = Noto_Sans_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
-
-// TODO re-evaluate
-export const viewport: Viewport = { interactiveWidget: "resizes-content" }
 
 export const metadata: Metadata = {
   keywords: ["#nobridge"],
