@@ -7,7 +7,6 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       NEXT_PUBLIC_HOSTNAME: string
-      NEXT_PUBLIC_SUBSCRIPTION_LIMIT: string
       NEXT_PUBLIC_VAPID_KEY: string
       DATABASE_URL: string
       EMAIL: string

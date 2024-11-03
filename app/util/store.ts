@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { SubscriptionLimit } from "./env"
+import { SubscriptionLimit } from "../config"
 import { AppBskyGraphGetFollows, AtpAgent } from "@atproto/api"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { parse, stringify } from "superjson"

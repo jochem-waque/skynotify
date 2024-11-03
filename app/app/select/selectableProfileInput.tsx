@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { SubscriptionLimit } from "@/util/env"
+import { SubscriptionLimit } from "@/config"
 import { useDataStore } from "@/util/store"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { ChangeEvent } from "react"

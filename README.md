@@ -10,8 +10,9 @@ A containerised service that provides real-time push notifications for Bluesky p
 4. Create a Firebase project with Cloud Messaging turned on
 5. Place Firebase Admin SDK credentials in `server/firebase.json`
 6. Place Firebase Web SDK credentials in `app/firebase.ts`
-7. Run `docker compose build`
-8. Run `docker compose up -d`
+7. Set a subscription limit in `app/config.ts`
+8. Run `docker compose build`
+9. Run `docker compose up -d`
 
 The service will now be running in the background. To make the service accessible from the outside on port 80, the following can be added to `app` in `docker-compose.yml`:
 
