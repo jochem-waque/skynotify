@@ -41,13 +41,89 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     screenshots: [
       {
-        src: "/screenshot-720x1280.png",
-        sizes: "720x1280",
+        src: "/narrow/landing.png",
+        sizes: "1440x2560",
+        form_factor: "narrow",
+      },
+      // Only 5 screenshots are displayed, add dark landing
+      {
+        src: "/narrow/landing_dark.png",
+        sizes: "1440x2560",
         form_factor: "narrow",
       },
       {
-        src: "/screenshot-1280x720.png",
-        sizes: "1280x720",
+        src: "/narrow/import.png",
+        sizes: "1440x2560",
+        form_factor: "narrow",
+      },
+      {
+        src: "/narrow/specify.png",
+        sizes: "1440x2560",
+        form_factor: "narrow",
+      },
+      {
+        src: "/narrow/overview.png",
+        sizes: "1440x2560",
+        form_factor: "narrow",
+      },
+      // {
+      //   src: "/narrow/landing_dark.png",
+      //   sizes: "1440x2560",
+      //   form_factor: "narrow",
+      // },
+      // {
+      //   src: "/narrow/import_dark.png",
+      //   sizes: "1440x2560",
+      //   form_factor: "narrow",
+      // },
+      // {
+      //   src: "/narrow/specify_dark.png",
+      //   sizes: "1440x2560",
+      //   form_factor: "narrow",
+      // },
+      // {
+      //   src: "/narrow/overview_dark.png",
+      //   sizes: "1440x2560",
+      //   form_factor: "narrow",
+      // },
+      {
+        src: "/wide/landing.png",
+        sizes: "2560x1440",
+        form_factor: "wide",
+      },
+      {
+        src: "/wide/import.png",
+        sizes: "2560x1440",
+        form_factor: "wide",
+      },
+      {
+        src: "/wide/specify.png",
+        sizes: "2560x1440",
+        form_factor: "wide",
+      },
+      {
+        src: "/wide/overview.png",
+        sizes: "2560x1440",
+        form_factor: "wide",
+      },
+      {
+        src: "/wide/landing_dark.png",
+        sizes: "2560x1440",
+        form_factor: "wide",
+      },
+      {
+        src: "/wide/import_dark.png",
+        sizes: "2560x1440",
+        form_factor: "wide",
+      },
+      {
+        src: "/wide/specify_dark.png",
+        sizes: "2560x1440",
+        form_factor: "wide",
+      },
+      {
+        src: "/wide/overview_dark.png",
+        sizes: "2560x1440",
         form_factor: "wide",
       },
     ],
