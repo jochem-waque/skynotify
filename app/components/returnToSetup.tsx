@@ -23,7 +23,7 @@ export default function ReturnToSetup() {
       onClick={click}
       type="button"
     >
-      Redo setup
+      Return to setup
     </button>
   )
 }
