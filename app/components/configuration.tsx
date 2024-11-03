@@ -94,7 +94,7 @@ export default function Configuration() {
               avatar={avatar}
             ></Profile>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <ImmutableChips {...savedConfiguration.get(did)!}></ImmutableChips>
           </div>
         </div>

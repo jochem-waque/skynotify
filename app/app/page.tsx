@@ -15,7 +15,15 @@ export default async function Page() {
         <RedirectFromRoot></RedirectFromRoot>
         <div className="text-center">
           <h1 className="text-4xl">Bsky Post Notifications</h1>
-          <span>by {process.env.NEXT_PUBLIC_AUTHOR}</span>
+          <span>
+            by{" "}
+            <Link
+              className="underline hover:opacity-75"
+              href="https://github.com/Jochem-W"
+            >
+              Jochem-W
+            </Link>
+          </span>
         </div>
         <div className="max-h-16 grow"></div>
         <GetStarted></GetStarted>

@@ -14,7 +14,16 @@ export default function Footer({ absolute }: { absolute?: boolean }) {
         Made with <span className="brightness-0 grayscale dark:invert">❤️</span>
       </span>
       <span className="border-r border-current"></span>
-      <span>&copy; {process.env.NEXT_PUBLIC_AUTHOR} 2024</span>
+      <span>
+        &copy;{" "}
+        <Link
+          className="underline hover:opacity-75"
+          href="https://github.com/Jochem-W"
+        >
+          Jochem-W
+        </Link>{" "}
+        2024
+      </span>
       <span className="border-r border-current"></span>
 
       <Link
