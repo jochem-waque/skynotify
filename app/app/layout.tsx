@@ -41,6 +41,7 @@ export const metadata: Metadata = {
       "Web app that provides real-time background push notifications for Bluesky posts",
     images: "/icon-128x128.png",
   },
+  metadataBase: new URL(`https://${process.env.NEXT_PUBLIC_HOSTNAME}/`),
 }
 
 export default function RootLayout({
