@@ -10,6 +10,11 @@ import NoFollowing from "@/components/noFollowing"
 import NotifyAllChipInput from "@/components/profile/notifyAllChipInput"
 import ProfileChipsList from "@/components/profile/profileChipsLists"
 import SaveChangesButton from "@/components/saveChangesButton"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Set notifications | Bsky Notifs",
+}
 
 export default function Page() {
   return (

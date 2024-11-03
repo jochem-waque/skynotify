@@ -8,8 +8,13 @@ import Header from "@/components/header"
 import InstallationContent from "@/components/installation/installationContent"
 import InstructionList from "@/components/instructionList"
 import { Browser, OS, Platform, simplifyPlatform } from "@/util/platform"
+import { Metadata } from "next"
 import { headers } from "next/headers"
 import { UAParser } from "ua-parser-js"
+
+export const metadata: Metadata = {
+  title: "Install | Bsky Notifs",
+}
 
 async function parseUserAgent(): Promise<Platform> {
   const headersResult = await headers()

@@ -10,7 +10,12 @@ import InstructionList from "@/components/instructionList"
 import NoFollowing from "@/components/noFollowing"
 import SearchableProfileSelectorList from "@/components/profile/searchableProfileSelectorList"
 import ProgressBar from "@/components/progressBar"
+import { Metadata } from "next"
 import Link from "next/link"
+
+export const metadata: Metadata = {
+  title: "Select profiles | Bsky Notifs",
+}
 
 export default function Page() {
   return (

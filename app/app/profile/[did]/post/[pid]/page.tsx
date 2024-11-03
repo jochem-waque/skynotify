@@ -3,9 +3,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { Metadata } from "next"
 import { headers } from "next/headers"
 import { redirect, RedirectType } from "next/navigation"
 import { UAParser } from "ua-parser-js"
+
+export const metadata: Metadata = {
+  title: "Redirecting to post | Bsky Notifs",
+}
 
 export default async function Page({
   params,

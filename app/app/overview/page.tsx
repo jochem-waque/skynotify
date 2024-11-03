@@ -7,6 +7,11 @@ import Configuration from "@/components/configuration"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import ReturnToSetup from "@/components/returnToSetup"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Overview | Bsky Notifs",
+}
 
 export default function Page() {
   return (

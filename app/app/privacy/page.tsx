@@ -5,7 +5,12 @@
  */
 import Footer from "@/components/footer"
 import Header from "@/components/header"
+import { Metadata } from "next"
 import Link from "next/link"
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | Bsky Notifs",
+}
 
 export default function Page() {
   return (

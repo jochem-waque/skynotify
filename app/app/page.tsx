@@ -6,7 +6,12 @@
 import Footer from "@/components/footer"
 import GetStarted from "@/components/getStarted"
 import RedirectFromRoot from "@/components/redirectFromRoot"
+import { Metadata } from "next"
 import Link from "next/link"
+
+export const metadata: Metadata = {
+  title: "Real-time Bluesky Notifications | Bsky Notifs",
+}
 
 export default async function Page() {
   return (

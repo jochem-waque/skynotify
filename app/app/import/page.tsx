@@ -8,6 +8,11 @@ import Header from "@/components/header"
 import ImportFollowing from "@/components/importFollowing"
 import InstructionList from "@/components/instructionList"
 import ProgressBar from "@/components/progressBar"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Import following | Bsky Notifs",
+}
 
 export default function Page() {
   return (
