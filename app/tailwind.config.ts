@@ -21,15 +21,6 @@ const config: Config = {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
       },
-      keyframes: {
-        expand: {
-          "0%": { "grid-template-rows": "0fr" },
-          "100%": { "grid-template-rows": "1fr" },
-        },
-      },
-      animation: {
-        expand: "expand 500ms ease-in-out",
-      },
     },
   },
 }

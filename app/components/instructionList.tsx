@@ -21,7 +21,7 @@ export default function InstructionList({
           <h2 className="text-xl">Installation</h2>
         </div>
         <div
-          className={`${step === "installation" ? "animate-expand" : "grid-rows-[0fr]"} grid duration-500`}
+          className={`${step === "installation" ? "" : "grid-rows-[0fr]"} grid duration-500`}
         >
           <div className="flex flex-col gap-2">
             {step === "installation" && children}
@@ -35,7 +35,7 @@ export default function InstructionList({
           <h2 className="text-xl">Import following</h2>
         </div>
         <div
-          className={`${step === "import" ? "animate-expand" : "grid-rows-[0fr]"} grid duration-500`}
+          className={`${step === "import" ? "" : "grid-rows-[0fr]"} grid duration-500`}
         >
           <div className="flex flex-col gap-2">
             {step === "import" && children}
@@ -49,7 +49,7 @@ export default function InstructionList({
           <h2 className="text-xl">Select accounts</h2>
         </div>
         <div
-          className={`${step === "select" ? "animate-expand" : "grid-rows-[0fr]"} grid duration-500`}
+          className={`${step === "select" ? "" : "grid-rows-[0fr]"} grid duration-500`}
         >
           <div className="flex flex-col gap-2">
             {step === "select" && children}
@@ -63,7 +63,7 @@ export default function InstructionList({
           <h2 className="text-xl">Set notifications</h2>
         </div>
         <div
-          className={`${step === "set" ? "animate-expand" : "grid-rows-[0fr]"} grid duration-500`}
+          className={`${step === "set" ? "" : "grid-rows-[0fr]"} grid duration-500`}
         >
           <div className="flex flex-col gap-2">
             {step === "set" && children}
