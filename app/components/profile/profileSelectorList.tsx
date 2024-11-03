@@ -8,6 +8,7 @@
 import { useDataStore } from "../../util/store"
 import Profile from "./profile"
 import SelectableProfileInput from "./selectableProfileInput"
+import Fuse from "fuse.js"
 import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 
 export default function ProfileSelectorList({ query }: { query: string }) {
@@ -17,16 +18,23 @@ export default function ProfileSelectorList({ query }: { query: string }) {
   const [upper, setUpper] = useState(50)
   const throttled = useRef(false)
 
-  const filteredProfiles = useMemo(
-    () =>
-      [...profiles.entries()].filter(
-        ([, profile]) =>
-          (query && profile.displayName?.toLowerCase().includes(query)) ||
-          profile.handle.toLowerCase().includes(query) ||
-          profile.description?.toLowerCase().includes(query),
-      ),
-    [profiles, query],
-  )
+  const filteredProfiles = useMemo(() => {
+    if (!query) {
+      return [...profiles.entries()]
+    }
+
+    const keys = [...profiles.keys()]
+    const values = [...profiles.values()]
+
+    const fuse = new Fuse(values, {
+      threshold: 0.3,
+      keys: ["handle", "displayName", "description"],
+    })
+
+    return fuse
+      .search(query, { limit: 50 })
+      .map(({ item, refIndex }) => [keys[refIndex]!, item] as const)
+  }, [profiles, query])
 
   const size = useRef(filteredProfiles.length)
 
