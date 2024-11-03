@@ -5,27 +5,43 @@
  */
 import { Platform } from "@/util/platform"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 
 export default function PlatformInstructions({
   platform,
 }: {
   platform: Platform
 }) {
+  const params = useSearchParams()
+
+  const alreadyInstalled = params.has("accepted") && (
+    <p>
+      You&apos;ve accepted the installation prompt, and the app is currently
+      installing. Please continue from the app once it&apos;s installed. If the
+      app isn&apos;t installing, please follow the instructions below.
+    </p>
+  )
+
   switch (platform) {
     case "android":
       return (
         <div id="android" className="flex flex-col gap-2">
+          {alreadyInstalled}
           <ol className="list-inside list-decimal">
             <li>
               Open the hamburger menu <span className="font-black">⋮</span> in
-              the browser navigation bar
+              the browser navigation bar.
             </li>
             <li>
               Click <span className="font-bold">Add to Home screen</span>, or a
-              similarly named option
+              similarly named option.
             </li>
             <li>
-              Click <span className="font-bold">Install</span>
+              Click <span className="font-bold">Install</span>.
+            </li>
+            <li>
+              Open the app from the home screen or app drawer once it&apos;s
+              finished installing.
             </li>
           </ol>
         </div>
@@ -33,6 +49,7 @@ export default function PlatformInstructions({
     case "desktop-chromium":
       return (
         <div id="desktop-chromium" className="flex flex-col gap-2">
+          {alreadyInstalled}
           <p>
             Click the install button in the address bar on the left and follow
             the instructions in the installation prompt.
@@ -49,6 +66,7 @@ export default function PlatformInstructions({
     case "macos-safari":
       return (
         <div id="macos-safari" className="flex flex-col gap-2">
+          {alreadyInstalled}
           <ol className="list-inside list-decimal">
             <li>
               Click the{" "}
@@ -67,12 +85,17 @@ export default function PlatformInstructions({
               Click <span className="font-bold">Add to Dock</span>, or{" "}
               <span className="font-bold">Add to Home Screen</span> on iPadOS
             </li>
+            <li>
+              Open the app from your desktop, app dock or home screen once
+              it&apos;s finished installing.
+            </li>
           </ol>
         </div>
       )
     case "ios":
       return (
         <div id="ios" className="flex flex-col gap-2">
+          {alreadyInstalled}
           <ol className="list-inside list-decimal">
             <li>
               Click the{" "}
@@ -90,12 +113,17 @@ export default function PlatformInstructions({
             <li>
               Click <span className="font-bold">Add to Home Screen</span>
             </li>
+            <li>
+              Open the app from your home screen once it&apos;s finished
+              installing.
+            </li>
           </ol>
         </div>
       )
     case "unknown":
       return (
         <div id="unknown" className="flex flex-col gap-2">
+          {alreadyInstalled}
           <p>
             Your browser could not be automatically detected. Please select an
             applicable browser from the dropdown menu, or use the instructions
@@ -125,18 +153,21 @@ export default function PlatformInstructions({
       )
     case "firefox":
       return (
-        <p id="firefox" className="block">
-          Firefox is currently not officially supported. Please use a different
-          browser, or install the{" "}
-          <Link
-            className="text-blue-500 underline transition-opacity hover:opacity-75"
-            href="https://addons.mozilla.org/firefox/addon/pwas-for-firefox/"
-            target="_blank"
-          >
-            Progressive Web Apps for Firefox
-          </Link>{" "}
-          extension. No additional support will be given.
-        </p>
+        <>
+          {alreadyInstalled}
+          <p id="firefox" className="block">
+            Firefox is currently not officially supported. Please use a
+            different browser, or install the{" "}
+            <Link
+              className="text-blue-500 underline transition-opacity hover:opacity-75"
+              href="https://addons.mozilla.org/firefox/addon/pwas-for-firefox/"
+              target="_blank"
+            >
+              Progressive Web Apps for Firefox
+            </Link>{" "}
+            extension. No additional support will be given.
+          </p>
+        </>
       )
     default:
       return null

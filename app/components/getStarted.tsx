@@ -25,7 +25,12 @@ export default function GetStarted() {
   }, [])
 
   async function promptAndRedirect() {
-    await installEvent?.prompt()
+    const result = await installEvent?.prompt()
+    if (result?.outcome === "accepted") {
+      router.push("install?accepted")
+      return
+    }
+
     router.push("install")
   }
 
