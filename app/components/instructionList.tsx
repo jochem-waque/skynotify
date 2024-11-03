@@ -3,6 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import ScrollIntoViewOnProfiles from "./scrollIntoViewOnProfiles"
 import { ReactNode } from "react"
 
 export default function InstructionList({
@@ -42,6 +43,9 @@ export default function InstructionList({
           </div>
         </div>
       </li>
+      {step === "select" && (
+        <ScrollIntoViewOnProfiles></ScrollIntoViewOnProfiles>
+      )}
       <li
         className={`${step === "select" ? "" : "opacity-50"} flex flex-col gap-2 after:my-1 after:w-full after:border-b`}
       >
@@ -56,6 +60,7 @@ export default function InstructionList({
           </div>
         </div>
       </li>
+      {step === "set" && <ScrollIntoViewOnProfiles></ScrollIntoViewOnProfiles>}
       <li
         className={`${step === "set" ? "" : "opacity-50"} flex flex-col gap-2 after:my-1 after:w-full after:border-b`}
       >
