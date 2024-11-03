@@ -14,10 +14,7 @@ export default function Page() {
       <Header></Header>
       <main className="flex grow flex-col gap-2">
         <h2 className="text-2xl">Overview</h2>
-        <p>
-          You&apos;re currently receiving push notifications for the following
-          profiles:
-        </p>
+
         <div className="flex flex-col gap-2 rounded-lg">
           <Configuration></Configuration>
         </div>

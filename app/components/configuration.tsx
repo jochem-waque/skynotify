@@ -15,16 +15,21 @@ export default function Configuration() {
   const savedConfiguration = useDataStore((state) => state.savedConfiguration)
   const atpAgent = useRef<AtpAgent>(null)
   const [profiles, setProfiles] = useState<Map<string, ProfileType>>(new Map())
+  const fetching = useRef(false)
 
   useEffect(() => {
     async function fetchProfiles() {
+      if (fetching.current) {
+        return
+      }
+
+      fetching.current = true
+
       if (!atpAgent.current) {
         atpAgent.current = new AtpAgent({
           service: "https://public.api.bsky.app/",
         })
       }
-
-      const profiles: (readonly [string, ProfileType])[] = []
 
       const actors = [...savedConfiguration.keys()]
       for (let i = 0; i < actors.length; i += 25) {
@@ -32,14 +37,18 @@ export default function Configuration() {
           actors: actors.slice(i, i + 25),
         })
 
-        profiles.push(
-          ...response.data.profiles.map(
-            (profile) => [profile.did, pickProfile(profile)] as const,
-          ),
+        setProfiles(
+          (old) =>
+            new Map([
+              ...old,
+              ...response.data.profiles.map(
+                (profile) => [profile.did, pickProfile(profile)] as const,
+              ),
+            ]),
         )
       }
 
-      setProfiles(new Map(profiles))
+      fetching.current = false
     }
 
     if (savedConfiguration.size === 0) {
@@ -49,23 +58,47 @@ export default function Configuration() {
     fetchProfiles()
   }, [savedConfiguration])
 
-  return [...profiles.entries()].map(
-    ([did, { handle, displayName, avatar }]) => (
+  const percentage =
+    savedConfiguration.size > 0
+      ? 100 * Math.min(1, profiles.size / savedConfiguration.size)
+      : 100
+
+  return (
+    <>
       <div
-        className="flex flex-col gap-1 rounded-lg bg-neutral-100 p-2 dark:bg-neutral-800"
-        key={did}
+        className={`${percentage === 100 ? "-mt-2 min-h-0" : "mt-0 min-h-1"} relative w-full rounded-lg bg-neutral-100 transition-[margin-top,min-height] dark:bg-neutral-800`}
       >
-        <div>
-          <Profile
-            handle={handle}
-            displayName={displayName}
-            avatar={avatar}
-          ></Profile>
-        </div>
-        <div className="flex gap-2">
-          <ImmutableChips {...savedConfiguration.get(did)!}></ImmutableChips>
-        </div>
+        <div
+          style={{ width: `${percentage}%` }}
+          className="absolute h-full rounded-lg bg-blue-400 transition-[width] dark:bg-blue-600"
+        ></div>
       </div>
-    ),
+      {savedConfiguration.size === 0 && (
+        <p> You&apos;re currently not receiving any push notifications.</p>
+      )}
+      {savedConfiguration.size > 0 && (
+        <p>
+          You&apos;re currently receiving push notifications for the following
+          profiles:
+        </p>
+      )}
+      {[...profiles.entries()].map(([did, { handle, displayName, avatar }]) => (
+        <div
+          className="flex flex-col gap-1 rounded-lg bg-neutral-100 p-2 dark:bg-neutral-800"
+          key={did}
+        >
+          <div>
+            <Profile
+              handle={handle}
+              displayName={displayName}
+              avatar={avatar}
+            ></Profile>
+          </div>
+          <div className="flex gap-2">
+            <ImmutableChips {...savedConfiguration.get(did)!}></ImmutableChips>
+          </div>
+        </div>
+      ))}
+    </>
   )
 }
