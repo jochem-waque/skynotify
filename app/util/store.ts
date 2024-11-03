@@ -85,6 +85,7 @@ const combined = combine(
     actor: null as string | null,
     followsCount: 0,
     fetching: false,
+    fetchError: false,
     allSelected: false,
     allNotifyPosts: false,
     allNotifyReposts: false,
@@ -105,7 +106,7 @@ const combined = combine(
     setFollowsCount: (followsCount: number) => set({ followsCount }),
     setFetching: (value: boolean) => set({ fetching: value }),
     fetchProfiles: async (actor: string) => {
-      set({ fetching: true, profiles: new Map() })
+      set({ fetching: true, profiles: new Map(), fetchError: false })
 
       const agent = new AtpAgent({
         service: "https://public.api.bsky.app/",
@@ -113,11 +114,17 @@ const combined = combine(
 
       let response: AppBskyGraphGetFollows.Response | undefined = undefined
       do {
-        response = await agent.getFollows({
-          actor,
-          limit: 100,
-          cursor: response?.data.cursor,
-        })
+        try {
+          response = await agent.getFollows({
+            actor,
+            limit: 100,
+            cursor: response?.data.cursor,
+          })
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {
+          set({ fetchError: true, fetching: false })
+          return
+        }
 
         set(({ profiles: oldProfiles }) => ({
           profiles: new Map([
