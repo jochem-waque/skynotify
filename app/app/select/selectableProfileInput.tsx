@@ -28,22 +28,6 @@ export default function SelectableProfileInput({
     setDisabled(selected.size >= limit && !isSelected)
   }, [isSelected, selected.size])
 
-  useEffect(() => {
-    if (disabled) {
-      console.log("Disabled is true")
-    }
-  }, [disabled])
-
-  useEffect(() => console.log("Limit", limit), [])
-
-  useEffect(() => {
-    console.log(selected.size)
-  }, [selected.size])
-
-  useEffect(() => {
-    console.log(selected.size)
-  }, [selected])
-
   return (
     <input
       disabled={disabled}
