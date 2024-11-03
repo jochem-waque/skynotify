@@ -17,7 +17,13 @@ export async function save(
   subscriptions: Omit<typeof subscriptionTable.$inferInsert, "token">[],
 ) {
   await Drizzle.transaction(async (tx) => {
-    await tx.delete(subscriptionTable).where(eq(subscriptionTable.token, token))
+    const deletion = await tx
+      .delete(subscriptionTable)
+      .where(eq(subscriptionTable.token, token))
+    if (subscriptions.length === 0) {
+      return deletion
+    }
+
     return await tx
       .insert(subscriptionTable)
       .values(
