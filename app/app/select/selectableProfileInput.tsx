@@ -7,7 +7,7 @@
 
 import { useDataStore } from "@/util/store"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
-import { ChangeEvent } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 
 const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
 
@@ -22,9 +22,15 @@ export default function SelectableProfileInput({
     setSelected(event.currentTarget.name, event.currentTarget.checked)
   }
 
+  // TODO doesn't seem to work otherwise in production
+  const [disabled, setDisabled] = useState(false)
+  useEffect(() => {
+    setDisabled(selected.size >= limit && !isSelected)
+  }, [isSelected, selected.size])
+
   return (
     <input
-      disabled={selected.size >= limit && !isSelected}
+      disabled={disabled}
       className="h-0 w-0"
       onChange={change}
       checked={isSelected}
