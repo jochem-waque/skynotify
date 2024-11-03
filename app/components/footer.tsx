@@ -8,7 +8,7 @@ import Link from "next/link"
 export default function Footer({ absolute }: { absolute?: boolean }) {
   return (
     <footer
-      className={`${absolute ? "absolute bottom-0" : ""} flex w-full flex-col items-center gap-2 text-xs opacity-50`}
+      className={`${absolute ? "absolute bottom-0" : ""} flex w-full flex-col items-center gap-1 text-xs opacity-50`}
     >
       <span>Not affiliated with Bluesky</span>
       <div className="flex flex-wrap justify-center gap-2">
