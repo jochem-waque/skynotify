@@ -29,7 +29,7 @@ export default function OpenBackgroundNotifications() {
   useEffect(() => {
     const messaging = getMessaging(FirebaseApp)
     return onMessage(messaging, () => console.log)
-  })
+  }, [])
 
   return null
 }
