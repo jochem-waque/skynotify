@@ -11,7 +11,10 @@ import "server-only"
 const drizzleClientSingleton = async () => {
   const pg = postgres(process.env.DATABASE_URL)
   const orm = drizzle(pg)
-  await migrate(orm, { migrationsFolder: "./drizzle" })
+  if (process.env.NODE_ENV !== "production") {
+    await migrate(orm, { migrationsFolder: "./drizzle" })
+  }
+
   return orm
 }
 
