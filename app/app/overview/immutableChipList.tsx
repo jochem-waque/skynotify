@@ -20,14 +20,14 @@ export default function ImmutableChipList({
         Posts
       </span>
       <span
-        className={`${replies ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-200 dark:bg-neutral-700"} select-none rounded-full px-3 py-1`}
-      >
-        Reposts
-      </span>
-      <span
         className={`${reposts ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-200 dark:bg-neutral-700"} select-none rounded-full px-3 py-1`}
       >
         Replies
+      </span>
+      <span
+        className={`${replies ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-200 dark:bg-neutral-700"} select-none rounded-full px-3 py-1`}
+      >
+        Reposts
       </span>
     </>
   )
