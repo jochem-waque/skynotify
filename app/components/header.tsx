@@ -7,10 +7,10 @@ import NavigationButton from "./navigationButton"
 
 export default function Header() {
   return (
-    <header className="flex justify-between px-2">
+    <header className="flex justify-between">
       <NavigationButton></NavigationButton>
       <h1 className="text-center text-3xl">SkyNotify</h1>
-      <div></div>
+      <div className="w-4"></div>
     </header>
   )
 }
