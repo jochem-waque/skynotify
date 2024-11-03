@@ -37,6 +37,8 @@ export function pickProfile({
   }
 }
 
+const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
+
 export function updateAllSelected() {
   useDataStore.setState(({ selected, profiles }) => ({
     allSelected:
@@ -217,7 +219,7 @@ const combined = combine(
       }),
     toggleNotifyPostsAll: () =>
       set(({ notifyPosts, selected }) => {
-        if (selected.symmetricDifference(notifyPosts).size === 0) {
+        if (selected.difference(notifyPosts).size === 0) {
           return { notifyPosts: new Set(), allnotifyPosts: false }
         }
 
@@ -225,7 +227,7 @@ const combined = combine(
       }),
     toggleNotifyRepostsAll: () =>
       set(({ notifyReposts, selected }) => {
-        if (selected.symmetricDifference(notifyReposts).size === 0) {
+        if (selected.difference(notifyReposts).size === 0) {
           return { notifyReposts: new Set(), allnotifyReposts: false }
         }
 
@@ -233,7 +235,7 @@ const combined = combine(
       }),
     toggleNotifyRepliesAll: () =>
       set(({ notifyReplies, selected }) => {
-        if (selected.symmetricDifference(notifyReplies).size === 0) {
+        if (selected.difference(notifyReplies).size === 0) {
           return { notifyReplies: new Set(), allnotifyReplies: false }
         }
 
@@ -242,7 +244,7 @@ const combined = combine(
     saveCurrent: () =>
       set(({ notifyPosts, notifyReposts, notifyReplies, selected }) => ({
         savedConfiguration: new Map(
-          [...selected.values()].map((did) => [
+          [...selected.values()].slice(0, limit).map((did) => [
             did,
             {
               posts: notifyPosts.has(did),

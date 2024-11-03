@@ -11,6 +11,8 @@ import { useDataStore } from "@/util/store"
 import { FirebaseError } from "firebase/app"
 import { getMessaging, getToken } from "firebase/messaging"
 
+const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
+
 export default function SaveChangesButton() {
   const selected = useDataStore((state) => state.selected)
   const notifyPosts = useDataStore((state) => state.notifyPosts)
@@ -28,7 +30,7 @@ export default function SaveChangesButton() {
     saveCurrent()
     await save(
       token,
-      [...selected.values()].map((did) => ({
+      [...selected.values()].slice(0, limit).map((did) => ({
         target: did,
         posts: notifyPosts.has(did),
         reposts: notifyReposts.has(did),
