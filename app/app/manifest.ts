@@ -12,7 +12,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "A Progressive Web App for Bluesky post notifications",
     id: "/",
     scope: "/",
-    start_url: "/", // TODO
+    start_url: "/",
     display: "standalone",
     orientation: "natural",
     launch_handler: {
