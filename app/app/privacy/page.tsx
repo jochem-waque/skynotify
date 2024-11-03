@@ -75,14 +75,17 @@ export default function Page() {
         <div className="flex flex-col gap-1">
           <h3 className="text-xl">Personal data</h3>
           <p>
-            Unless stated in the{" "}
+            This service only makes use of personal data, such as IP addresses,
+            when it is necessary for the operation and security of the service.
+            This data is automatically processed and stored by Cloudflare. For
+            more information, please refer to the{" "}
             <Link
               className="text-blue-500 underline transition-opacity hover:opacity-75"
               href="https://www.cloudflare.com/privacypolicy/"
             >
               Cloudflare Privacy Policy
             </Link>
-            , this service does not make use of any personal data at any point.
+            .
           </p>
         </div>
       </main>
