@@ -17,7 +17,7 @@ export default function Footer({ absolute }: { absolute?: boolean }) {
       <span>
         &copy;{" "}
         <Link
-          className="underline hover:opacity-75"
+          className="underline transition-opacity hover:opacity-75"
           href="https://github.com/Jochem-W"
         >
           Jochem-W
@@ -25,14 +25,12 @@ export default function Footer({ absolute }: { absolute?: boolean }) {
         2024
       </span>
       <span className="border-r border-current"></span>
-
       <Link
         className="underline transition-opacity hover:opacity-75"
         href="/privacy"
       >
         Privacy Policy
       </Link>
-
       <span className="border-r border-current"></span>
       <Link
         className="underline transition-opacity hover:opacity-75"
