@@ -28,7 +28,7 @@ export default async function Page() {
               Real-time background push notifications for Bluesky posts
             </p>
           </div>
-          <div className="max-h-32 grow"></div>
+          <div className="max-h-4 grow"></div>
           <GetStarted></GetStarted>
           <p className="max-w-[60ch] text-center text-xs opacity-50">
             By clicking this button, you acknowledge that you have read and
