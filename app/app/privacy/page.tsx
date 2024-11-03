@@ -9,7 +9,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Bsky Notifs",
+  title: "Privacy Policy | SkyNotify",
 }
 
 export default function Page() {

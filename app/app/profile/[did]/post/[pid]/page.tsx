@@ -9,7 +9,7 @@ import { redirect, RedirectType } from "next/navigation"
 import { UAParser } from "ua-parser-js"
 
 export const metadata: Metadata = {
-  title: "Redirecting to post | Bsky Notifs",
+  title: "Redirecting to post | SkyNotify",
 }
 
 export default async function Page({

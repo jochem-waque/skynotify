@@ -13,7 +13,7 @@ import { headers } from "next/headers"
 import { UAParser } from "ua-parser-js"
 
 export const metadata: Metadata = {
-  title: "Install | Bsky Notifs",
+  title: "Install | SkyNotify",
 }
 
 async function parseUserAgent(): Promise<Platform> {

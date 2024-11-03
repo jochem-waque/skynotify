@@ -13,7 +13,7 @@ import ProfileListWithChip from "@/components/profileListWithChip"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Set notifications | Bsky Notifs",
+  title: "Set notifications | SkyNotify",
 }
 
 export default function Page() {

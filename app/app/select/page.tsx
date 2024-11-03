@@ -14,7 +14,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Select profiles | Bsky Notifs",
+  title: "Select profiles | SkyNotify",
 }
 
 export default function Page() {

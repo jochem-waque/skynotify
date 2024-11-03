@@ -10,7 +10,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Real-time Bluesky Notifications | Bsky Notifs",
+  title: "Real-time Bluesky Notifications | SkyNotify",
 }
 
 export default async function Page() {
@@ -21,7 +21,7 @@ export default async function Page() {
         <main className="flex grow flex-col items-center justify-center gap-2">
           <RedirectFromRoot></RedirectFromRoot>
           <div className="text-center">
-            <h1 className="text-4xl">Bsky Post Notifications</h1>
+            <h1 className="text-4xl">SkyNotify</h1>
             <p className="opacity-50">
               Real-time background push notifications for Bluesky posts
             </p>

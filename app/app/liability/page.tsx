@@ -8,7 +8,7 @@ import Header from "@/components/header"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Liability Disclaimer | Bsky Notifs",
+  title: "Liability Disclaimer | SkyNotify",
 }
 
 export default function Page() {

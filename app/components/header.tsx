@@ -9,7 +9,7 @@ export default function Header() {
   return (
     <header className="flex justify-between px-2">
       <NavigationButton></NavigationButton>
-      <h1 className="text-center text-3xl">Bsky Post Notifications</h1>
+      <h1 className="text-center text-3xl">SkyNotify</h1>
       <div></div>
     </header>
   )

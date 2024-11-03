@@ -10,7 +10,7 @@ import Header from "@/components/header"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Overview | Bsky Notifs",
+  title: "Overview | SkyNotify",
 }
 
 export default function Page() {

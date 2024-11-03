@@ -11,7 +11,7 @@ import ProgressBar from "@/components/progressBar"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Import following | Bsky Notifs",
+  title: "Import following | SkyNotify",
 }
 
 export default function Page() {
