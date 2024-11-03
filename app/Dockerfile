@@ -32,4 +32,4 @@ RUN npm install -g pnpm
 COPY --from=builder /app .
 
 # Generate and run
-CMD pnpm build --experimental-build-mode generate ; pnpm start
+CMD ["pnpm", "build", "--experimental-build-mode", "generate", ";", "pnpm", "start"]
