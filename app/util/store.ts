@@ -11,8 +11,6 @@ import { parse, stringify } from "superjson"
 import { create, StateCreator } from "zustand"
 import { combine, persist, PersistStorage } from "zustand/middleware"
 
-// TODO allSelected etc. needs to be updated to work properly
-
 export type Profile = {
   handle: string
   displayName?: string
@@ -38,14 +36,6 @@ export function pickProfile({
 }
 
 const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
-
-export function updateAllSelected() {
-  useDataStore.setState(({ selected, profiles }) => ({
-    allSelected:
-      selected.size >= profiles.size &&
-      new Set(profiles.keys()).symmetricDifference(selected).size === 0,
-  }))
-}
 
 export function updateAllNotifyPosts() {
   useDataStore.setState(({ notifyPosts, selected }) => ({
@@ -86,7 +76,6 @@ const combined = combine(
     followsCount: 0,
     fetching: false,
     fetchError: false,
-    allSelected: false,
     allNotifyPosts: false,
     allNotifyReposts: false,
     allNotifyReplies: false,
@@ -215,15 +204,6 @@ const combined = combine(
         return { notifyReplies: new Set(notifyReplies) }
       }),
     deselectAll: () => set(({}) => ({ selected: new Set() })),
-    toggleSelectAll: () =>
-      set(({ profiles, selected }) => {
-        const all = new Set(profiles.keys())
-        if (all.symmetricDifference(selected).size === 0) {
-          return { selected: new Set(), allSelected: false }
-        }
-
-        return { selected: all, allSelected: true }
-      }),
     toggleNotifyPostsAll: () =>
       set(({ notifyPosts, selected }) => {
         if (selected.difference(notifyPosts).size === 0) {

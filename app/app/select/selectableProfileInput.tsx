@@ -18,13 +18,8 @@ export default function SelectableProfileInput({
   const setSelected = useDataStore((state) => state.setSelected)
   const isSelected = selected.has(did)
 
-  // useEffect(() => {
-  //   updateAllSelected()
-  // }, [])
-
   function change(event: ChangeEvent<HTMLInputElement>) {
     setSelected(event.currentTarget.name, event.currentTarget.checked)
-    // updateAllSelected()
   }
 
   return (
