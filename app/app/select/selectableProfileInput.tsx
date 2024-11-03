@@ -7,7 +7,7 @@
 
 import { useDataStore } from "@/util/store"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
-import { ChangeEvent } from "react"
+import { ChangeEvent, useMemo } from "react"
 
 const limit = parseInt(process.env.NEXT_PUBLIC_SUBSCRIPTION_LIMIT)
 
@@ -16,7 +16,7 @@ export default function SelectableProfileInput({
 }: Pick<ProfileView, "did">) {
   const selected = useDataStore((state) => state.selected)
   const setSelected = useDataStore((state) => state.setSelected)
-  const isSelected = selected.has(did)
+  const isSelected = useMemo(() => selected.has(did), [selected, did])
 
   function change(event: ChangeEvent<HTMLInputElement>) {
     setSelected(event.currentTarget.name, event.currentTarget.checked)
