@@ -43,7 +43,15 @@ export default function SelectableProfileList({ query }: { query: string }) {
   }, [filteredProfiles])
 
   useEffect(() => {
-    window.scrollTo({ top: 0 })
+    const rect = ref.current?.getBoundingClientRect()
+    if (!rect) {
+      window.scrollTo({ top: 0 })
+      return
+    }
+
+    // TODO don't use magic number
+    const offset = (rect.height / size.current) * 1.3
+    window.scrollBy({ top: rect.y - offset })
   }, [query])
 
   // IntersectionObserver worked, but you could scroll past the observed
