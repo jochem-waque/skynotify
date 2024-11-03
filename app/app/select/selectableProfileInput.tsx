@@ -17,10 +17,6 @@ export default function SelectableProfileInput({
   const selected = useDataStore((state) => state.selected)
   const setSelected = useDataStore((state) => state.setSelected)
   const isSelected = useMemo(() => selected.has(did), [selected, did])
-  const disabled = useMemo(
-    () => selected.size >= limit && !isSelected,
-    [selected, isSelected],
-  )
 
   function change(event: ChangeEvent<HTMLInputElement>) {
     setSelected(event.currentTarget.name, event.currentTarget.checked)
@@ -28,7 +24,7 @@ export default function SelectableProfileInput({
 
   return (
     <input
-      disabled={disabled}
+      disabled={selected.size >= limit && !isSelected}
       className="h-0 w-0"
       onChange={change}
       checked={isSelected}
