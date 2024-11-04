@@ -15,6 +15,7 @@ export default function UpdateToken() {
 
   useEffect(() => {
     async function updateToken() {
+      await navigator.serviceWorker.ready
       const registration = await navigator.serviceWorker.getRegistration()
       if (!registration) {
         return
