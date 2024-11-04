@@ -10,6 +10,8 @@ import { subscriptionTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
 
 export async function updateToken(oldToken: string, newToken: string) {
+  console.log("Updating token", oldToken, "-->", newToken)
+
   await Drizzle.update(subscriptionTable)
     .set({ token: newToken })
     .where(eq(subscriptionTable.token, oldToken))
