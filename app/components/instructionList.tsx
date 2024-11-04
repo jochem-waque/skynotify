@@ -50,7 +50,7 @@ export default function InstructionList({
         className={`${step === "select" ? "" : "opacity-50"} flex flex-col gap-2 after:my-1 after:w-full after:border-b`}
       >
         <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-100 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
-          <h2 className="text-xl">Select accounts</h2>
+          <h2 className="text-xl">Select profiles</h2>
         </div>
         <div
           className={`${step === "select" ? "" : "grid-rows-[0fr]"} grid duration-500`}
