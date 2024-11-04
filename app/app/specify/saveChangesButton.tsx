@@ -20,10 +20,13 @@ export default function SaveChangesButton() {
   const notifyReplies = useDataStore((state) => state.notifyReplies)
   const saveCurrent = useDataStore((state) => state.saveCurrent)
   const [error, setError] = useState("")
+  const [disabled, setDisabled] = useState(false)
 
   async function click() {
+    setDisabled(true)
     const token = await subscribeToPush()
     if (!token) {
+      setDisabled(false)
       return
     }
 
@@ -81,8 +84,9 @@ export default function SaveChangesButton() {
       {error && <p className="z-10 text-red-500">{error}</p>}
       <button
         onClick={click}
+        disabled={disabled}
         type="button"
-        className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center dark:bg-blue-600"
+        className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center disabled:opacity-75 dark:bg-blue-600"
       >
         Save changes
       </button>
