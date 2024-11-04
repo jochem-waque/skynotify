@@ -6,7 +6,7 @@
 import "./globals.css"
 import LoadConfig from "@/components/loadConfig"
 import OpenBackgroundNotifications from "@/components/openBackgroundNotifications"
-import { Metadata } from "next"
+import { Metadata, Viewport } from "next"
 import { Noto_Sans, Noto_Sans_Mono } from "next/font/google"
 
 const font = Noto_Sans({
@@ -40,6 +40,8 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL(`https://${process.env.NEXT_PUBLIC_HOSTNAME}/`),
 }
+
+export const viewport: Viewport = { interactiveWidget: "resizes-content" }
 
 export default function RootLayout({
   children,
