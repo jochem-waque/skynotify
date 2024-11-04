@@ -9,7 +9,7 @@ import { useDataStore } from "@/util/store"
 import { AtpAgent } from "@atproto/api"
 import { XRPCError } from "@atproto/xrpc"
 import { useRouter } from "next/navigation"
-import { KeyboardEvent, MouseEvent, useRef, useState } from "react"
+import { KeyboardEvent, useRef, useState } from "react"
 
 export default function ImportFollowing() {
   const fetchProfiles = useDataStore((state) => state.fetchProfiles)
@@ -20,6 +20,7 @@ export default function ImportFollowing() {
   const actor = useDataStore((state) => state.actor)
   const fetching = useDataStore((state) => state.fetching)
   const [error, setError] = useState<string>("")
+  const ref = useRef<HTMLInputElement>(null)
 
   const atpAgent = useRef<AtpAgent>(null)
 
@@ -61,13 +62,12 @@ export default function ImportFollowing() {
     router.push("select")
   }
 
-  function click(event: MouseEvent<HTMLButtonElement>) {
-    const input = event.currentTarget.previousElementSibling
-    if (!(input instanceof HTMLInputElement)) {
+  function click() {
+    if (!ref.current) {
       return
     }
 
-    getFollowing(input.value)
+    getFollowing(ref.current.value)
   }
 
   function keyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -79,6 +79,7 @@ export default function ImportFollowing() {
   return (
     <>
       <input
+        ref={ref}
         defaultValue={actor ?? undefined}
         className="w-full rounded-lg bg-neutral-100 p-2 font-mono dark:bg-neutral-800"
         spellCheck={false}
