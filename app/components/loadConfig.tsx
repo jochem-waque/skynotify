@@ -9,14 +9,11 @@ import { useDataStore } from "@/util/store"
 import { useEffect } from "react"
 
 export default function LoadConfig() {
-  const hasHydrated = useDataStore((state) => state.hasHydrated)
   const loadSaved = useDataStore((state) => state.loadSaved)
 
   useEffect(() => {
-    if (hasHydrated) {
-      loadSaved()
-    }
-  }, [hasHydrated, loadSaved])
+    loadSaved()
+  }, [loadSaved])
 
   return null
 }

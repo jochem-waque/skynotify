@@ -5,13 +5,11 @@
  */
 "use client"
 
-import { useDataStore } from "@/util/store"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 export default function RedirectFromRoot() {
   const router = useRouter()
-  const hasHydrated = useDataStore((state) => state.hasHydrated)
 
   useEffect(() => {
     async function listener(event: MediaQueryListEvent | MediaQueryList) {
@@ -29,16 +27,12 @@ export default function RedirectFromRoot() {
       }
     }
 
-    if (!hasHydrated) {
-      return
-    }
-
     const mql = window.matchMedia("(display-mode: standalone)")
     listener(mql)
     mql.addEventListener("change", listener)
 
     return () => mql.removeEventListener("change", listener)
-  }, [router, hasHydrated])
+  }, [router])
 
   return null
 }

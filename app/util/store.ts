@@ -70,7 +70,6 @@ type StateFromCombine<T> =
 
 const combined = combine(
   {
-    hasHydrated: false,
     token: null as string | null,
     actor: null as string | null,
     followsCount: 0,
@@ -90,7 +89,6 @@ const combined = combine(
     >(),
   },
   (set) => ({
-    setHasHydrated: (hasHydrated: boolean) => set({ hasHydrated }),
     setToken: (token: string) =>
       set(({ token: previous }) => {
         if (token === previous) {
@@ -304,8 +302,5 @@ export const useDataStore = create(
       savedConfiguration: state.savedConfiguration,
       token: state.token,
     }),
-    onRehydrateStorage: (state) => {
-      return () => state.setHasHydrated(true)
-    },
   }),
 )
