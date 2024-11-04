@@ -4,12 +4,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Link from "next/link"
+import { ReactNode } from "react"
 
-export default function Footer({ absolute }: { absolute?: boolean }) {
+export default function Footer({
+  absolute,
+  children,
+}: {
+  absolute?: boolean
+  children?: ReactNode
+}) {
   return (
     <footer
       className={`${absolute ? "absolute bottom-0" : ""} flex w-full flex-col items-center gap-1 text-xs opacity-50`}
     >
+      {children}
       <span>Not affiliated with Bluesky</span>
       <div className="flex flex-wrap justify-center gap-2">
         <Link

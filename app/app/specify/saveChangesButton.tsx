@@ -18,6 +18,7 @@ export default function SaveChangesButton() {
   const notifyPosts = useDataStore((state) => state.notifyPosts)
   const notifyReposts = useDataStore((state) => state.notifyReposts)
   const notifyReplies = useDataStore((state) => state.notifyReplies)
+  const setToken = useDataStore((state) => state.setToken)
   const saveCurrent = useDataStore((state) => state.saveCurrent)
   const [error, setError] = useState("")
   const [saving, setSaving] = useState(false)
@@ -29,6 +30,8 @@ export default function SaveChangesButton() {
       setSaving(false)
       return
     }
+
+    setToken(token)
 
     saveCurrent()
     await save(

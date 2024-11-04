@@ -71,6 +71,7 @@ type StateFromCombine<T> =
 const combined = combine(
   {
     hasHydrated: false,
+    token: null as string | null,
     actor: null as string | null,
     followsCount: 0,
     fetching: false,
@@ -90,6 +91,22 @@ const combined = combine(
   },
   (set) => ({
     setHasHydrated: (hasHydrated: boolean) => set({ hasHydrated }),
+    setToken: (token: string) =>
+      set(({ token: previous }) => {
+        if (token === previous) {
+          console.log("Token didn't change")
+          return {}
+        }
+
+        if (previous === null) {
+          console.log("Previous token was null")
+          return { token }
+        }
+        console.log("Token changed")
+
+        // TODO token changed
+        return { token }
+      }),
     setActor: (actor: string) => set({ actor }),
     setFollowsCount: (followsCount: number) => set({ followsCount }),
     setFetching: (value: boolean) => set({ fetching: value }),
@@ -285,6 +302,7 @@ export const useDataStore = create(
     partialize: (state) => ({
       actor: state.actor,
       savedConfiguration: state.savedConfiguration,
+      token: state.token,
     }),
     onRehydrateStorage: (state) => {
       return () => state.setHasHydrated(true)

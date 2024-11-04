@@ -3,6 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import SupportId from "./supportId"
 import Configuration from "@/app/overview/configuration"
 import ReturnToSetup from "@/app/overview/returnToSetup"
 import Footer from "@/components/footer"
@@ -27,7 +28,9 @@ export default function Page() {
           <ReturnToSetup></ReturnToSetup>
         </div>
       </main>
-      <Footer></Footer>
+      <Footer>
+        <SupportId></SupportId>
+      </Footer>
     </>
   )
 }
