@@ -37,7 +37,8 @@ export default function PlatformInstructionList({
               similarly named option.
             </li>
             <li>
-              Click <span className="font-bold">Install</span>.
+              Click <span className="font-bold">Install</span>. Google Chrome
+              might be required.
             </li>
             <li>
               Open the app from the home screen or app drawer once it&apos;s
