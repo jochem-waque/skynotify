@@ -100,7 +100,7 @@ export default function Configuration() {
       )}
       {[...profiles.entries()].map(([did, { handle, displayName, avatar }]) => (
         <div
-          className="flex flex-col gap-1 rounded-lg bg-neutral-100 p-2 dark:bg-neutral-800"
+          className="flex flex-col gap-2 rounded-lg bg-neutral-100 p-2 dark:bg-neutral-800"
           key={did}
         >
           <div>
