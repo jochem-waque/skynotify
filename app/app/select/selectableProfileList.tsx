@@ -17,7 +17,7 @@ export default function SelectableProfileList({ query }: { query: string }) {
   const [lower, setLower] = useState(0)
   const [upper, setUpper] = useState(50)
   const throttled = useRef(false)
-  const previousQuery = useRef<string>(null)
+  const previousQuery = useRef<string>("")
 
   const filteredProfiles = useMemo(() => {
     if (!query) {
@@ -43,10 +43,8 @@ export default function SelectableProfileList({ query }: { query: string }) {
     size.current = filteredProfiles.length
   }, [filteredProfiles])
 
-  // TODO in strict mode, this could break, but it seems to be fine
   useEffect(() => {
-    if (previousQuery.current === null) {
-      previousQuery.current = query
+    if (previousQuery.current === query) {
       return
     }
 
