@@ -19,8 +19,12 @@ export default function ScrollIntoViewOnProfiles() {
       return
     }
 
-    ref.current.scrollIntoView()
-    setScrolled(true)
+    const current = ref.current
+
+    window.requestAnimationFrame(() => {
+      current.scrollIntoView()
+      setScrolled(true)
+    })
   }, [profiles, scrolled])
 
   if (scrolled) {
