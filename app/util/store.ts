@@ -6,6 +6,7 @@
 "use client"
 
 import { SubscriptionLimit } from "../config"
+import { updateToken } from "@/actions/updateToken"
 import { AppBskyGraphGetFollows, AtpAgent } from "@atproto/api"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { parse, stringify } from "superjson"
@@ -92,17 +93,15 @@ const combined = combine(
     setToken: (token: string) =>
       set(({ token: previous }) => {
         if (token === previous) {
-          console.log("Token didn't change")
           return {}
         }
 
         if (previous === null) {
-          console.log("Previous token was null")
           return { token }
         }
-        console.log("Token changed")
 
-        // TODO token changed
+        // TODO cursed, but seems to work
+        updateToken(previous, token).catch(console.error)
         return { token }
       }),
     setActor: (actor: string) => set({ actor }),
