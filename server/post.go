@@ -22,8 +22,7 @@ import (
 )
 
 func makePostMessage(car storage.ReadableCar, cid string, path string, user User) (messaging.MulticastMessage, bool, error) {
-	message := messaging.MulticastMessage{}
-	message.FCMOptions.AnalyticsLabel = "post"
+	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "post"}}
 
 	_, pid, found := strings.Cut(path, "/")
 	if !found {
