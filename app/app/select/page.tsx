@@ -39,7 +39,7 @@ export default function Page() {
           <div className="sticky bottom-2 flex w-full after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
             <Link
               href="specify"
-              className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center dark:bg-blue-600"
+              className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
             >
               Continue
             </Link>
