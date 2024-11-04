@@ -17,6 +17,7 @@
     "drizzle-orm": "^0.36.0",
     "firebase": "^11.0.1",
     "fuse.js": "^7.0.0",
+    "idb-keyval": "^6.2.1",
     "next": "^15.0.2",
     "postgres": "^3.4.5",
     "react": "19.0.0-rc-02c0e824-20241028",

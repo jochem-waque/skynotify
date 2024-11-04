@@ -18,20 +18,29 @@ export default async function Page({
   params: Promise<{ pid: string; did: string }>
 }) {
   const { pid, did } = await params
-
   let url = new URL(
     `https://bsky.app/profile/${decodeURIComponent(did)}/post/${decodeURIComponent(pid)}`,
   )
 
   const hdrs = await headers()
   const userAgent = hdrs.get("User-Agent")
-  if (userAgent) {
-    const parser = new UAParser(userAgent)
-    if (parser.getOS().name === "Android") {
+  if (!userAgent) {
+    redirect(url.toString(), RedirectType.replace)
+  }
+
+  const parser = new UAParser(userAgent)
+  switch (parser.getOS().name) {
+    case "Android":
       url = new URL(
-        `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`,
+        `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;end`,
       )
-    }
+      break
+    case "iOS":
+    case "macOS":
+      url = new URL(`bluesky:/${url.pathname}`)
+      break
+    default:
+      break
   }
 
   redirect(url.toString(), RedirectType.replace)

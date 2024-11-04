@@ -6,6 +6,7 @@
 import FirebaseApp from "@/util/firebase"
 import { defaultCache } from "@serwist/next/worker"
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw"
+import { get } from "idb-keyval"
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist"
 import { Serwist } from "serwist"
 
@@ -44,7 +45,22 @@ self.addEventListener("notificationclick", (event) => {
 
 const messaging = getMessaging(FirebaseApp)
 
-onBackgroundMessage(messaging, (payload) => {
+async function getClickAction(url?: string) {
+  if (!url) {
+    return undefined
+  }
+
+  const mode = (await get<"direct" | "manual">("redirect_mode")) ?? "direct"
+  if (mode === "direct") {
+    return url
+  }
+
+  const parsed = new URL(url)
+  parsed.hostname = self.location.hostname
+  return url.toString()
+}
+
+onBackgroundMessage(messaging, async (payload) => {
   if (!payload.data) {
     return
   }
@@ -57,7 +73,9 @@ onBackgroundMessage(messaging, (payload) => {
   self.registration.showNotification(title, {
     badge: "/badge.png",
     body,
-    data: { FCM_MSG: { notification: { click_action: url } } },
+    data: {
+      FCM_MSG: { notification: { click_action: await getClickAction(url) } },
+    },
     icon,
     image,
     silent: true,

@@ -33,6 +33,9 @@ importers:
       fuse.js:
         specifier: ^7.0.0
         version: 7.0.0
+      idb-keyval:
+        specifier: ^6.2.1
+        version: 6.2.1
       next:
         specifier: ^15.0.2
         version: 15.0.2(react-dom@19.0.0-rc-02c0e824-20241028(react@19.0.0-rc-02c0e824-20241028))(react@19.0.0-rc-02c0e824-20241028)
@@ -1833,6 +1836,9 @@ packages:
 
   http-parser-js@0.5.8:
     resolution: {integrity: sha512-SGeBX54F94Wgu5RH3X5jsDtf4eHyRogWX1XGT3b4HuW3tQPM4AaBzoUji/4AAJNXCEOWZ5O0DgZmJw1947gD5Q==}
+
+  idb-keyval@6.2.1:
+    resolution: {integrity: sha512-8Sb3veuYCyrZL+VBt9LJfZjLUPWVvqn8tG28VqYNFCo43KHcKuq+b4EiXGeuaLAQWL2YmyDgMp2aSpH9JHsEQg==}
 
   idb@7.1.1:
     resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
@@ -4672,6 +4678,8 @@ snapshots:
       function-bind: 1.1.2
 
   http-parser-js@0.5.8: {}
+
+  idb-keyval@6.2.1: {}
 
   idb@7.1.1: {}
 
