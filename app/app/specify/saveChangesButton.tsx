@@ -86,7 +86,7 @@ export default function SaveChangesButton() {
         onClick={click}
         disabled={disabled}
         type="button"
-        className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:opacity-75 dark:bg-blue-600"
+        className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:cursor-wait disabled:opacity-75 dark:bg-blue-600"
       >
         Save changes
       </button>
