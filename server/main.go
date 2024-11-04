@@ -154,7 +154,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 	}
 
 	for _, message := range messages {
-		message.Webpush.Headers = make(map[string]string)
+		message.Webpush = &messaging.WebpushConfig{Headers: make(map[string]string)}
 		message.Webpush.Headers["TTL"] = "43200" // 12 hours
 		message.Webpush.Headers["Urgency"] = "normal"
 		responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
