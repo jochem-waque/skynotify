@@ -295,7 +295,6 @@ const storage: PersistStorage<StateFromCombine<typeof combined>> = {
 export const useDataStore = create(
   persist(combined, {
     name: "preferences",
-    // TODO indexedDB?
     storage,
     partialize: (state) => ({
       actor: state.actor,
