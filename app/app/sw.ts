@@ -64,7 +64,7 @@ async function getClickAction(url?: string) {
 
   const parsed = new URL(url)
   parsed.hostname = self.location.hostname
-  return url.toString()
+  return parsed.toString()
 }
 
 onBackgroundMessage(messaging, async (payload) => {
