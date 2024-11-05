@@ -3,9 +3,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import Redirect from "./redirect"
+import Footer from "@/components/footer"
 import { Metadata } from "next"
 import { headers } from "next/headers"
-import { redirect, RedirectType } from "next/navigation"
+import Link from "next/link"
 import { UAParser } from "ua-parser-js"
 
 export const metadata: Metadata = {
@@ -24,24 +26,39 @@ export default async function Page({
 
   const hdrs = await headers()
   const userAgent = hdrs.get("User-Agent")
-  if (!userAgent) {
-    redirect(url.toString(), RedirectType.replace)
+  if (userAgent) {
+    const parser = new UAParser(userAgent)
+    switch (parser.getOS().name) {
+      case "Android":
+        url = new URL(
+          `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;end`,
+        )
+        break
+      case "iOS":
+      case "macOS":
+        // TODO should be ipadOS only
+        url = new URL(`bluesky:/${url.pathname}`)
+        break
+      default:
+        break
+    }
   }
 
-  const parser = new UAParser(userAgent)
-  switch (parser.getOS().name) {
-    case "Android":
-      url = new URL(
-        `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;end`,
-      )
-      break
-    case "iOS":
-    case "macOS":
-      url = new URL(`bluesky:/${url.pathname}`)
-      break
-    default:
-      break
-  }
+  const href = url.toString()
 
-  redirect(url.toString(), RedirectType.replace)
+  return (
+    <>
+      <Redirect href={href}></Redirect>
+      <div className="flex grow flex-col items-center justify-center gap-1">
+        <h1 className="text-center text-3xl">Redirecting to Bluesky</h1>
+        <Link
+          className="text-lg text-blue-500 underline transition-opacity hover:opacity-75"
+          href={href}
+        >
+          Click here if you&apos;re not redirected
+        </Link>
+      </div>
+      <Footer></Footer>
+    </>
+  )
 }
