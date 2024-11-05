@@ -29,13 +29,12 @@ export default function Page() {
           <ul className="list-inside list-disc">
             <li>
               <span className="font-bold">Direct (fastest)</span>: directly open
-              notifications. Might cause notifications to be opened in the
-              browser.
+              posts. Opens posts in the browser on some platforms.
             </li>
             <li>
-              <span className="font-bold">Manual</span>: require a second press
-              to redirect to Bluesky. Allows notifications to be opened in the
-              Bluesky app.
+              <span className="font-bold">Indirect</span>: redirect to a page
+              that attempts to open the Bluesky app. Works well on Apple
+              devices.
             </li>
           </ul>
         </div>

@@ -7,8 +7,7 @@
 
 import { get, update } from "idb-keyval"
 import { ChangeEvent, useEffect, useState } from "react"
-
-const defaultValue = "direct"
+import { UAParser } from "ua-parser-js"
 
 export default function RedirectDropdown() {
   const [value, setValue] = useState<string>()
@@ -28,7 +27,19 @@ export default function RedirectDropdown() {
   useEffect(() => {
     async function thing() {
       const current = await get<string>("redirect_mode")
-      setValue(current ?? defaultValue)
+      if (current !== undefined) {
+        setValue(current)
+        return
+      }
+
+      const parser = new UAParser()
+      const os = parser.getOS()?.name
+      if (os === "iOS" || os === "macOS") {
+        setValue("manual")
+        return
+      }
+
+      setValue("direct")
     }
 
     thing()
@@ -40,13 +51,12 @@ export default function RedirectDropdown() {
       disabled={!value}
       value={value}
       onChange={change}
-      defaultValue={defaultValue}
     >
       <option className="text-base dark:bg-neutral-900" value="direct">
         Direct (fastest)
       </option>
       <option className="text-base dark:bg-neutral-900" value="manual">
-        Manual
+        Indirect
       </option>
     </select>
   )
