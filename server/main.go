@@ -127,7 +127,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 		return nil
 	}
 
-	if len(rows) == 0 {
+	if len(rows) == 0 && !hasUser(evt.Repo) {
 		return nil
 	}
 
@@ -152,7 +152,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			continue
 		}
 
-		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") {
+		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") && len(rows) > 0 {
 			err := openCar(&car, evt)
 			if err != nil {
 				fmt.Println(err)
@@ -163,7 +163,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			continue
 		}
 
-		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
+		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") && len(rows) > 0 {
 			err := openCar(&car, evt)
 			if err != nil {
 				fmt.Println(err)

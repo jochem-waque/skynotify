@@ -31,6 +31,14 @@ var users = struct {
 	m map[string]User
 }{m: make(map[string]User)}
 
+func hasUser(did string) bool {
+	users.RLock()
+	_, ok := users.m[did]
+	users.RUnlock()
+
+	return ok
+}
+
 func getOrFetchUser(did string) (User, error) {
 	users.RLock()
 	user := users.m[did]
