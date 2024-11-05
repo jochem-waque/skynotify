@@ -41,10 +41,10 @@ func hasUser(did string) bool {
 
 func getOrFetchUser(did string) (User, error) {
 	users.RLock()
-	user := users.m[did]
+	user, ok := users.m[did]
 	users.RUnlock()
 
-	if user != (User{}) {
+	if ok {
 		return user, nil
 	}
 
@@ -78,10 +78,11 @@ func getOrFetchUser(did string) (User, error) {
 
 func updateUser(did string, car storage.ReadableCar, cid string) error {
 	users.RLock()
-	user := users.m[did]
+	user, ok := users.m[did]
 	users.RUnlock()
 
-	if user.Handle == "" {
+	if !ok {
+		// TODO return because I'm not sure if the payload contains an entire user
 		return nil
 	}
 
