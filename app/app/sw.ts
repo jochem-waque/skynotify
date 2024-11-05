@@ -26,17 +26,15 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 })
 
-self.addEventListener("notificationclick", (event) => {
+self.addEventListener("notificationclick", async (event) => {
   const url = new URL(event.notification.data.FCM_MSG.notification.click_action)
-  if (
-    url.protocol !== "https" ||
-    (url.hostname !== self.location.hostname && url.hostname !== "bsky.app")
-  ) {
+  if (url.protocol !== "https:") {
     return event.waitUntil(self.clients.openWindow(url))
   }
 
-  if (url.hostname !== "bsky.app") {
-    return
+  const mode = await get<"direct" | "manual">("redirect_mode")
+  if (mode === "manual") {
+    url.hostname = self.location.hostname
   }
 
   if (self.navigator.userAgent.toLowerCase().includes("android")) {
@@ -52,21 +50,6 @@ self.addEventListener("notificationclick", (event) => {
 
 const messaging = getMessaging(FirebaseApp)
 
-async function getClickAction(url?: string) {
-  if (!url) {
-    return undefined
-  }
-
-  const mode = (await get<"direct" | "manual">("redirect_mode")) ?? "direct"
-  if (mode === "direct") {
-    return url
-  }
-
-  const parsed = new URL(url)
-  parsed.hostname = self.location.hostname
-  return parsed.toString()
-}
-
 onBackgroundMessage(messaging, async (payload) => {
   if (!payload.data) {
     return
@@ -80,9 +63,7 @@ onBackgroundMessage(messaging, async (payload) => {
   self.registration.showNotification(title, {
     badge: "/badge.png",
     body,
-    data: {
-      FCM_MSG: { notification: { click_action: await getClickAction(url) } },
-    },
+    data: { FCM_MSG: { notification: { click_action: url } } },
     icon,
     image,
     silent: true,
