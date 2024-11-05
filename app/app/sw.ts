@@ -26,31 +26,32 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 })
 
-self.addEventListener("notificationclick", async (event) => {
+self.addEventListener("notificationclick", (event) => {
   const url = new URL(event.notification.data.FCM_MSG.notification.click_action)
   if (url.protocol !== "https:") {
     return event.waitUntil(self.clients.openWindow(url))
   }
 
-  const mode = await get<"direct" | "manual">("redirect_mode")
-  if (mode === "manual") {
-    url.hostname = self.location.hostname
-  }
+  return event.waitUntil(
+    get<"direct" | "manual">("redirect_mode").then((mode) => {
+      if (mode === "manual") {
+        url.hostname = self.location.hostname
+      }
 
-  if (self.navigator.userAgent.toLowerCase().includes("android")) {
-    return event.waitUntil(
-      self.clients.openWindow(
-        `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`,
-      ),
-    )
-  }
+      if (self.navigator.userAgent.toLowerCase().includes("android")) {
+        self.clients.openWindow(
+          `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`,
+        )
+      }
 
-  return event.waitUntil(self.clients.openWindow(url))
+      return self.clients.openWindow(url)
+    }),
+  )
 })
 
 const messaging = getMessaging(FirebaseApp)
 
-onBackgroundMessage(messaging, async (payload) => {
+onBackgroundMessage(messaging, (payload) => {
   if (!payload.data) {
     return
   }
