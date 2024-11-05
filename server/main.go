@@ -153,6 +153,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 		}
 
 		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") && len(rows) > 0 {
+			// TODO check applicable tokens early
 			err := openCar(&car, evt)
 			if err != nil {
 				fmt.Println(err)
@@ -164,6 +165,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 		}
 
 		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") && len(rows) > 0 {
+			// TODO check applicable tokens early
 			err := openCar(&car, evt)
 			if err != nil {
 				fmt.Println(err)
