@@ -28,6 +28,13 @@ const serwist = new Serwist({
 
 self.addEventListener("notificationclick", (event) => {
   const url = new URL(event.notification.data.FCM_MSG.notification.click_action)
+  if (
+    url.protocol !== "https" ||
+    (url.hostname !== self.location.hostname && url.hostname !== "bsky.app")
+  ) {
+    return event.waitUntil(self.clients.openWindow(url))
+  }
+
   if (url.hostname !== "bsky.app") {
     return
   }
