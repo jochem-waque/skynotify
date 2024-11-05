@@ -15,10 +15,14 @@ export default function SelectableProfileInput({
 }: Pick<ProfileView, "did">) {
   const selected = useDataStore((state) => state.selected)
   const setSelected = useDataStore((state) => state.setSelected)
+  const setNotifyPosts = useDataStore((state) => state.setNotifyPosts)
   const isSelected = selected.has(did)
 
   function change(event: ChangeEvent<HTMLInputElement>) {
     setSelected(event.currentTarget.name, event.currentTarget.checked)
+    if (event.currentTarget.checked) {
+      setNotifyPosts(event.currentTarget.name, true)
+    }
   }
 
   return (
