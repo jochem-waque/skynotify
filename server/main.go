@@ -98,7 +98,29 @@ func main() {
 	events.HandleRepoStream(context.Background(), con, sched)
 }
 
+func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
+	for _, op := range evt.Ops {
+		if op.Action == "update" && op.Path == "app.bsky.actor.profile/self" {
+			return true
+		}
+
+		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") {
+			return true
+		}
+
+		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
+			return true
+		}
+	}
+
+	return false
+}
+
 func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
+	if !hasUsefulOp(evt) {
+		return nil
+	}
+
 	rows, err := querier.GetSubscriptions(context.Background(), evt.Repo)
 	if err != nil {
 		fmt.Println(err)
