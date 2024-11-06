@@ -54,7 +54,7 @@ export default function Page() {
             Additionally, any data that the user enters, or any data that the
             user generates as a result of their interaction with this service,
             may be further processed on the origin server. This data is
-            currently processed in the United States of America.
+            currently processed in Germany.
           </p>
         </div>
         <div className="flex flex-col gap-1">
@@ -65,7 +65,7 @@ export default function Page() {
             tokens, Bluesky account identifiers, and Boolean values indicating
             notification preferences. This data is anonymous, and cannot be
             traced back to any individual user. This data is currently stored in
-            the United States of America.
+            Germany.
           </p>
           <p>
             Additionally, the user&apos;s data might also be stored by third
