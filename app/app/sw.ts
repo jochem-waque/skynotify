@@ -40,7 +40,7 @@ self.addEventListener("notificationclick", (event) => {
       }
 
       if (self.navigator.userAgent.toLowerCase().includes("android")) {
-        self.clients.openWindow(
+        return self.clients.openWindow(
           `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`,
         )
       }
