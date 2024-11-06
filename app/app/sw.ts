@@ -36,6 +36,7 @@ self.addEventListener("notificationclick", (event) => {
     get<"direct" | "manual">("redirect_mode").then((mode) => {
       if (mode === "manual") {
         url.hostname = self.location.hostname
+        return self.clients.openWindow(url)
       }
 
       if (self.navigator.userAgent.toLowerCase().includes("android")) {
