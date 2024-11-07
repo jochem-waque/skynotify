@@ -35,7 +35,7 @@ self.addEventListener("notificationclick", (event) => {
   return event.waitUntil(
     get<"direct" | "manual">("redirect_mode").then((mode) => {
       if (mode === "manual") {
-        url.hostname = self.location.hostname
+        url.host = self.location.host
         return self.clients.openWindow(url)
       }
 
