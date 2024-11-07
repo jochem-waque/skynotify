@@ -42,50 +42,30 @@ export default function manifest(): MetadataRoute.Manifest {
     screenshots: [
       {
         src: "/narrow/landing.png",
-        sizes: "1440x2560",
+        sizes: "1442x3202",
         form_factor: "narrow",
       },
       // Only 5 screenshots are displayed, add dark landing
       {
         src: "/narrow/landing_dark.png",
-        sizes: "1440x2560",
+        sizes: "1442x3202",
         form_factor: "narrow",
       },
       {
         src: "/narrow/import.png",
-        sizes: "1440x2560",
+        sizes: "1442x3202",
         form_factor: "narrow",
       },
       {
         src: "/narrow/specify.png",
-        sizes: "1440x2560",
+        sizes: "1442x3202",
         form_factor: "narrow",
       },
       {
         src: "/narrow/overview.png",
-        sizes: "1440x2560",
+        sizes: "1442x3202",
         form_factor: "narrow",
       },
-      // {
-      //   src: "/narrow/landing_dark.png",
-      //   sizes: "1440x2560",
-      //   form_factor: "narrow",
-      // },
-      // {
-      //   src: "/narrow/import_dark.png",
-      //   sizes: "1440x2560",
-      //   form_factor: "narrow",
-      // },
-      // {
-      //   src: "/narrow/specify_dark.png",
-      //   sizes: "1440x2560",
-      //   form_factor: "narrow",
-      // },
-      // {
-      //   src: "/narrow/overview_dark.png",
-      //   sizes: "1440x2560",
-      //   form_factor: "narrow",
-      // },
       {
         src: "/wide/landing.png",
         sizes: "2560x1440",
