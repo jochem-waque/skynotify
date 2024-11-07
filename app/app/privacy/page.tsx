@@ -46,8 +46,8 @@ export default function Page() {
           </p>
           <p>
             To enable the receiving of push notifications, the Firebase
-installation ID is processed and stored by Google Firebase, as
-listed in the{" "}
+            installation ID is processed and stored by Google Firebase, as
+            listed in the{" "}
             <Link
               className="text-blue-500 underline transition-opacity hover:opacity-75"
               href="https://firebase.google.com/support/privacy"
@@ -72,7 +72,7 @@ listed in the{" "}
             Messaging tokens, Bluesky account identifiers, and Boolean values
             indicating notification preferences. Users are distinguished and
             addressed solely by their Firebase Cloud Messaging token, which is
-            insufficient to identify a person. This data is stored in Germany,
+            insufficient to identify a person. This data is stored in the EU,
             and automatically deleted when the app is uninstalled and the
             Firebase Cloud Messaging token is unreachable.
           </p>
