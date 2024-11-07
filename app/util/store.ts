@@ -33,7 +33,7 @@ export function pickProfile({
     handle,
     displayName,
     description,
-    avatar,
+    avatar: avatar?.replace("/avatar/", "/avatar_thumbnail/"),
   }
 }
 
