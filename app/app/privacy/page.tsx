@@ -45,8 +45,9 @@ export default function Page() {
             of the EU.
           </p>
           <p>
-            To enable receiving of push notifications, the Firebase installation
-            ID is processed and stored by Google Firebase, as listed in the{" "}
+            To enable the receiving of push notifications, the Firebase
+installation ID is processed and stored by Google Firebase, as
+listed in the{" "}
             <Link
               className="text-blue-500 underline transition-opacity hover:opacity-75"
               href="https://firebase.google.com/support/privacy"
