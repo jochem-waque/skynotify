@@ -14,7 +14,5 @@ export const subscriptionTable = pgTable(
     reposts: boolean("reposts").notNull(),
     replies: boolean("replies").notNull(),
   },
-  (table) => ({
-    pk: primaryKey({ columns: [table.token, table.target] }),
-  }),
+  (table) => [primaryKey({ columns: [table.token, table.target] })],
 )
