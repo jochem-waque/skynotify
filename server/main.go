@@ -38,7 +38,7 @@ var messagingClient *messaging.Client
 
 var querier *DBQuerier
 
-var httpClient *http.Client = &http.Client{Timeout: time.Second * 10}
+var httpClient *http.Client = &http.Client{Timeout: time.Second * 30}
 
 func loadEnv() {
 	_, err := os.Stat(".env")
