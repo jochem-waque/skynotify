@@ -7,6 +7,7 @@
 
 import FirebaseApp from "@/util/firebase"
 import { getMessaging, onMessage } from "firebase/messaging"
+import { get } from "idb-keyval"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef } from "react"
 
@@ -15,10 +16,36 @@ export default function OpenBackgroundNotifications() {
   const registration = useRef<ServiceWorkerRegistration>(null)
 
   useEffect(() => {
-    function listener(event: MessageEvent) {
-      if (event.data.messageType === "notification-clicked") {
-        router.replace(event.data.notification.click_action)
+    async function listener(event: MessageEvent) {
+      if (
+        event.data.messageType !== "notification-clicked" ||
+        !event.data.notification.click_action
+      ) {
+        return
       }
+
+      const url = new URL(event.data.notification.click_action)
+      if (url.protocol !== "https:") {
+        router.replace(url.toString())
+        return
+      }
+
+      const mode = await get<"direct" | "manual">("redirect_mode")
+
+      if (mode === "manual") {
+        url.host = self.location.host
+        router.replace(url.toString())
+        return
+      }
+
+      if (self.navigator.userAgent.toLowerCase().includes("android")) {
+        router.replace(
+          `intent:/${url.pathname}#Intent;scheme=bluesky;package=xyz.blueskyweb.app;S.browser_fallback_url=${url};end`,
+        )
+        return
+      }
+
+      router.replace(url.toString())
     }
 
     navigator.serviceWorker.addEventListener("message", listener)
