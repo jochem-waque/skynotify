@@ -65,7 +65,9 @@ export default function SaveChangesButton() {
         !(err instanceof FirebaseError) ||
         err.code !== "messaging/permission-blocked"
       ) {
-        setError("An unexpected error occurred, please try again later.")
+        setError(
+          "An unexpected error occurred while requesting notification access.",
+        )
         return null
       }
 
