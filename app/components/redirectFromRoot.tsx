@@ -13,9 +13,8 @@ export default function RedirectFromRoot() {
 
   useEffect(() => {
     async function listener(event: MediaQueryListEvent | MediaQueryList) {
-      await navigator.serviceWorker.ready
-      const registration = await navigator.serviceWorker.getRegistration()
-      const subscription = await registration?.pushManager.getSubscription()
+      const registration = await navigator.serviceWorker.ready
+      const subscription = await registration.pushManager.getSubscription()
 
       if (subscription) {
         router.replace("overview")

@@ -51,10 +51,7 @@ export default function SaveChangesButton() {
   }
 
   async function subscribeToPush() {
-    const registration = await navigator.serviceWorker.getRegistration()
-    if (!registration) {
-      return null
-    }
+    const registration = await navigator.serviceWorker.ready
 
     const messaging = getMessaging(FirebaseApp)
     let token
