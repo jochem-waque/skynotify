@@ -48,9 +48,23 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		return message, false, err
 	}
 
-	imageRef, err := extractImage(n)
+	imageRef, err := extractImageThumb(n)
 	if err != nil {
 		return message, false, err
+	}
+
+	// if imageRef == "" {
+	// 	imageRef, err = extractVideoThumbnail(n)
+	// 	if err != nil {
+	// 		return message, false, err
+	// 	}
+	// }
+
+	if imageRef == "" {
+		imageRef, err = extractExternalThumb(n)
+		if err != nil {
+			return message, false, err
+		}
 	}
 
 	createdAt, err := extractCreatedAt(n)
@@ -69,7 +83,10 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 	message.Data["tag"] = path
 	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid)
 	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
-	message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, imageRef)
+
+	if imageRef != "" {
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, imageRef)
+	}
 
 	if user.Avatar != "" {
 		message.Data["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
@@ -150,9 +167,7 @@ func extractParent(node datamodel.Node) (string, error) {
 	return uri.AsString()
 }
 
-// TODO: figure out how to check if it's ErrNotExists
-// TODO: support other embed types
-func extractImage(node datamodel.Node) (string, error) {
+func extractImageThumb(node datamodel.Node) (string, error) {
 	embed, err := node.LookupByString("embed")
 	// TODO: figure out how to check if it's ErrNotExists
 	if err != nil {
@@ -193,6 +208,83 @@ func extractImage(node datamodel.Node) (string, error) {
 	}
 
 	ref, err := image.LookupByString("ref")
+	if err != nil {
+		return "", err
+	}
+
+	linkNode, err := ref.AsLink()
+	if err != nil {
+		return "", err
+	}
+
+	return linkNode.String(), nil
+}
+
+// TODO
+// func extractVideoThumbnail(node datamodel.Node) (string, error) {
+// 	embed, err := node.LookupByString("embed")
+// 	// TODO: figure out how to check if it's ErrNotExists
+// 	if err != nil {
+// 		return "", nil
+// 	}
+
+// 	video, err := embed.LookupByString("video")
+// 	if err != nil {
+// 		media, err := embed.LookupByString("media")
+// 		if err != nil {
+// 			return "", nil
+// 		}
+
+// 		video, err = media.LookupByString("video")
+// 		if err != nil {
+// 			return "", nil
+// 		}
+// 	}
+
+// 	thumbnail, err := video.LookupByString("thumbnail")
+// 	if err != nil {
+// 		return "", nil
+// 	}
+
+// 	ref, err := thumbnail.LookupByString("ref")
+// 	if err != nil {
+// 		return "", err
+// 	}
+
+// 	linkNode, err := ref.AsLink()
+// 	if err != nil {
+// 		return "", err
+// 	}
+
+// 	return linkNode.String(), nil
+// }
+
+func extractExternalThumb(node datamodel.Node) (string, error) {
+	embed, err := node.LookupByString("embed")
+	// TODO: figure out how to check if it's ErrNotExists
+	if err != nil {
+		return "", nil
+	}
+
+	external, err := embed.LookupByString("external")
+	if err != nil {
+		media, err := embed.LookupByString("media")
+		if err != nil {
+			return "", nil
+		}
+
+		external, err = media.LookupByString("external")
+		if err != nil {
+			return "", nil
+		}
+	}
+
+	thumb, err := external.LookupByString("thumb")
+	if err != nil {
+		return "", nil
+	}
+
+	ref, err := thumb.LookupByString("ref")
 	if err != nil {
 		return "", err
 	}

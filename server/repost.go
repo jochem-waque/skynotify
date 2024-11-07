@@ -21,6 +21,18 @@ import (
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
+type EmbedData struct {
+	Images []struct {
+		Thumb string `json:"thumb"`
+	} `json:"images,omitempty"`
+	Video struct {
+		Thumbnail string `json:"thumbnail,omitempty"`
+	} `json:"video,omitempty"`
+	External struct {
+		Thumb string `json:"thumb,omitempty"`
+	} `json:"external,omitempty"`
+}
+
 type PostsResponse struct {
 	Posts []struct {
 		Uri    string `json:"uri"`
@@ -32,14 +44,8 @@ type PostsResponse struct {
 			Text string `json:"text,omitempty"`
 		} `json:"record"`
 		Embed struct {
-			Media struct {
-				Images []struct {
-					Thumb string `json:"thumb"`
-				} `json:"images,omitempty"`
-			} `json:"media,omitempty"`
-			Images []struct {
-				Thumb string `json:"thumb"`
-			} `json:"images,omitempty"`
+			EmbedData
+			Media EmbedData `json:"media,omitempty"`
 		} `json:"embed,omitempty"`
 	} `json:"posts"`
 }
@@ -98,6 +104,14 @@ func makeRepostMessage(car storage.ReadableCar, cid string, path string, user Us
 		message.Data["image"] = post.Embed.Images[0].Thumb
 	} else if len(post.Embed.Media.Images) > 0 {
 		message.Data["image"] = post.Embed.Media.Images[0].Thumb
+	} else if post.Embed.Video.Thumbnail != "" {
+		message.Data["image"] = post.Embed.Video.Thumbnail
+	} else if post.Embed.Media.Video.Thumbnail != "" {
+		message.Data["image"] = post.Embed.Media.Video.Thumbnail
+	} else if post.Embed.External.Thumb != "" {
+		message.Data["image"] = post.Embed.External.Thumb
+	} else if post.Embed.Media.External.Thumb != "" {
+		message.Data["image"] = post.Embed.Media.External.Thumb
 	}
 
 	if user.DisplayName != "" {
