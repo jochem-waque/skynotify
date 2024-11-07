@@ -8,10 +8,11 @@
 import FirebaseApp from "@/util/firebase"
 import { getMessaging, onMessage } from "firebase/messaging"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 export default function OpenBackgroundNotifications() {
   const router = useRouter()
+  const registration = useRef<ServiceWorkerRegistration>(null)
 
   useEffect(() => {
     function listener(event: MessageEvent) {
@@ -27,8 +28,36 @@ export default function OpenBackgroundNotifications() {
   }, [router])
 
   useEffect(() => {
+    async function setRegistration() {
+      registration.current = await navigator.serviceWorker.ready
+    }
+
+    setRegistration()
+  }, [])
+
+  useEffect(() => {
     const messaging = getMessaging(FirebaseApp)
-    return onMessage(messaging, () => console.log)
+    return onMessage(messaging, (payload) => {
+      if (!payload.data || !registration.current) {
+        return
+      }
+
+      const { title, body, icon, image, tag, timestamp, url } = payload.data
+      if (!title) {
+        return
+      }
+
+      registration.current.showNotification(title, {
+        badge: "/badge.png",
+        body,
+        data: { FCM_MSG: { notification: { click_action: url } } },
+        icon,
+        image,
+        silent: true,
+        tag,
+        timestamp: Number(timestamp),
+      })
+    })
   }, [])
 
   return null
