@@ -5,4 +5,4 @@
  */
 // TODO shouldn't be necessary, but for some reason a NEXT_PUBLIC_ env variable
 // isn't always accessible?
-export const SubscriptionLimit = 50
+export const SubscriptionLimit = 100
