@@ -20,6 +20,7 @@ export default function Profile({
           width={48}
           height={48}
           alt={"Profile picture"}
+          unoptimized={true}
         ></Image>
       )}
       <div className="flex flex-col justify-center overflow-hidden">
