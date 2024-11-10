@@ -12,6 +12,7 @@ services:
       EMAIL: "${EMAIL}"
   db:
     image: postgres:17
+    restart: unless-stopped
     environment:
       POSTGRES_USER: "skynotify"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
