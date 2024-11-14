@@ -8,8 +8,8 @@
 import { useDataStore } from "@/util/store"
 import { AtpAgent } from "@atproto/api"
 import { XRPCError } from "@atproto/xrpc"
-import { useRouter } from "next/navigation"
-import { KeyboardEvent, useRef, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react"
 
 export default function ImportFollowing() {
   const fetchProfiles = useDataStore((state) => state.fetchProfiles)
@@ -21,46 +21,50 @@ export default function ImportFollowing() {
   const fetching = useDataStore((state) => state.fetching)
   const [error, setError] = useState<string>("")
   const ref = useRef<HTMLInputElement>(null)
-
   const atpAgent = useRef<AtpAgent>(null)
+  const params = useSearchParams()
+  const trySkip = useRef(true)
 
-  async function getFollowing(actor: string) {
-    if (!atpAgent.current) {
-      atpAgent.current = new AtpAgent({
-        service: "https://public.api.bsky.app/",
-      })
-    }
+  const getFollowing = useCallback(
+    async (actor: string) => {
+      if (!atpAgent.current) {
+        atpAgent.current = new AtpAgent({
+          service: "https://public.api.bsky.app/",
+        })
+      }
 
-    let response
-    try {
-      response = await atpAgent.current.getProfile({ actor })
-    } catch (e) {
-      if (!(e instanceof XRPCError)) {
+      let response
+      try {
+        response = await atpAgent.current.getProfile({ actor })
+      } catch (e) {
+        if (!(e instanceof XRPCError)) {
+          setError("An unknown error ocurred, please try again later")
+          return
+        }
+
+        setError("The given handle appears to be invalid")
+        return
+      }
+
+      if (!response.success) {
         setError("An unknown error ocurred, please try again later")
         return
       }
 
-      setError("The given handle appears to be invalid")
-      return
-    }
+      if (!response.data.followsCount) {
+        setError("This account doesn't follow anyone")
+        return
+      }
 
-    if (!response.success) {
-      setError("An unknown error ocurred, please try again later")
-      return
-    }
-
-    if (!response.data.followsCount) {
-      setError("This account doesn't follow anyone")
-      return
-    }
-
-    setError("")
-    setFollowsCount(response.data.followsCount)
-    setActor(actor)
-    setFetching(true)
-    fetchProfiles(actor)
-    router.push("select")
-  }
+      setError("")
+      setFollowsCount(response.data.followsCount)
+      setActor(actor)
+      setFetching(true)
+      fetchProfiles(actor)
+      router.push("select")
+    },
+    [fetchProfiles, router, setActor, setFetching, setFollowsCount],
+  )
 
   function click() {
     if (!ref.current) {
@@ -75,6 +79,13 @@ export default function ImportFollowing() {
       getFollowing(event.currentTarget.value)
     }
   }
+
+  useEffect(() => {
+    if (actor && params.has("continue") && trySkip.current) {
+      trySkip.current = false
+      getFollowing(actor)
+    }
+  }, [params, actor, getFollowing])
 
   return (
     <>
