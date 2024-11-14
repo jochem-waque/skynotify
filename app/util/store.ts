@@ -89,7 +89,7 @@ const combined = combine(
       { posts: boolean; replies: boolean; reposts: boolean }
     >(),
   },
-  (set) => ({
+  (set, get) => ({
     setToken: (token: string) =>
       set(({ token: previous }) => {
         if (token === previous) {
@@ -106,8 +106,11 @@ const combined = combine(
       }),
     setActor: (actor: string) => set({ actor }),
     setFollowsCount: (followsCount: number) => set({ followsCount }),
-    setFetching: (value: boolean) => set({ fetching: value }),
     fetchProfiles: async (actor: string) => {
+      if (get().fetching) {
+        return
+      }
+
       set({ fetching: true, profiles: new Map(), fetchError: false })
 
       const agent = new AtpAgent({

@@ -13,16 +13,15 @@ import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react"
 
 export default function ImportFollowing() {
   const fetchProfiles = useDataStore((state) => state.fetchProfiles)
-  const setFetching = useDataStore((state) => state.setFetching)
   const setActor = useDataStore((state) => state.setActor)
   const setFollowsCount = useDataStore((state) => state.setFollowsCount)
-  const router = useRouter()
   const actor = useDataStore((state) => state.actor)
   const fetching = useDataStore((state) => state.fetching)
   const [error, setError] = useState<string>("")
-  const ref = useRef<HTMLInputElement>(null)
-  const atpAgent = useRef<AtpAgent>(null)
   const params = useSearchParams()
+  const router = useRouter()
+  const atpAgent = useRef<AtpAgent>(null)
+  const ref = useRef<HTMLInputElement>(null)
   const trySkip = useRef(true)
 
   const getFollowing = useCallback(
@@ -59,11 +58,10 @@ export default function ImportFollowing() {
       setError("")
       setFollowsCount(response.data.followsCount)
       setActor(actor)
-      setFetching(true)
       fetchProfiles(actor)
       router.push("select")
     },
-    [fetchProfiles, router, setActor, setFetching, setFollowsCount],
+    [fetchProfiles, router, setActor, setFollowsCount],
   )
 
   function click() {
