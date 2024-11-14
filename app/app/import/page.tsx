@@ -3,7 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import ImportFollowing from "./importFollowing"
+import ImportFollowingSuspenseful from "./importFollowingSuspenseful"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import InstructionList from "@/components/instructionList"
@@ -22,7 +22,7 @@ export default function Page() {
         <InstructionList step="import">
           <p>Next, let&apos;s import your Bluesky following.</p>
           <ProgressBar></ProgressBar>
-          <ImportFollowing></ImportFollowing>
+          <ImportFollowingSuspenseful></ImportFollowingSuspenseful>
         </InstructionList>
       </main>
       <Footer></Footer>
