@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "node migrate.mjs && next start",
     "lint": "next lint",
-    "start:docker": "next build --experimental-build-mode generate && next start"
+    "start:docker": "node migrate.mjs && next build --experimental-build-mode generate && next start"
   },
   "dependencies": {
     "@atproto/api": "^0.13.16",
