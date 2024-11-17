@@ -53,12 +53,12 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		return message, false, err
 	}
 
-	// if imageRef == "" {
-	// 	imageRef, err = extractVideoThumbnail(n)
-	// 	if err != nil {
-	// 		return message, false, err
-	// 	}
-	// }
+	if imageRef == "" {
+		imageRef, err = extractVideoThumbnail(n, user.Did)
+		if err != nil {
+			return message, false, err
+		}
+	}
 
 	if imageRef == "" {
 		imageRef, err = extractExternalThumb(n)
@@ -220,44 +220,53 @@ func extractImageThumb(node datamodel.Node) (string, error) {
 	return linkNode.String(), nil
 }
 
-// TODO
-// func extractVideoThumbnail(node datamodel.Node) (string, error) {
-// 	embed, err := node.LookupByString("embed")
-// 	// TODO: figure out how to check if it's ErrNotExists
-// 	if err != nil {
-// 		return "", nil
-// 	}
+func extractVideoThumbnail(node datamodel.Node, did string) (string, error) {
+	embed, err := node.LookupByString("embed")
+	// TODO: figure out how to check if it's ErrNotExists
+	if err != nil {
+		return "", nil
+	}
 
-// 	video, err := embed.LookupByString("video")
-// 	if err != nil {
-// 		media, err := embed.LookupByString("media")
-// 		if err != nil {
-// 			return "", nil
-// 		}
+	video, err := embed.LookupByString("video")
+	if err != nil {
+		media, err := embed.LookupByString("media")
+		if err != nil {
+			return "", nil
+		}
 
-// 		video, err = media.LookupByString("video")
-// 		if err != nil {
-// 			return "", nil
-// 		}
-// 	}
+		video, err = media.LookupByString("video")
+		if err != nil {
+			return "", nil
+		}
+	}
 
-// 	thumbnail, err := video.LookupByString("thumbnail")
-// 	if err != nil {
-// 		return "", nil
-// 	}
+	thumbnail, err := video.LookupByString("thumbnail")
+	if err != nil {
+		ref, err := video.LookupByString("ref")
+		if err != nil {
+			return "", err
+		}
 
-// 	ref, err := thumbnail.LookupByString("ref")
-// 	if err != nil {
-// 		return "", err
-// 	}
+		linkNode, err := ref.AsLink()
+		if err != nil {
+			return "", err
+		}
 
-// 	linkNode, err := ref.AsLink()
-// 	if err != nil {
-// 		return "", err
-// 	}
+		return fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", did, linkNode.String()), nil
+	}
 
-// 	return linkNode.String(), nil
-// }
+	ref, err := thumbnail.LookupByString("ref")
+	if err != nil {
+		return "", err
+	}
+
+	linkNode, err := ref.AsLink()
+	if err != nil {
+		return "", err
+	}
+
+	return linkNode.String(), nil
+}
 
 func extractExternalThumb(node datamodel.Node) (string, error) {
 	embed, err := node.LookupByString("embed")
