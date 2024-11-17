@@ -15,7 +15,7 @@ import {
 
 export const tokenTable = pgTable("token", {
   id: serial("id").primaryKey(),
-  token: text("token").notNull(),
+  token: text("token").notNull().unique(),
   unregistered: timestamp("unregistered"),
 })
 

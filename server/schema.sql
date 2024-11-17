@@ -24,3 +24,5 @@ DO $$ BEGIN
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
+
+ALTER TABLE "token" ADD CONSTRAINT "token_token_unique" UNIQUE("token");
