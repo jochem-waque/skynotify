@@ -182,21 +182,24 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 		message.Webpush.Headers["TTL"] = "43200" // 12 hours
 		message.Webpush.Headers["Urgency"] = "normal"
 		responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
-		for _, response := range responses.Responses {
+		for i, response := range responses.Responses {
 			if response.Success {
 				continue
 			}
 
 			if !errorutils.IsNotFound(response.Error) {
-				fmt.Println(response.Error)
+				fmt.Printf("%#v\n", response.Error)
 				continue
 			}
 
-			fmt.Printf("%#v\n", response.Error)
-			// _, err := querier.DeleteToken(context.Background(), message.Tokens[i])
-			// if err != nil {
-			// 	fmt.Println(err)
-			// }
+			token := message.Tokens[i]
+			_, err := querier.InvalidateToken(context.Background(), token)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+			fmt.Printf("Invalidated token %s\n", token)
 		}
 	}
 

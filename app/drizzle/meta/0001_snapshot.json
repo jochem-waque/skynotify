@@ -1,0 +1,115 @@
+{
+  "id": "53394505-2eb8-4552-9d40-13e54af0610c",
+  "prevId": "10eecec5-1cb9-4b58-b362-04ed33f409e5",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.subscription": {
+      "name": "subscription",
+      "schema": "",
+      "columns": {
+        "token": {
+          "name": "token",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target": {
+          "name": "target",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "posts": {
+          "name": "posts",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reposts": {
+          "name": "reposts",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "replies": {
+          "name": "replies",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "subscription_token_token_id_fk": {
+          "name": "subscription_token_token_id_fk",
+          "tableFrom": "subscription",
+          "tableTo": "token",
+          "columnsFrom": [
+            "token"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "subscription_token_target_pk": {
+          "name": "subscription_token_target_pk",
+          "columns": [
+            "token",
+            "target"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.token": {
+      "name": "token",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unregistered": {
+          "name": "unregistered",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

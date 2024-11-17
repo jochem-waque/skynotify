@@ -6,13 +6,13 @@
 "use server"
 
 import Drizzle from "@/util/db"
-import { subscriptionTable } from "@/util/schema"
+import { tokenTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
 
 export async function updateToken(oldToken: string, newToken: string) {
   console.log("Updating token", oldToken, "-->", newToken)
 
-  await Drizzle.update(subscriptionTable)
+  await Drizzle.update(tokenTable)
     .set({ token: newToken })
-    .where(eq(subscriptionTable.token, oldToken))
+    .where(eq(tokenTable.token, oldToken))
 }

@@ -7,7 +7,7 @@
 
 import { SubscriptionLimit } from "@/config"
 import Drizzle from "@/util/db"
-import { subscriptionTable } from "@/util/schema"
+import { subscriptionTable, tokenTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
@@ -17,19 +17,33 @@ export async function save(
 ) {
   try {
     await Drizzle.transaction(async (tx) => {
-      const deletion = await tx
-        .delete(subscriptionTable)
-        .where(eq(subscriptionTable.token, token))
-      if (subscriptions.length === 0) {
-        return deletion
+      const [user] = await tx
+        .insert(tokenTable)
+        .values({ token })
+        .onConflictDoUpdate({
+          target: [tokenTable.token],
+          set: { unregistered: null },
+        })
+        .returning({ id: tokenTable.id })
+
+      if (!user) {
+        tx.rollback()
+        return
       }
 
-      return await tx
+      await tx
+        .delete(subscriptionTable)
+        .where(eq(subscriptionTable.token, user.id))
+      if (subscriptions.length === 0) {
+        return
+      }
+
+      await tx
         .insert(subscriptionTable)
         .values(
           subscriptions
             .slice(0, SubscriptionLimit)
-            .map((subscription) => ({ ...subscription, token })),
+            .map((subscription) => ({ ...subscription, token: user.id })),
         )
         .onConflictDoNothing()
     })

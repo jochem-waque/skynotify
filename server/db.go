@@ -19,7 +19,7 @@ import (
 type Querier interface {
 	GetSubscriptions(ctx context.Context, did string) ([]GetSubscriptionsRow, error)
 
-	DeleteToken(ctx context.Context, token string) (pgconn.CommandTag, error)
+	InvalidateToken(ctx context.Context, token string) (pgconn.CommandTag, error)
 }
 
 var _ Querier = &DBQuerier{}
@@ -70,7 +70,7 @@ func (tr *typeResolver) setValue(vt pgtype.ValueTranscoder, val interface{}) pgt
 	return vt
 }
 
-const getSubscriptionsSQL = `SELECT token, posts, reposts, replies FROM subscription WHERE target = $1;`
+const getSubscriptionsSQL = `SELECT token.token, posts, reposts, replies FROM subscription INNER JOIN token ON token.id = subscription.token WHERE target = $1 AND unregistered IS NULL;`
 
 type GetSubscriptionsRow struct {
 	Token   string `json:"token"`
@@ -101,14 +101,14 @@ func (q *DBQuerier) GetSubscriptions(ctx context.Context, did string) ([]GetSubs
 	return items, err
 }
 
-const deleteTokenSQL = `DELETE FROM subscription WHERE token = $1;`
+const invalidateTokenSQL = `UPDATE token SET unregistered = NOW() WHERE token = $1;`
 
-// DeleteToken implements Querier.DeleteToken.
-func (q *DBQuerier) DeleteToken(ctx context.Context, token string) (pgconn.CommandTag, error) {
-	ctx = context.WithValue(ctx, "pggen_query_name", "DeleteToken")
-	cmdTag, err := q.conn.Exec(ctx, deleteTokenSQL, token)
+// InvalidateToken implements Querier.InvalidateToken.
+func (q *DBQuerier) InvalidateToken(ctx context.Context, token string) (pgconn.CommandTag, error) {
+	ctx = context.WithValue(ctx, "pggen_query_name", "InvalidateToken")
+	cmdTag, err := q.conn.Exec(ctx, invalidateTokenSQL, token)
 	if err != nil {
-		return cmdTag, fmt.Errorf("exec query DeleteToken: %w", err)
+		return cmdTag, fmt.Errorf("exec query InvalidateToken: %w", err)
 	}
 	return cmdTag, err
 }
