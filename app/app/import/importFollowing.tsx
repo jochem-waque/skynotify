@@ -25,7 +25,7 @@ export default function ImportFollowing() {
   const trySkip = useRef(true)
 
   const getFollowing = useCallback(
-    async (actor: string) => {
+    async (actor: string, replace?: boolean) => {
       if (!atpAgent.current) {
         atpAgent.current = new AtpAgent({
           service: "https://public.api.bsky.app/",
@@ -59,6 +59,11 @@ export default function ImportFollowing() {
       setFollowsCount(response.data.followsCount)
       setActor(actor)
       fetchProfiles(actor)
+      if (replace) {
+        router.replace("select")
+        return
+      }
+
       router.push("select")
     },
     [fetchProfiles, router, setActor, setFollowsCount],
@@ -81,7 +86,7 @@ export default function ImportFollowing() {
   useEffect(() => {
     if (actor && params.has("continue") && trySkip.current) {
       trySkip.current = false
-      getFollowing(actor)
+      getFollowing(actor, true)
     }
   }, [params, actor, getFollowing])
 
