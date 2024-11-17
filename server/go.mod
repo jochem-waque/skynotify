@@ -4,7 +4,7 @@ go 1.23.2
 
 require (
 	firebase.google.com/go/v4 v4.15.0
-	github.com/bluesky-social/indigo v0.0.0-20241113201608-785ad1884e6c
+	github.com/bluesky-social/indigo v0.0.0-20241116232723-a422903741f9
 	github.com/gorilla/websocket v1.5.3
 	github.com/ipfs/go-cid v0.4.1
 	github.com/ipld/go-car/v2 v2.14.2
@@ -12,7 +12,7 @@ require (
 	github.com/jackc/pgtype v1.14.4
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/lpernett/godotenv v0.0.0-20230527005122-0de1d4c5ef5e
-	google.golang.org/api v0.205.0
+	google.golang.org/api v0.206.0
 )
 
 require (
