@@ -75,6 +75,7 @@ func makeRepostMessage(car storage.ReadableCar, cid string, path string, user Us
 	}
 
 	if len(jsonResponse.Posts) == 0 {
+		// TODO retry?
 		return message, fmt.Errorf("no posts for uri %s", data.uri)
 	}
 

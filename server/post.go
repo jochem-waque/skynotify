@@ -372,6 +372,7 @@ func getParentHandle(uri string) (string, error) {
 	}
 
 	if len(jsonResponse.Posts) == 0 {
+		// TODO retry?
 		return "", fmt.Errorf("no posts for uri %s", uri)
 	}
 
