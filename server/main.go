@@ -21,7 +21,7 @@ import (
 	"github.com/Jochem-W/skynotify/server/db"
 	"github.com/Jochem-W/skynotify/server/post"
 	"github.com/Jochem-W/skynotify/server/repost"
-	"github.com/Jochem-W/skynotify/server/users"
+	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/events"
 	"github.com/bluesky-social/indigo/events/schedulers/sequential"
@@ -128,14 +128,14 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 		return nil
 	}
 
-	if len(rows) == 0 && !users.Exists(evt.Repo) {
+	if len(rows) == 0 && !user.Exists(evt.Repo) {
 		return nil
 	}
 
-	user, err := users.GetOrFetch(evt.Repo)
+	userData, err := user.GetOrFetch(evt.Repo)
 	if err != nil {
 		fmt.Println(err)
-		user.Did = evt.Repo
+		userData.Did = evt.Repo
 	}
 
 	var car storage.ReadableCar
@@ -149,7 +149,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 				return nil
 			}
 
-			users.Update(evt.Repo, car, cid.MustParse(op.Cid.String()).KeyString())
+			user.Update(evt.Repo, car, cid.MustParse(op.Cid.String()).KeyString())
 			continue
 		}
 
@@ -161,7 +161,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 				return nil
 			}
 
-			processRepost(&messages, rows, user, car, op)
+			processRepost(&messages, rows, userData, car, op)
 			continue
 		}
 
@@ -173,7 +173,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 				return nil
 			}
 
-			processPost(&messages, rows, user, car, op)
+			processPost(&messages, rows, userData, car, op)
 			continue
 		}
 	}
@@ -223,7 +223,7 @@ func openCar(car *storage.ReadableCar, evt *atproto.SyncSubscribeRepos_Commit) e
 	return nil
 }
 
-func processPost(messages *[]messaging.MulticastMessage, rows []db.GetSubscriptionsRow, user users.User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
+func processPost(messages *[]messaging.MulticastMessage, rows []db.GetSubscriptionsRow, user user.User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
 	message, reply, err := post.MakeMessage(car, cid.MustParse(op.Cid.String()).KeyString(), op.Path, user)
 	if err != nil {
 		fmt.Println(err)
@@ -245,7 +245,7 @@ func processPost(messages *[]messaging.MulticastMessage, rows []db.GetSubscripti
 	return nil
 }
 
-func processRepost(messages *[]messaging.MulticastMessage, rows []db.GetSubscriptionsRow, user users.User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
+func processRepost(messages *[]messaging.MulticastMessage, rows []db.GetSubscriptionsRow, user user.User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
 	message, err := repost.MakeMessage(car, cid.MustParse(op.Cid.String()).KeyString(), op.Path, user)
 	if err != nil {
 		fmt.Println(err)

@@ -16,7 +16,8 @@ import (
 
 	"firebase.google.com/go/v4/messaging"
 	"github.com/Jochem-W/skynotify/server/internal"
-	"github.com/Jochem-W/skynotify/server/users"
+	"github.com/Jochem-W/skynotify/server/post"
+	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/ipld/go-car/v2/storage"
 	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/datamodel"
@@ -28,7 +29,7 @@ type repostData struct {
 	createdAt string
 }
 
-func MakeMessage(car storage.ReadableCar, cid string, path string, user users.User) (messaging.MulticastMessage, error) {
+func MakeMessage(car storage.ReadableCar, cid string, path string, user user.User) (messaging.MulticastMessage, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "repost"}}
 
 	data, err := parseRepostOp(car, cid)
@@ -41,7 +42,7 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user users.Us
 		return message, err
 	}
 
-	jsonResponse := internal.PostsResponse{}
+	jsonResponse := post.PostsResponse{}
 	err = json.NewDecoder(response.Body).Decode(&jsonResponse)
 	if err != nil {
 		return message, err
@@ -125,7 +126,7 @@ func parseRepostOp(car storage.ReadableCar, cid string) (repostData, error) {
 
 	data.uri = uri
 
-	createdAt, err := internal.ExtractCreatedAt(n)
+	createdAt, err := post.ExtractCreatedAt(n)
 	if err != nil {
 		return data, err
 	}

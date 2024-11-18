@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/Jochem-W/skynotify/server/internal"
-	"github.com/Jochem-W/skynotify/server/users"
+	"github.com/Jochem-W/skynotify/server/user"
 
 	"firebase.google.com/go/v4/messaging"
 	"github.com/ipld/go-car/v2/storage"
@@ -24,7 +24,51 @@ import (
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-func MakeMessage(car storage.ReadableCar, cid string, path string, user users.User) (messaging.MulticastMessage, bool, error) {
+type embedData struct {
+	Images []struct {
+		Thumb string `json:"thumb"`
+	} `json:"images,omitempty"`
+	Video struct {
+		Thumbnail string `json:"thumbnail,omitempty"`
+	} `json:"video,omitempty"`
+	External struct {
+		Thumb string `json:"thumb,omitempty"`
+	} `json:"external,omitempty"`
+}
+
+type PostsResponse struct {
+	Posts []struct {
+		Uri    string `json:"uri"`
+		Author struct {
+			Did    string `json:"did"`
+			Handle string `json:"handle"`
+		} `json:"author"`
+		Record struct {
+			Text string `json:"text,omitempty"`
+		} `json:"record"`
+		Embed struct {
+			embedData
+			Media embedData `json:"media,omitempty"`
+		} `json:"embed,omitempty"`
+	} `json:"posts"`
+}
+
+func ExtractCreatedAt(node datamodel.Node) (string, error) {
+	createdAt, err := node.LookupByString("createdAt")
+	// TODO: figure out how to check if it's ErrNotExists
+	if err != nil {
+		return "", err
+	}
+
+	createdAtStr, err := createdAt.AsString()
+	if err != nil {
+		return "", err
+	}
+
+	return createdAtStr, nil
+}
+
+func MakeMessage(car storage.ReadableCar, cid string, path string, user user.User) (messaging.MulticastMessage, bool, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "post"}}
 
 	_, pid, found := strings.Cut(path, "/")
@@ -70,7 +114,7 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user users.Us
 		}
 	}
 
-	createdAt, err := internal.ExtractCreatedAt(n)
+	createdAt, err := ExtractCreatedAt(n)
 	if err != nil {
 		return message, false, err
 	}
@@ -204,7 +248,7 @@ func extractQuote(node datamodel.Node) (string, error) {
 		return "", fmt.Errorf("couldn't cut DID from %s", after)
 	}
 
-	user, err := users.GetOrFetch(did)
+	user, err := user.GetOrFetch(did)
 	if err != nil {
 		return "", err
 	}
@@ -357,7 +401,7 @@ func getParentHandle(uri string) (string, error) {
 		return "", err
 	}
 
-	jsonResponse := internal.PostsResponse{}
+	jsonResponse := PostsResponse{}
 	err = json.NewDecoder(response.Body).Decode(&jsonResponse)
 	if err != nil {
 		return "", err
