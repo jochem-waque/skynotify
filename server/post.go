@@ -106,14 +106,14 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		return message, false, err
 	}
 
-	reply := parent != ""
+	isReply := parent != ""
 	isQuote := quoted != ""
-	if reply {
+	if isReply {
 		message.FCMOptions.AnalyticsLabel = "reply"
 
 		handle, err := getParentHandle(parent)
 		if err != nil {
-			return message, reply, err
+			return message, isReply, err
 		}
 
 		message.Data["title"] += " replied"
@@ -123,7 +123,7 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		message.Data["body"] = fmt.Sprintf("@%s %s", quoted, message.Data["body"])
 	}
 
-	return message, reply, nil
+	return message, isReply, nil
 }
 
 func extractText(node datamodel.Node) (string, error) {
