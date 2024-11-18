@@ -217,11 +217,11 @@ func extractQuote(node datamodel.Node) (string, error) {
 	}
 
 	uri, err := record.LookupByString("uri")
-	if !internal.IsNotExists(err) {
-		return "", err
-	}
-
 	if err != nil {
+		if !internal.IsNotExists(err) {
+			return "", err
+		}
+
 		record, err = record.LookupByString("record")
 		if err != nil {
 			return "", err
@@ -263,11 +263,11 @@ func extractImageThumb(node datamodel.Node) (string, error) {
 	}
 
 	images, err := embed.LookupByString("images")
-	if !internal.IsNotExists(err) {
-		return "", err
-	}
-
 	if err != nil {
+		if !internal.IsNotExists(err) {
+			return "", err
+		}
+
 		media, err := embed.LookupByString("media")
 		if err != nil {
 			return "", internal.IgnoreNotExists(err)
@@ -319,11 +319,11 @@ func extractVideoThumbnail(node datamodel.Node, did string) (string, error) {
 	}
 
 	video, err := embed.LookupByString("video")
-	if !internal.IsNotExists(err) {
-		return "", err
-	}
-
 	if err != nil {
+		if !internal.IsNotExists(err) {
+			return "", err
+		}
+
 		media, err := embed.LookupByString("media")
 		if err != nil {
 			return "", internal.IgnoreNotExists(err)
@@ -336,11 +336,11 @@ func extractVideoThumbnail(node datamodel.Node, did string) (string, error) {
 	}
 
 	thumbnail, err := video.LookupByString("thumbnail")
-	if !internal.IsNotExists(err) {
-		return "", err
-	}
-
 	if err != nil {
+		if !internal.IsNotExists(err) {
+			return "", err
+		}
+
 		ref, err := video.LookupByString("ref")
 		if err != nil {
 			return "", err
@@ -374,11 +374,11 @@ func extractExternalThumb(node datamodel.Node) (string, error) {
 	}
 
 	external, err := embed.LookupByString("external")
-	if !internal.IsNotExists(err) {
-		return "", err
-	}
-
 	if err != nil {
+		if !internal.IsNotExists(err) {
+			return "", err
+		}
+
 		media, err := embed.LookupByString("media")
 		if err != nil {
 			return "", internal.IgnoreNotExists(err)
