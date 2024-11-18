@@ -123,7 +123,7 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user users.Us
 		message.Data["body"] = fmt.Sprintf("@%s %s", handle, message.Data["body"])
 	} else if isQuote {
 		message.Data["title"] += " quoted"
-		message.Data["body"] = fmt.Sprintf("@%s %s", quoted, message.Data["body"])
+		message.Data["body"] = fmt.Sprintf("%s @%s", message.Data["body"], quoted)
 	}
 
 	return message, isReply, nil
