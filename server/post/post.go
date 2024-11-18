@@ -178,7 +178,15 @@ func extractQuote(node datamodel.Node) (string, error) {
 
 	uri, err := record.LookupByString("uri")
 	if err != nil {
-		return "", err
+		record, err = record.LookupByString("record")
+		if err != nil {
+			return "", err
+		}
+
+		uri, err = record.LookupByString("uri")
+		if err != nil {
+			return "", err
+		}
 	}
 
 	uriString, err := uri.AsString()
