@@ -207,7 +207,6 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 	return nil
 }
 
-// TODO better quote support
 func openCar(car *storage.ReadableCar, evt *atproto.SyncSubscribeRepos_Commit) error {
 	if *car != nil {
 		return nil

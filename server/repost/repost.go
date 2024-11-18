@@ -74,7 +74,6 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user user.Use
 	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", post.Author.Did, pid)
 	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
-	// TODO support other embeds
 	if len(post.Embed.Images) > 0 {
 		message.Data["image"] = post.Embed.Images[0].Thumb
 	} else if len(post.Embed.Media.Images) > 0 {
