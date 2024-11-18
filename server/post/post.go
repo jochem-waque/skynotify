@@ -201,11 +201,7 @@ func extractQuote(node datamodel.Node) (string, error) {
 		return "", err
 	}
 
-	if user.DisplayName == "" {
-		return user.Handle, nil
-	}
-
-	return user.DisplayName, nil
+	return user.Handle, nil
 }
 
 func extractImageThumb(node datamodel.Node) (string, error) {
