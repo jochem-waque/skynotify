@@ -77,6 +77,11 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		return message, false, err
 	}
 
+	quoted, err := extractQuote(n)
+	if err != nil {
+		return message, false, err
+	}
+
 	message.Data = make(map[string]string)
 	message.Data["title"] = user.Handle
 	message.Data["body"] = text
@@ -102,6 +107,7 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 	}
 
 	reply := parent != ""
+	isQuote := quoted != ""
 	if reply {
 		message.FCMOptions.AnalyticsLabel = "reply"
 
@@ -112,6 +118,9 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 
 		message.Data["title"] += " replied"
 		message.Data["body"] = fmt.Sprintf("@%s %s", handle, message.Data["body"])
+	} else if isQuote {
+		message.Data["title"] += " quoted"
+		message.Data["body"] = fmt.Sprintf("@%s %s", quoted, message.Data["body"])
 	}
 
 	return message, reply, nil
@@ -165,6 +174,50 @@ func extractParent(node datamodel.Node) (string, error) {
 	}
 
 	return uri.AsString()
+}
+
+func extractQuote(node datamodel.Node) (string, error) {
+	embed, err := node.LookupByString("embed")
+	// TODO: figure out how to check if it's ErrNotExists
+	if err != nil {
+		return "", nil
+	}
+
+	record, err := embed.LookupByString("record")
+	if err != nil {
+		return "", nil
+	}
+
+	uri, err := record.LookupByString("uri")
+	if err != nil {
+		return "", err
+	}
+
+	uriString, err := uri.AsString()
+	if err != nil {
+		return "", err
+	}
+
+	after, found := strings.CutPrefix(uriString, "at://")
+	if !found {
+		return "", fmt.Errorf("couldn't cut prefix at:// from %s", uriString)
+	}
+
+	did, _, found := strings.Cut(after, "/")
+	if !found {
+		return "", fmt.Errorf("couldn't cut DID from %s", after)
+	}
+
+	user, err := getOrFetchUser(did)
+	if err != nil {
+		return "", err
+	}
+
+	if user.DisplayName == "" {
+		return user.Handle, nil
+	}
+
+	return user.DisplayName, nil
 }
 
 func extractImageThumb(node datamodel.Node) (string, error) {
