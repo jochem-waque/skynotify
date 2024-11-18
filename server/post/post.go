@@ -55,7 +55,6 @@ type PostsResponse struct {
 
 func ExtractCreatedAt(node datamodel.Node) (string, error) {
 	createdAt, err := node.LookupByString("createdAt")
-	// TODO: figure out how to check if it's ErrNotExists
 	if err != nil {
 		return "", err
 	}
@@ -175,9 +174,8 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user user.Use
 
 func extractText(node datamodel.Node) (string, error) {
 	text, err := node.LookupByString("text")
-	// TODO: figure out how to check if it's ErrNotExists
 	if err != nil {
-		return "", err
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	textstr, err := text.AsString()
@@ -189,10 +187,9 @@ func extractText(node datamodel.Node) (string, error) {
 }
 
 func extractParent(node datamodel.Node) (string, error) {
-	// TODO: figure out how to check if it's ErrNotExists
 	reply, err := node.LookupByString("reply")
 	if err != nil {
-		return "", nil
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	parent, err := reply.LookupByString("parent")
@@ -210,17 +207,20 @@ func extractParent(node datamodel.Node) (string, error) {
 
 func extractQuote(node datamodel.Node) (string, error) {
 	embed, err := node.LookupByString("embed")
-	// TODO: figure out how to check if it's ErrNotExists
 	if err != nil {
-		return "", nil
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	record, err := embed.LookupByString("record")
 	if err != nil {
-		return "", nil
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	uri, err := record.LookupByString("uri")
+	if !internal.IsNotExists(err) {
+		return "", err
+	}
+
 	if err != nil {
 		record, err = record.LookupByString("record")
 		if err != nil {
@@ -258,21 +258,24 @@ func extractQuote(node datamodel.Node) (string, error) {
 
 func extractImageThumb(node datamodel.Node) (string, error) {
 	embed, err := node.LookupByString("embed")
-	// TODO: figure out how to check if it's ErrNotExists
 	if err != nil {
-		return "", nil
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	images, err := embed.LookupByString("images")
+	if !internal.IsNotExists(err) {
+		return "", err
+	}
+
 	if err != nil {
 		media, err := embed.LookupByString("media")
 		if err != nil {
-			return "", nil
+			return "", internal.IgnoreNotExists(err)
 		}
 
 		images, err = media.LookupByString("images")
 		if err != nil {
-			return "", nil
+			return "", internal.IgnoreNotExists(err)
 		}
 	}
 
@@ -311,25 +314,32 @@ func extractImageThumb(node datamodel.Node) (string, error) {
 
 func extractVideoThumbnail(node datamodel.Node, did string) (string, error) {
 	embed, err := node.LookupByString("embed")
-	// TODO: figure out how to check if it's ErrNotExists
 	if err != nil {
-		return "", nil
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	video, err := embed.LookupByString("video")
+	if !internal.IsNotExists(err) {
+		return "", err
+	}
+
 	if err != nil {
 		media, err := embed.LookupByString("media")
 		if err != nil {
-			return "", nil
+			return "", internal.IgnoreNotExists(err)
 		}
 
 		video, err = media.LookupByString("video")
 		if err != nil {
-			return "", nil
+			return "", internal.IgnoreNotExists(err)
 		}
 	}
 
 	thumbnail, err := video.LookupByString("thumbnail")
+	if !internal.IsNotExists(err) {
+		return "", err
+	}
+
 	if err != nil {
 		ref, err := video.LookupByString("ref")
 		if err != nil {
@@ -359,27 +369,30 @@ func extractVideoThumbnail(node datamodel.Node, did string) (string, error) {
 
 func extractExternalThumb(node datamodel.Node) (string, error) {
 	embed, err := node.LookupByString("embed")
-	// TODO: figure out how to check if it's ErrNotExists
 	if err != nil {
-		return "", nil
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	external, err := embed.LookupByString("external")
+	if !internal.IsNotExists(err) {
+		return "", err
+	}
+
 	if err != nil {
 		media, err := embed.LookupByString("media")
 		if err != nil {
-			return "", nil
+			return "", internal.IgnoreNotExists(err)
 		}
 
 		external, err = media.LookupByString("external")
 		if err != nil {
-			return "", nil
+			return "", internal.IgnoreNotExists(err)
 		}
 	}
 
 	thumb, err := external.LookupByString("thumb")
 	if err != nil {
-		return "", nil
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	ref, err := thumb.LookupByString("ref")

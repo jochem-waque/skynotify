@@ -6,8 +6,24 @@
 package internal
 
 import (
+	"errors"
 	"net/http"
 	"time"
+
+	"github.com/ipld/go-ipld-prime/datamodel"
 )
 
 var HttpClient *http.Client = &http.Client{Timeout: time.Second * 30}
+
+func IgnoreNotExists(err error) error {
+	if IsNotExists(err) {
+		return nil
+	}
+
+	return err
+}
+
+func IsNotExists(err error) bool {
+	var notExists datamodel.ErrNotExists
+	return errors.As(err, &notExists)
+}

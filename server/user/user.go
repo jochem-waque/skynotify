@@ -129,7 +129,7 @@ func Update(did string, car storage.ReadableCar, cid string) error {
 func extractAvatar(node datamodel.Node) (string, error) {
 	avatar, err := node.LookupByString("avatar")
 	if err != nil {
-		return "", nil
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	ref, err := avatar.LookupByString("ref")
@@ -147,9 +147,8 @@ func extractAvatar(node datamodel.Node) (string, error) {
 
 func extractDisplayName(node datamodel.Node) (string, error) {
 	displayName, err := node.LookupByString("displayName")
-	// TODO: figure out how to check if it's ErrNotExists
 	if err != nil {
-		return "", nil
+		return "", internal.IgnoreNotExists(err)
 	}
 
 	displayNameStr, err := displayName.AsString()
