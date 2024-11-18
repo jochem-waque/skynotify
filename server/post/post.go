@@ -409,6 +409,8 @@ func extractExternalThumb(node datamodel.Node) (string, error) {
 }
 
 func getParentHandle(uri string) (string, error) {
+	time.Sleep(5 * time.Second)
+
 	response, err := internal.HttpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts?uris=%s", uri))
 	if err != nil {
 		return "", err
