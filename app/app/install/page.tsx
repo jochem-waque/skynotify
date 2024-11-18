@@ -35,7 +35,7 @@ async function parseUserAgent(): Promise<Platform> {
     case "iOS":
       os = "ios"
       break
-    case "Mac OS":
+    case "macOS":
       os = "macos"
       break
     default:
