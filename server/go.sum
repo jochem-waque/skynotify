@@ -46,8 +46,8 @@ github.com/benbjohnson/clock v1.3.0 h1:ip6w0uFQkncKQ979AypyG0ER7mqUSBdKLOgAle/AT
 github.com/benbjohnson/clock v1.3.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
-github.com/bluesky-social/indigo v0.0.0-20241116232723-a422903741f9 h1:jc6g88hbRT92T+s0n+kK13zH3dT3QN0UuZWddKg9A10=
-github.com/bluesky-social/indigo v0.0.0-20241116232723-a422903741f9/go.mod h1:KbLtB7hMXow4LfZTd0NgqKG0+b/zi81/dWwg/fL9ERs=
+github.com/bluesky-social/indigo v0.0.0-20241117235119-be57b0df127b h1:VcB1PBxcz2jTVN4rMHB5Kgjs30K3jw37zLnjpdwZQBA=
+github.com/bluesky-social/indigo v0.0.0-20241117235119-be57b0df127b/go.mod h1:KbLtB7hMXow4LfZTd0NgqKG0+b/zi81/dWwg/fL9ERs=
 github.com/carlmjohnson/versioninfo v0.22.5 h1:O00sjOLUAFxYQjlN/bzYTuZiS0y6fWDQjMRvwtKgwwc=
 github.com/carlmjohnson/versioninfo v0.22.5/go.mod h1:QT9mph3wcVfISUKd0i9sZfVrPviHuSF+cUtLjm2WSf8=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
