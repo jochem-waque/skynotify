@@ -3,7 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package main
+package post
 
 import (
 	"bytes"
@@ -14,6 +14,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Jochem-W/skynotify/server/internal"
+	"github.com/Jochem-W/skynotify/server/users"
+
 	"firebase.google.com/go/v4/messaging"
 	"github.com/ipld/go-car/v2/storage"
 	"github.com/ipld/go-ipld-prime/codec/dagcbor"
@@ -21,7 +24,7 @@ import (
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-func makePostMessage(car storage.ReadableCar, cid string, path string, user User) (messaging.MulticastMessage, bool, error) {
+func MakeMessage(car storage.ReadableCar, cid string, path string, user users.User) (messaging.MulticastMessage, bool, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "post"}}
 
 	_, pid, found := strings.Cut(path, "/")
@@ -67,7 +70,7 @@ func makePostMessage(car storage.ReadableCar, cid string, path string, user User
 		}
 	}
 
-	createdAt, err := extractCreatedAt(n)
+	createdAt, err := internal.ExtractCreatedAt(n)
 	if err != nil {
 		return message, false, err
 	}
@@ -141,21 +144,6 @@ func extractText(node datamodel.Node) (string, error) {
 	return textstr, nil
 }
 
-func extractCreatedAt(node datamodel.Node) (string, error) {
-	createdAt, err := node.LookupByString("createdAt")
-	// TODO: figure out how to check if it's ErrNotExists
-	if err != nil {
-		return "", err
-	}
-
-	createdAtStr, err := createdAt.AsString()
-	if err != nil {
-		return "", err
-	}
-
-	return createdAtStr, nil
-}
-
 func extractParent(node datamodel.Node) (string, error) {
 	// TODO: figure out how to check if it's ErrNotExists
 	reply, err := node.LookupByString("reply")
@@ -208,7 +196,7 @@ func extractQuote(node datamodel.Node) (string, error) {
 		return "", fmt.Errorf("couldn't cut DID from %s", after)
 	}
 
-	user, err := getOrFetchUser(did)
+	user, err := users.GetOrFetch(did)
 	if err != nil {
 		return "", err
 	}
@@ -360,12 +348,12 @@ func extractExternalThumb(node datamodel.Node) (string, error) {
 }
 
 func getParentHandle(uri string) (string, error) {
-	response, err := httpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts?uris=%s", uri))
+	response, err := internal.HttpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts?uris=%s", uri))
 	if err != nil {
 		return "", err
 	}
 
-	jsonResponse := PostsResponse{}
+	jsonResponse := internal.PostsResponse{}
 	err = json.NewDecoder(response.Body).Decode(&jsonResponse)
 	if err != nil {
 		return "", err

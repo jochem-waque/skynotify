@@ -3,7 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package main
+package users
 
 import (
 	"bytes"
@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/Jochem-W/skynotify/server/internal"
 	"github.com/ipld/go-car/v2/storage"
 	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/datamodel"
@@ -31,7 +32,7 @@ var users = struct {
 	m map[string]User
 }{m: make(map[string]User)}
 
-func hasUser(did string) bool {
+func Exists(did string) bool {
 	users.RLock()
 	_, ok := users.m[did]
 	users.RUnlock()
@@ -39,7 +40,7 @@ func hasUser(did string) bool {
 	return ok
 }
 
-func getOrFetchUser(did string) (User, error) {
+func GetOrFetch(did string) (User, error) {
 	users.RLock()
 	user, ok := users.m[did]
 	users.RUnlock()
@@ -48,7 +49,7 @@ func getOrFetchUser(did string) (User, error) {
 		return user, nil
 	}
 
-	response, err := httpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=%s", did))
+	response, err := internal.HttpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=%s", did))
 	if err != nil {
 		return user, err
 	}
@@ -76,7 +77,7 @@ func getOrFetchUser(did string) (User, error) {
 	return user, nil
 }
 
-func updateUser(did string, car storage.ReadableCar, cid string) error {
+func Update(did string, car storage.ReadableCar, cid string) error {
 	users.RLock()
 	user, ok := users.m[did]
 	users.RUnlock()

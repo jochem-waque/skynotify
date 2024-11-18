@@ -3,7 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package main
+package repost
 
 import (
 	"bytes"
@@ -15,47 +15,20 @@ import (
 	"time"
 
 	"firebase.google.com/go/v4/messaging"
+	"github.com/Jochem-W/skynotify/server/internal"
+	"github.com/Jochem-W/skynotify/server/users"
 	"github.com/ipld/go-car/v2/storage"
 	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/datamodel"
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-type EmbedData struct {
-	Images []struct {
-		Thumb string `json:"thumb"`
-	} `json:"images,omitempty"`
-	Video struct {
-		Thumbnail string `json:"thumbnail,omitempty"`
-	} `json:"video,omitempty"`
-	External struct {
-		Thumb string `json:"thumb,omitempty"`
-	} `json:"external,omitempty"`
-}
-
-type PostsResponse struct {
-	Posts []struct {
-		Uri    string `json:"uri"`
-		Author struct {
-			Did    string `json:"did"`
-			Handle string `json:"handle"`
-		} `json:"author"`
-		Record struct {
-			Text string `json:"text,omitempty"`
-		} `json:"record"`
-		Embed struct {
-			EmbedData
-			Media EmbedData `json:"media,omitempty"`
-		} `json:"embed,omitempty"`
-	} `json:"posts"`
-}
-
 type repostData struct {
 	uri       string
 	createdAt string
 }
 
-func makeRepostMessage(car storage.ReadableCar, cid string, path string, user User) (messaging.MulticastMessage, error) {
+func MakeMessage(car storage.ReadableCar, cid string, path string, user users.User) (messaging.MulticastMessage, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "repost"}}
 
 	data, err := parseRepostOp(car, cid)
@@ -63,12 +36,12 @@ func makeRepostMessage(car storage.ReadableCar, cid string, path string, user Us
 		return message, err
 	}
 
-	response, err := httpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts?uris=%s", data.uri))
+	response, err := internal.HttpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts?uris=%s", data.uri))
 	if err != nil {
 		return message, err
 	}
 
-	jsonResponse := PostsResponse{}
+	jsonResponse := internal.PostsResponse{}
 	err = json.NewDecoder(response.Body).Decode(&jsonResponse)
 	if err != nil {
 		return message, err
@@ -152,7 +125,7 @@ func parseRepostOp(car storage.ReadableCar, cid string) (repostData, error) {
 
 	data.uri = uri
 
-	createdAt, err := extractCreatedAt(n)
+	createdAt, err := internal.ExtractCreatedAt(n)
 	if err != nil {
 		return data, err
 	}
