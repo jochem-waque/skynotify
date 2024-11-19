@@ -88,8 +88,14 @@ func main() {
 	}
 
 	rsc := &events.RepoStreamCallbacks{
-		RepoIdentity: processIdentity,
-		RepoCommit:   processCommit,
+		RepoIdentity: func(evt *atproto.SyncSubscribeRepos_Identity) error {
+			go processIdentity(evt)
+			return nil
+		},
+		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
+			go processCommit(evt)
+			return nil
+		},
 		Error: func(evt *events.ErrorFrame) error {
 			fmt.Printf("ERROR: %s (%s)\n", evt.Error, evt.Message)
 			return nil
