@@ -37,8 +37,6 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user user.Use
 		return message, err
 	}
 
-	time.Sleep(5 * time.Second)
-
 	response, err := internal.HttpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts?uris=%s", data.uri))
 	if err != nil {
 		return message, err
