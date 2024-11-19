@@ -3,12 +3,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import ImportFollowingSuspenseful from "./importFollowingSuspenseful"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import InstructionList from "@/components/instructionList"
 import ProgressBar from "@/components/progressBar"
 import { Metadata } from "next"
+import ImportFollowingSuspenseful from "./importFollowingSuspenseful"
 
 export const metadata: Metadata = {
   title: "Import following | SkyNotify",

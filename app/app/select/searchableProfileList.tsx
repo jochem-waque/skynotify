@@ -5,8 +5,8 @@
  */
 "use client"
 
-import SelectableProfileList from "./selectableProfileList"
 import { ChangeEvent, MouseEvent, useRef, useState } from "react"
+import SelectableProfileList from "./selectableProfileList"
 
 export default function SearchableProfileList() {
   const [query, setQuery] = useState("")

@@ -5,11 +5,11 @@
  */
 "use client"
 
-import SelectableProfileInput from "./selectableProfileInput"
 import Profile from "@/components/profile"
 import { useDataStore } from "@/util/store"
 import Fuse from "fuse.js"
 import { Fragment, useEffect, useMemo, useRef, useState } from "react"
+import SelectableProfileInput from "./selectableProfileInput"
 
 export default function SelectableProfileList({ query }: { query: string }) {
   const ref = useRef<HTMLDivElement>(null)

@@ -3,12 +3,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Redirect from "./redirect"
 import Footer from "@/components/footer"
 import { Metadata } from "next"
 import { headers } from "next/headers"
 import Link from "next/link"
 import { UAParser } from "ua-parser-js"
+import Redirect from "./redirect"
 
 export const metadata: Metadata = {
   title: "Redirecting to post | SkyNotify",

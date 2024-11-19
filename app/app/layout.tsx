@@ -3,12 +3,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import "./globals.css"
 import LoadConfig from "@/components/loadConfig"
 import OpenBackgroundNotifications from "@/components/openBackgroundNotifications"
 import UpdateToken from "@/components/updateToken"
 import { Metadata, Viewport } from "next"
 import { Noto_Sans, Noto_Sans_Mono } from "next/font/google"
+import "./globals.css"
 
 const font = Noto_Sans({
   display: "swap",

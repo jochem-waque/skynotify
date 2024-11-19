@@ -5,11 +5,11 @@
  */
 "use client"
 
-import ImmutableChipList from "./immutableChipList"
 import Profile from "@/components/profile"
-import { pickProfile, useDataStore, Profile as ProfileType } from "@/util/store"
+import { pickProfile, Profile as ProfileType, useDataStore } from "@/util/store"
 import { AtpAgent } from "@atproto/api"
 import { useEffect, useRef, useState } from "react"
+import ImmutableChipList from "./immutableChipList"
 
 export default function Configuration() {
   const savedConfiguration = useDataStore((state) => state.savedConfiguration)

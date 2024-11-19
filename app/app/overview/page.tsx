@@ -3,13 +3,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import RedirectDropdown from "./settings"
-import SupportId from "./supportId"
 import Configuration from "@/app/overview/configuration"
 import ReturnToSetup from "@/app/overview/returnToSetup"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import { Metadata } from "next"
+import RedirectDropdown from "./settings"
+import SupportId from "./supportId"
 
 export const metadata: Metadata = {
   title: "Overview | SkyNotify",
