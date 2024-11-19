@@ -1,6 +1,7 @@
-# Blue
+# Skynotify
 
-A containerised service that provides real-time push notifications for Bluesky posts.
+A containerised service that provides real-time push notifications for Bluesky
+posts.
 
 ## Usage
 
@@ -14,7 +15,9 @@ A containerised service that provides real-time push notifications for Bluesky p
 8. Run `docker compose build`
 9. Run `docker compose up -d`
 
-The service will now be running in the background. To make the service accessible from the outside on port 80, the following can be added to `app` in `docker-compose.yml`:
+The service will now be running in the background. To make the service
+accessible from the outside on port 80, the following can be added to `app` in
+`docker-compose.yml`:
 
 ```yml
 ports:
