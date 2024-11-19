@@ -106,12 +106,10 @@ func main() {
 	events.HandleRepoStream(context.Background(), con, sched)
 }
 
-func processIdentity(evt *atproto.SyncSubscribeRepos_Identity) error {
+func processIdentity(evt *atproto.SyncSubscribeRepos_Identity) {
 	if evt.Handle != nil {
 		user.UpdateHandle(evt.Did, *evt.Handle)
 	}
-
-	return nil
 }
 
 func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
@@ -132,24 +130,24 @@ func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
 	return false
 }
 
-func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
+func processCommit(evt *atproto.SyncSubscribeRepos_Commit) {
 	if evt.TooBig {
 		// fmt.Println("skipping too big commit")
-		return nil
+		return
 	}
 
 	if !hasUsefulOp(evt) {
-		return nil
+		return
 	}
 
 	rows, err := querier.GetSubscriptions(context.Background(), evt.Repo)
 	if err != nil {
 		fmt.Println(err)
-		return nil
+		return
 	}
 
 	if len(rows) == 0 && !user.Exists(evt.Repo) {
-		return nil
+		return
 	}
 
 	userData, err := user.GetOrFetch(evt.Repo)
@@ -166,7 +164,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			err := openCar(&car, evt)
 			if err != nil {
 				fmt.Println(err)
-				return nil
+				return
 			}
 
 			err = user.Update(evt.Repo, car, cid.MustParse(op.Cid.String()).KeyString())
@@ -182,7 +180,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			err := openCar(&car, evt)
 			if err != nil {
 				fmt.Println(err)
-				return nil
+				return
 			}
 
 			err = processRepost(&messages, rows, userData, car, op)
@@ -198,7 +196,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			err := openCar(&car, evt)
 			if err != nil {
 				fmt.Println(err)
-				return nil
+				return
 			}
 
 			err = processPost(&messages, rows, userData, car, op)
@@ -236,8 +234,6 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			fmt.Printf("Invalidated token %s\n", token)
 		}
 	}
-
-	return nil
 }
 
 func openCar(car *storage.ReadableCar, evt *atproto.SyncSubscribeRepos_Commit) error {
