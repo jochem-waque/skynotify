@@ -67,10 +67,15 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user user.Use
 
 	pid := post.Uri[slash+1:]
 
+	tag := path[strings.LastIndex(path, ".")+1:]
+	if len(tag) > 32 {
+		tag = tag[:32]
+	}
+
 	message.Data = make(map[string]string)
 	message.Data["title"] = user.Handle
 	message.Data["body"] = fmt.Sprintf("@%s: %s", post.Author.Handle, post.Record.Text)
-	message.Data["tag"] = path
+	message.Data["tag"] = tag
 	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", post.Author.Did, pid)
 	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
