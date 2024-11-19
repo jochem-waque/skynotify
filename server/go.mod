@@ -4,14 +4,14 @@ go 1.23.2
 
 require (
 	firebase.google.com/go/v4 v4.15.0
-	github.com/bluesky-social/indigo v0.0.0-20241119010152-c0181b6c62d3
+	github.com/bluesky-social/indigo v0.0.0-20241119181532-966c093275b7
 	github.com/gorilla/websocket v1.5.3
 	github.com/ipfs/go-cid v0.4.1
 	github.com/ipld/go-car/v2 v2.14.2
 	github.com/ipld/go-ipld-prime v0.21.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/lpernett/godotenv v0.0.0-20230527005122-0de1d4c5ef5e
-	google.golang.org/api v0.206.0
+	google.golang.org/api v0.207.0
 )
 
 require (
@@ -22,7 +22,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.5.2 // indirect
 	cloud.google.com/go/firestore v1.17.0 // indirect
 	cloud.google.com/go/iam v1.2.2 // indirect
-	cloud.google.com/go/longrunning v0.6.2 // indirect
+	cloud.google.com/go/longrunning v0.6.3 // indirect
 	cloud.google.com/go/monitoring v1.21.2 // indirect
 	cloud.google.com/go/storage v1.47.0 // indirect
 	github.com/DataDog/zstd v1.5.6 // indirect
