@@ -128,7 +128,7 @@ func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
 
 func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 	if evt.TooBig {
-		fmt.Println("skipping too big commit")
+		// fmt.Println("skipping too big commit")
 		return nil
 	}
 
