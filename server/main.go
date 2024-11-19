@@ -154,7 +154,11 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 				return nil
 			}
 
-			user.Update(evt.Repo, car, cid.MustParse(op.Cid.String()).KeyString())
+			err = user.Update(evt.Repo, car, cid.MustParse(op.Cid.String()).KeyString())
+			if err != nil {
+				fmt.Println(err)
+			}
+
 			continue
 		}
 
@@ -166,7 +170,11 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 				return nil
 			}
 
-			processRepost(&messages, rows, userData, car, op)
+			err = processRepost(&messages, rows, userData, car, op)
+			if err != nil {
+				fmt.Println(err)
+			}
+
 			continue
 		}
 
@@ -178,7 +186,11 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 				return nil
 			}
 
-			processPost(&messages, rows, userData, car, op)
+			err = processPost(&messages, rows, userData, car, op)
+			if err != nil {
+				fmt.Println(err)
+			}
+
 			continue
 		}
 	}
