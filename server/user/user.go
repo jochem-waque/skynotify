@@ -77,6 +77,22 @@ func GetOrFetch(did string) (User, error) {
 	return user, nil
 }
 
+func UpdateHandle(did string, handle string) {
+	users.RLock()
+	user, ok := users.m[did]
+	users.RUnlock()
+
+	if !ok {
+		return
+	}
+
+	user.Handle = handle
+
+	users.Lock()
+	users.m[did] = user
+	users.Unlock()
+}
+
 func Update(did string, car storage.ReadableCar, cid string) error {
 	users.RLock()
 	user, ok := users.m[did]

@@ -88,7 +88,8 @@ func main() {
 	}
 
 	rsc := &events.RepoStreamCallbacks{
-		RepoCommit: processCommit,
+		RepoIdentity: processIdentity,
+		RepoCommit:   processCommit,
 		Error: func(evt *events.ErrorFrame) error {
 			fmt.Printf("ERROR: %s (%s)\n", evt.Error, evt.Message)
 			return nil
@@ -97,6 +98,14 @@ func main() {
 
 	sched := sequential.NewScheduler("firehose", rsc.EventHandler)
 	events.HandleRepoStream(context.Background(), con, sched)
+}
+
+func processIdentity(evt *atproto.SyncSubscribeRepos_Identity) error {
+	if evt.Handle != nil {
+		user.UpdateHandle(evt.Did, *evt.Handle)
+	}
+
+	return nil
 }
 
 func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
