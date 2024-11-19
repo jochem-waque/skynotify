@@ -1,7 +1,8 @@
 # Skynotify
 
 A containerised service that provides real-time push notifications for Bluesky
-posts.
+posts, officially hosted on [skynotify.co](https://skynotify.co/) and easily
+self-hostable.
 
 ## Installing
 
