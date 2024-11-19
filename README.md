@@ -3,7 +3,7 @@
 A containerised service that provides real-time push notifications for Bluesky
 posts.
 
-## Usage
+## Installing
 
 1. Install Docker and Docker Compose
 2. Clone or download the repository
@@ -23,6 +23,18 @@ accessible from the outside on port 80, the following can be added to `app` in
 ports:
   - "80:3000"
 ```
+
+## Contributing
+
+All contributions, issues and pull requests are welcome, but I can't guarantee
+that I'll have the time to keep up with everything. To start contributing,
+you'll need to install the following:
+
+- Go
+- Node.js
+  - Node.js 23 is currently not supported
+- VS Code
+- pnpm
 
 ## License
 
