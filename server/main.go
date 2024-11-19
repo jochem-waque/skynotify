@@ -242,8 +242,7 @@ func openCar(car *storage.ReadableCar, evt *atproto.SyncSubscribeRepos_Commit) e
 func processPost(messages *[]messaging.MulticastMessage, rows []db.GetSubscriptionsRow, user user.User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
 	message, reply, err := post.MakeMessage(car, cid.MustParse(op.Cid.String()).KeyString(), op.Path, user)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return err
 	}
 
 	tokens := []string{}
@@ -264,8 +263,7 @@ func processPost(messages *[]messaging.MulticastMessage, rows []db.GetSubscripti
 func processRepost(messages *[]messaging.MulticastMessage, rows []db.GetSubscriptionsRow, user user.User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
 	message, err := repost.MakeMessage(car, cid.MustParse(op.Cid.String()).KeyString(), op.Path, user)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return err
 	}
 
 	tokens := []string{}
