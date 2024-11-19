@@ -64,9 +64,6 @@ importers:
       '@eslint/eslintrc':
         specifier: ^3.2.0
         version: 3.2.0
-      '@trivago/prettier-plugin-sort-imports':
-        specifier: ^4.3.0
-        version: 4.3.0(prettier@3.3.3)
       '@tsconfig/strictest':
         specifier: ^2.0.5
         version: 2.0.5
@@ -2864,12 +2861,14 @@ snapshots:
       '@babel/helper-validator-identifier': 7.25.9
       js-tokens: 4.0.0
       picocolors: 1.1.1
+    optional: true
 
   '@babel/generator@7.17.7':
     dependencies:
       '@babel/types': 7.17.0
       jsesc: 2.5.2
       source-map: 0.5.7
+    optional: true
 
   '@babel/generator@7.26.2':
     dependencies:
@@ -2878,37 +2877,46 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 3.0.2
+    optional: true
 
   '@babel/helper-environment-visitor@7.24.7':
     dependencies:
       '@babel/types': 7.26.0
+    optional: true
 
   '@babel/helper-function-name@7.24.7':
     dependencies:
       '@babel/template': 7.25.9
       '@babel/types': 7.26.0
+    optional: true
 
   '@babel/helper-hoist-variables@7.24.7':
     dependencies:
       '@babel/types': 7.26.0
+    optional: true
 
   '@babel/helper-split-export-declaration@7.24.7':
     dependencies:
       '@babel/types': 7.26.0
+    optional: true
 
-  '@babel/helper-string-parser@7.25.9': {}
+  '@babel/helper-string-parser@7.25.9':
+    optional: true
 
-  '@babel/helper-validator-identifier@7.25.9': {}
+  '@babel/helper-validator-identifier@7.25.9':
+    optional: true
 
   '@babel/parser@7.26.2':
     dependencies:
       '@babel/types': 7.26.0
+    optional: true
 
   '@babel/template@7.25.9':
     dependencies:
       '@babel/code-frame': 7.26.2
       '@babel/parser': 7.26.2
       '@babel/types': 7.26.0
+    optional: true
 
   '@babel/traverse@7.23.2':
     dependencies:
@@ -2924,16 +2932,19 @@ snapshots:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@babel/types@7.17.0':
     dependencies:
       '@babel/helper-validator-identifier': 7.25.9
       to-fast-properties: 2.0.0
+    optional: true
 
   '@babel/types@7.26.0':
     dependencies:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
+    optional: true
 
   '@drizzle-team/brocli@0.10.2': {}
 
@@ -3711,6 +3722,7 @@ snapshots:
       prettier: 3.3.3
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@tsconfig/strictest@2.0.5': {}
 
@@ -4643,7 +4655,8 @@ snapshots:
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
-  globals@11.12.0: {}
+  globals@11.12.0:
+    optional: true
 
   globals@14.0.0: {}
 
@@ -4830,7 +4843,8 @@ snapshots:
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
 
-  javascript-natural-sort@0.7.1: {}
+  javascript-natural-sort@0.7.1:
+    optional: true
 
   jiti@1.21.6: {}
 
@@ -4843,9 +4857,11 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jsesc@2.5.2: {}
+  jsesc@2.5.2:
+    optional: true
 
-  jsesc@3.0.2: {}
+  jsesc@3.0.2:
+    optional: true
 
   json-buffer@3.0.1: {}
 
@@ -4895,7 +4911,8 @@ snapshots:
 
   lodash.sortby@4.7.0: {}
 
-  lodash@4.17.21: {}
+  lodash@4.17.21:
+    optional: true
 
   long@5.2.3: {}
 
@@ -5304,7 +5321,8 @@ snapshots:
       buffer-from: 1.1.2
       source-map: 0.6.1
 
-  source-map@0.5.7: {}
+  source-map@0.5.7:
+    optional: true
 
   source-map@0.6.1: {}
 
@@ -5447,7 +5465,8 @@ snapshots:
 
   tlds@1.255.0: {}
 
-  to-fast-properties@2.0.0: {}
+  to-fast-properties@2.0.0:
+    optional: true
 
   to-regex-range@5.0.1:
     dependencies:

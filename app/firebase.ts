@@ -10,4 +10,4 @@ export const Config = {
   storageBucket: "",
   messagingSenderId: "",
   appId: "",
-};
+}
