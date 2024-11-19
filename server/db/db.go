@@ -14,7 +14,6 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-// Querier is a typesafe Go interface backed by SQL queries.
 type Querier interface {
 	GetSubscriptions(ctx context.Context, did string) ([]GetSubscriptionsRow, error)
 
