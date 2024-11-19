@@ -3,6 +3,30 @@
   "version": "1.0.0",
   "private": true,
   "license": "AGPL-3.0-or-later",
+  "homepage": "https://skynotify.co/",
+  "bugs": {
+    "url": "https://github.com/Jochem-W/skynotify/issues"
+  },
+  "author": "Jochem-W <admin@skynotify.co> (https://jochem.cc/)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jochem-W/skynotify.git",
+    "directory": "app"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "onFail": "warn"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "onFail": "warn"
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
