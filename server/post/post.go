@@ -64,7 +64,7 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, userData user
 		return message, false, err
 	}
 
-	imageRef, err := extractImageThumb(n)
+	imageRef, err := extractImageThumb(n, userData.Did)
 	if err != nil {
 		return message, false, err
 	}
@@ -77,7 +77,7 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, userData user
 	}
 
 	if imageRef == "" {
-		imageRef, err = extractExternalThumb(n)
+		imageRef, err = extractExternalThumb(n, userData.Did)
 		if err != nil {
 			return message, false, err
 		}
@@ -111,7 +111,7 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, userData user
 	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
 	if imageRef != "" {
-		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", userData.Did, imageRef)
+		message.Data["image"] = imageRef
 	}
 
 	if userData.Avatar != "" {
@@ -236,7 +236,7 @@ func extractQuote(node datamodel.Node) (string, error) {
 	return user.Handle, nil
 }
 
-func extractImageThumb(node datamodel.Node) (string, error) {
+func extractImageThumb(node datamodel.Node, did string) (string, error) {
 	embed, err := node.LookupByString("embed")
 	if err != nil {
 		return "", internal.IgnoreNotExists(err)
@@ -289,7 +289,7 @@ func extractImageThumb(node datamodel.Node) (string, error) {
 		return "", err
 	}
 
-	return linkNode.String(), nil
+	return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, linkNode.String()), nil
 }
 
 func extractVideoThumbnail(node datamodel.Node, did string) (string, error) {
@@ -315,26 +315,7 @@ func extractVideoThumbnail(node datamodel.Node, did string) (string, error) {
 		}
 	}
 
-	thumbnail, err := video.LookupByString("thumbnail")
-	if err != nil {
-		if !internal.IsNotExists(err) {
-			return "", err
-		}
-
-		ref, err := video.LookupByString("ref")
-		if err != nil {
-			return "", err
-		}
-
-		linkNode, err := ref.AsLink()
-		if err != nil {
-			return "", err
-		}
-
-		return fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", did, linkNode.String()), nil
-	}
-
-	ref, err := thumbnail.LookupByString("ref")
+	ref, err := video.LookupByString("ref")
 	if err != nil {
 		return "", err
 	}
@@ -344,10 +325,10 @@ func extractVideoThumbnail(node datamodel.Node, did string) (string, error) {
 		return "", err
 	}
 
-	return linkNode.String(), nil
+	return fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", did, linkNode.String()), nil
 }
 
-func extractExternalThumb(node datamodel.Node) (string, error) {
+func extractExternalThumb(node datamodel.Node, did string) (string, error) {
 	embed, err := node.LookupByString("embed")
 	if err != nil {
 		return "", internal.IgnoreNotExists(err)
@@ -385,5 +366,5 @@ func extractExternalThumb(node datamodel.Node) (string, error) {
 		return "", err
 	}
 
-	return linkNode.String(), nil
+	return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, linkNode.String()), nil
 }
