@@ -36,7 +36,7 @@ const csp = [
 
   "upgrade-insecure-requests",
 
-  "report-to csp-endpoint",
+  "report-to default",
   // TODO "sandbox allow-same-origin allow-scripts",
 ].join("; ")
 
@@ -52,7 +52,7 @@ export default withSerwist({
           { key: "Content-Security-Policy", value: csp },
           {
             key: "Reporting-Endpoints",
-            value: `Reporting-Endpoints: csp-endpoint="https://${process.env.NEXT_PUBLIC_HOSTNAME}/csp"`,
+            value: `Reporting-Endpoints: default="https://${process.env.NEXT_PUBLIC_HOSTNAME}/csp"`,
           },
         ],
       },
