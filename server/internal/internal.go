@@ -51,18 +51,12 @@ func CutAtUri(uri string) (AtUri, error) {
 
 	atUri.Did = did
 
-	collection, after, found := strings.Cut(after, "/")
+	collection, rkey, found := strings.Cut(after, "/")
 	if !found {
 		return atUri, fmt.Errorf("SplitAtUri: couldn't cut collection from %s", after)
 	}
 
 	atUri.Collection = collection
-
-	rkey, _, found := strings.Cut(after, "/")
-	if !found {
-		return atUri, fmt.Errorf("SplitAtUri: couldn't cut rkey from %s", after)
-	}
-
 	atUri.RecordKey = rkey
 	return atUri, nil
 }
