@@ -23,35 +23,6 @@ import (
 	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-type embedData struct {
-	Images []struct {
-		Thumb string `json:"thumb"`
-	} `json:"images,omitempty"`
-	Video struct {
-		Thumbnail string `json:"thumbnail,omitempty"`
-	} `json:"video,omitempty"`
-	External struct {
-		Thumb string `json:"thumb,omitempty"`
-	} `json:"external,omitempty"`
-}
-
-type PostsResponse struct {
-	Posts []struct {
-		Uri    string `json:"uri"`
-		Author struct {
-			Did    string `json:"did"`
-			Handle string `json:"handle"`
-		} `json:"author"`
-		Record struct {
-			Text string `json:"text,omitempty"`
-		} `json:"record"`
-		Embed struct {
-			embedData
-			Media embedData `json:"media,omitempty"`
-		} `json:"embed,omitempty"`
-	} `json:"posts"`
-}
-
 func ExtractCreatedAt(node datamodel.Node) (string, error) {
 	createdAt, err := node.LookupByString("createdAt")
 	if err != nil {
@@ -211,18 +182,12 @@ func extractParentDid(node datamodel.Node) (string, error) {
 		return "", err
 	}
 
-	noPrefix, found := strings.CutPrefix(uriString, "at://")
-	if !found {
-		return "", fmt.Errorf("extractParentDid: couldn't cut prefix at:// from %s", uriString)
+	atUri, err := internal.CutAtUri(uriString)
+	if err != nil {
+		return "", err
 	}
 
-	did, _, found := strings.Cut(noPrefix, "/")
-	if !found {
-		return "", fmt.Errorf("extractParentDid: couldn't cut did from %s", noPrefix)
-
-	}
-
-	return did, nil
+	return atUri.Did, nil
 }
 
 func extractQuote(node datamodel.Node) (string, error) {
@@ -258,17 +223,12 @@ func extractQuote(node datamodel.Node) (string, error) {
 		return "", err
 	}
 
-	after, found := strings.CutPrefix(uriString, "at://")
-	if !found {
-		return "", fmt.Errorf("couldn't cut prefix at:// from %s", uriString)
+	atUri, err := internal.CutAtUri(uriString)
+	if err != nil {
+		return "", err
 	}
 
-	did, _, found := strings.Cut(after, "/")
-	if !found {
-		return "", fmt.Errorf("couldn't cut DID from %s", after)
-	}
-
-	user, err := user.GetOrFetch(did)
+	user, err := user.GetOrFetch(atUri.Did)
 	if err != nil {
 		return "", err
 	}

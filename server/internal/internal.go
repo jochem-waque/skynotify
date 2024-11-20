@@ -7,7 +7,9 @@ package internal
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/ipld/go-ipld-prime/datamodel"
@@ -26,4 +28,41 @@ func IgnoreNotExists(err error) error {
 func IsNotExists(err error) bool {
 	var notExists datamodel.ErrNotExists
 	return errors.As(err, &notExists)
+}
+
+type AtUri struct {
+	Did        string `json:"did"`
+	Collection string `json:"collection"`
+	RecordKey  string `json:"recordKey"`
+}
+
+func CutAtUri(uri string) (AtUri, error) {
+	atUri := AtUri{}
+
+	noPrefix, found := strings.CutPrefix(uri, "at://")
+	if !found {
+		return atUri, fmt.Errorf("SplitAtUri: couldn't cut prefix at:// from %s", noPrefix)
+	}
+
+	did, after, found := strings.Cut(noPrefix, "/")
+	if !found {
+		return atUri, fmt.Errorf("SplitAtUri: couldn't cut did from %s", noPrefix)
+	}
+
+	atUri.Did = did
+
+	collection, after, found := strings.Cut(after, "/")
+	if !found {
+		return atUri, fmt.Errorf("SplitAtUri: couldn't cut collection from %s", after)
+	}
+
+	atUri.Collection = collection
+
+	rkey, _, found := strings.Cut(after, "/")
+	if !found {
+		return atUri, fmt.Errorf("SplitAtUri: couldn't cut rkey from %s", after)
+	}
+
+	atUri.RecordKey = rkey
+	return atUri, nil
 }
