@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime"
 	"slices"
 	"strings"
 
@@ -24,7 +25,7 @@ import (
 	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/events"
-	"github.com/bluesky-social/indigo/events/schedulers/sequential"
+	"github.com/bluesky-social/indigo/events/schedulers/autoscaling"
 	"github.com/gorilla/websocket"
 	"github.com/ipfs/go-cid"
 	"github.com/ipld/go-car/v2/storage"
@@ -89,11 +90,11 @@ func main() {
 
 	rsc := &events.RepoStreamCallbacks{
 		RepoIdentity: func(evt *atproto.SyncSubscribeRepos_Identity) error {
-			go processIdentity(evt)
+			processIdentity(evt)
 			return nil
 		},
 		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
-			go processCommit(evt)
+			processCommit(evt)
 			return nil
 		},
 		Error: func(evt *events.ErrorFrame) error {
@@ -102,7 +103,9 @@ func main() {
 		},
 	}
 
-	sched := sequential.NewScheduler("firehose", rsc.EventHandler)
+	settings := autoscaling.DefaultAutoscaleSettings()
+	settings.Concurrency = runtime.NumCPU()
+	sched := autoscaling.NewScheduler(settings, "firehose", rsc.EventHandler)
 	events.HandleRepoStream(context.Background(), con, sched)
 }
 
