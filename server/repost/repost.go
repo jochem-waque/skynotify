@@ -107,9 +107,9 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, userData user
 	} else if len(post.Value.Embed.Media.Images) > 0 {
 		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Media.Images[0].Image.Ref.Link)
 	} else if post.Value.Embed.Video.Ref.Link != "" {
-		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Video.Ref.Link)
+		message.Data["image"] = fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", atUri.Did, post.Value.Embed.Video.Ref.Link)
 	} else if post.Value.Embed.Media.Video.Ref.Link != "" {
-		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Media.Video.Ref.Link)
+		message.Data["image"] = fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", atUri.Did, post.Value.Embed.Media.Video.Ref.Link)
 	} else if post.Value.Embed.External.Thumb.Ref.Link != "" {
 		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.External.Thumb.Ref.Link)
 	} else if post.Value.Embed.Media.External.Thumb.Ref.Link != "" {
