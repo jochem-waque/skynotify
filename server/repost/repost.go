@@ -74,6 +74,10 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, userData user
 		return message, err
 	}
 
+	if response.StatusCode != 200 {
+		return message, fmt.Errorf("repost.MakeMessage: response status %s", response.Status)
+	}
+
 	post := record{}
 	err = json.NewDecoder(response.Body).Decode(&post)
 	if err != nil {

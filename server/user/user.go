@@ -54,6 +54,10 @@ func GetOrFetch(did string) (User, error) {
 		return user, err
 	}
 
+	if response.StatusCode != 200 {
+		return user, fmt.Errorf("user.GetOrFetch: response status %s", response.Status)
+	}
+
 	user = User{}
 	err = json.NewDecoder(response.Body).Decode(&user)
 	if err != nil {
