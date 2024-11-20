@@ -3,6 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import Link from "next/link"
 import { ReactNode } from "react"
 import ScrollIntoViewOnProfiles from "./scrollIntoViewOnProfiles"
 
@@ -32,9 +33,17 @@ export default function InstructionList({
       <li
         className={`${step === "import" ? "" : "opacity-50"} flex flex-col gap-2 after:my-1 after:w-full after:border-b`}
       >
-        <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-100 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
-          <h2 className="text-xl">Import following</h2>
-        </div>
+        {step === "installation" ? (
+          <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-100 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
+            <h2 className="text-xl">Import following</h2>
+          </div>
+        ) : (
+          <Link href="import">
+            <div className="flex items-center gap-2 before:flex before:aspect-square before:w-8 before:items-center before:justify-center before:rounded-full before:bg-neutral-100 before:content-[counter(section)] before:[counter-increment:section] before:dark:bg-neutral-800">
+              <h2 className="text-xl">Import following</h2>
+            </div>
+          </Link>
+        )}
         <div
           className={`${step === "import" ? "" : "grid-rows-[0fr]"} grid duration-500`}
         >
