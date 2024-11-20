@@ -17,7 +17,7 @@ export default function NoFollowing() {
 
   useEffect(() => {
     if (!fetching && profiles.size === 0) {
-      router.push("import")
+      router.replace("import")
     }
   }, [fetching, profiles, router])
 
