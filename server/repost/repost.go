@@ -36,13 +36,23 @@ type record struct {
 
 type embedData struct {
 	Images []struct {
-		Thumb string `json:"thumb"`
+		Image struct {
+			Ref struct {
+				Link string `json:"$link"`
+			} `json:"ref"`
+		} `json:"image"`
 	} `json:"images,omitempty"`
 	Video struct {
-		Thumbnail string `json:"thumbnail,omitempty"`
+		Ref struct {
+			Link string `json:"$link"`
+		} `json:"ref"`
 	} `json:"video,omitempty"`
 	External struct {
-		Thumb string `json:"thumb,omitempty"`
+		Thumb struct {
+			Ref struct {
+				Link string `json:"$link"`
+			} `json:"ref"`
+		} `json:"thumb,omitempty"`
 	} `json:"external,omitempty"`
 }
 
@@ -93,17 +103,17 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, userData user
 	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
 	if len(post.Value.Embed.Images) > 0 {
-		message.Data["image"] = post.Value.Embed.Images[0].Thumb
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Images[0].Image.Ref.Link)
 	} else if len(post.Value.Embed.Media.Images) > 0 {
-		message.Data["image"] = post.Value.Embed.Media.Images[0].Thumb
-	} else if post.Value.Embed.Video.Thumbnail != "" {
-		message.Data["image"] = post.Value.Embed.Video.Thumbnail
-	} else if post.Value.Embed.Media.Video.Thumbnail != "" {
-		message.Data["image"] = post.Value.Embed.Media.Video.Thumbnail
-	} else if post.Value.Embed.External.Thumb != "" {
-		message.Data["image"] = post.Value.Embed.External.Thumb
-	} else if post.Value.Embed.Media.External.Thumb != "" {
-		message.Data["image"] = post.Value.Embed.Media.External.Thumb
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Media.Images[0].Image.Ref.Link)
+	} else if post.Value.Embed.Video.Ref.Link != "" {
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Video.Ref.Link)
+	} else if post.Value.Embed.Media.Video.Ref.Link != "" {
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Media.Video.Ref.Link)
+	} else if post.Value.Embed.External.Thumb.Ref.Link != "" {
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.External.Thumb.Ref.Link)
+	} else if post.Value.Embed.Media.External.Thumb.Ref.Link != "" {
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Media.External.Thumb.Ref.Link)
 	}
 
 	if userData.DisplayName != "" {
