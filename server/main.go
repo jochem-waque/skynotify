@@ -25,7 +25,7 @@ import (
 	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/events"
-	"github.com/bluesky-social/indigo/events/schedulers/autoscaling"
+	"github.com/bluesky-social/indigo/events/schedulers/parallel"
 	"github.com/gorilla/websocket"
 	"github.com/ipfs/go-cid"
 	"github.com/ipld/go-car/v2/storage"
@@ -103,9 +103,7 @@ func main() {
 		},
 	}
 
-	settings := autoscaling.DefaultAutoscaleSettings()
-	settings.Concurrency = runtime.NumCPU()
-	sched := autoscaling.NewScheduler(settings, "firehose", rsc.EventHandler)
+	sched := parallel.NewScheduler(runtime.NumCPU(), 500, "firehose", rsc.EventHandler)
 	events.HandleRepoStream(context.Background(), con, sched)
 }
 
