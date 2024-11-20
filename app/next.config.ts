@@ -17,7 +17,7 @@ const csp = [
   "frame-ancestors 'none'",
 
   "script-src-attr 'none'",
-  "script-src-elem 'self' 'unsafe-inline'",
+  "script-src-elem 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
   process.env.NODE_ENV !== "production"
     ? "script-src 'unsafe-eval'"
     : "script-src 'none'",
