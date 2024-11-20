@@ -52,7 +52,7 @@ export default withSerwist({
           { key: "Content-Security-Policy", value: csp },
           {
             key: "Reporting-Endpoints",
-            value: `Reporting-Endpoints: default="https://${process.env.NEXT_PUBLIC_HOSTNAME}/csp"`,
+            value: `Reporting-Endpoints: default="https://${process.env.NEXT_PUBLIC_HOSTNAME}/reports"`,
           },
         ],
       },
