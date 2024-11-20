@@ -8,7 +8,6 @@ package post
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -67,7 +66,7 @@ func ExtractCreatedAt(node datamodel.Node) (string, error) {
 	return createdAtStr, nil
 }
 
-func MakeMessage(car storage.ReadableCar, cid string, path string, user user.User) (messaging.MulticastMessage, bool, error) {
+func MakeMessage(car storage.ReadableCar, cid string, path string, userData user.User) (messaging.MulticastMessage, bool, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "post"}}
 
 	_, pid, found := strings.Cut(path, "/")
@@ -100,7 +99,7 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user user.Use
 	}
 
 	if imageRef == "" {
-		imageRef, err = extractVideoThumbnail(n, user.Did)
+		imageRef, err = extractVideoThumbnail(n, userData.Did)
 		if err != nil {
 			return message, false, err
 		}
@@ -134,25 +133,25 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user user.Use
 	}
 
 	message.Data = make(map[string]string)
-	message.Data["title"] = user.Handle
+	message.Data["title"] = userData.Handle
 	message.Data["body"] = text
 	message.Data["tag"] = tag
-	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", user.Did, pid)
+	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", userData.Did, pid)
 	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
 	if imageRef != "" {
-		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", user.Did, imageRef)
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", userData.Did, imageRef)
 	}
 
-	if user.Avatar != "" {
-		message.Data["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", user.Did, user.Avatar)
+	if userData.Avatar != "" {
+		message.Data["icon"] = fmt.Sprintf("https://cdn.bsky.app/img/avatar_thumbnail/plain/%s/%s@jpeg", userData.Did, userData.Avatar)
 	}
 
-	if user.DisplayName != "" {
-		message.Data["title"] = user.DisplayName
+	if userData.DisplayName != "" {
+		message.Data["title"] = userData.DisplayName
 	}
 
-	parent, err := extractParent(n)
+	parent, err := extractParentDid(n)
 	if err != nil {
 		return message, false, err
 	}
@@ -162,13 +161,13 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, user user.Use
 	if isReply {
 		message.FCMOptions.AnalyticsLabel = "reply"
 
-		handle, err := getParentHandle(parent)
+		parentUser, err := user.GetOrFetch(parent)
 		if err != nil {
 			return message, isReply, err
 		}
 
 		message.Data["title"] += " replied"
-		message.Data["body"] = fmt.Sprintf("@%s %s", handle, message.Data["body"])
+		message.Data["body"] = fmt.Sprintf("@%s %s", parentUser.Handle, message.Data["body"])
 	} else if isQuote {
 		message.Data["title"] += " quoted"
 		message.Data["body"] = fmt.Sprintf("%s @%s", message.Data["body"], quoted)
@@ -191,7 +190,7 @@ func extractText(node datamodel.Node) (string, error) {
 	return textstr, nil
 }
 
-func extractParent(node datamodel.Node) (string, error) {
+func extractParentDid(node datamodel.Node) (string, error) {
 	reply, err := node.LookupByString("reply")
 	if err != nil {
 		return "", internal.IgnoreNotExists(err)
@@ -207,7 +206,23 @@ func extractParent(node datamodel.Node) (string, error) {
 		return "", err
 	}
 
-	return uri.AsString()
+	uriString, err := uri.AsString()
+	if err != nil {
+		return "", err
+	}
+
+	noPrefix, found := strings.CutPrefix(uriString, "at://")
+	if !found {
+		return "", fmt.Errorf("extractParentDid: couldn't cut prefix at:// from %s", uriString)
+	}
+
+	did, _, found := strings.Cut(noPrefix, "/")
+	if !found {
+		return "", fmt.Errorf("extractParentDid: couldn't cut did from %s", noPrefix)
+
+	}
+
+	return did, nil
 }
 
 func extractQuote(node datamodel.Node) (string, error) {
@@ -411,26 +426,4 @@ func extractExternalThumb(node datamodel.Node) (string, error) {
 	}
 
 	return linkNode.String(), nil
-}
-
-func getParentHandle(uri string) (string, error) {
-	response, err := internal.HttpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts?uris=%s", uri))
-	if err != nil {
-		return "", err
-	}
-
-	jsonResponse := PostsResponse{}
-	err = json.NewDecoder(response.Body).Decode(&jsonResponse)
-	if err != nil {
-		return "", err
-	}
-
-	if len(jsonResponse.Posts) == 0 {
-		// TODO retry?
-		return "", fmt.Errorf("no posts for uri %s", uri)
-	}
-
-	post := jsonResponse.Posts[0]
-
-	return post.Author.Handle, nil
 }
