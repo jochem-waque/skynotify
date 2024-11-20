@@ -117,29 +117,31 @@ const combined = combine(
         service: "https://public.api.bsky.app/",
       })
 
-      let response: AppBskyGraphGetFollows.Response | undefined = undefined
-      do {
-        try {
-          response = await agent.getFollows({
-            actor,
-            limit: 100,
-            cursor: response?.data.cursor,
-          })
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (_) {
-          set({ fetchError: true, fetching: false })
-          return
-        }
+      for (const splitActor of actor.split(",")) {
+        let response: AppBskyGraphGetFollows.Response | undefined = undefined
+        do {
+          try {
+            response = await agent.getFollows({
+              actor: splitActor,
+              limit: 100,
+              cursor: response?.data.cursor,
+            })
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          } catch (_) {
+            set({ fetchError: true, fetching: false })
+            return
+          }
 
-        set(({ profiles: oldProfiles }) => ({
-          profiles: new Map([
-            ...oldProfiles.entries(),
-            ...response!.data.follows.map(
-              (follow) => [follow.did, pickProfile(follow)] as const,
-            ),
-          ]),
-        }))
-      } while (response.data.cursor)
+          set(({ profiles: oldProfiles }) => ({
+            profiles: new Map([
+              ...oldProfiles.entries(),
+              ...response!.data.follows.map(
+                (follow) => [follow.did, pickProfile(follow)] as const,
+              ),
+            ]),
+          }))
+        } while (response.data.cursor)
+      }
 
       set(({ profiles, selected }) => ({
         fetching: false,
