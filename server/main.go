@@ -213,7 +213,8 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) {
 		message.Webpush = &messaging.WebpushConfig{Headers: make(map[string]string)}
 		message.Webpush.Headers["TTL"] = "43200" // 12 hours
 		message.Webpush.Headers["Urgency"] = "normal"
-		message.Webpush.Headers["Topic"] = message.Data["tag"]
+		// I think setting the Topic header might act like an FCM topic? Was getting RESOURCE_EXHAUSTED (QUOTA_EXCEEDED)
+		// message.Webpush.Headers["Topic"] = message.Data["tag"]
 		responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
 		for i, response := range responses.Responses {
 			if response.Success {
