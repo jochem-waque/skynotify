@@ -11,10 +11,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bluesky-social/indigo/xrpc"
 	"github.com/bluesky-social/jetstream/pkg/models"
 )
 
 var HttpClient *http.Client = &http.Client{Timeout: time.Second * 30}
+var AtprotoXrpcClient *xrpc.Client = &xrpc.Client{Client: HttpClient, Host: "https://bsky.social"}
+var BskyXrpcClient *xrpc.Client = &xrpc.Client{Client: HttpClient, Host: "https://public.api.bsky.app"}
 
 type AtUri struct {
 	Did        string `json:"did"`

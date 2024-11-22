@@ -6,8 +6,8 @@
 package user
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
 	"sync"
 
@@ -45,22 +45,18 @@ func GetOrFetch(did string) (User, error) {
 		return user, nil
 	}
 
-	response, err := internal.HttpClient.Get(fmt.Sprintf("https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=%s", did))
+	response, err := bsky.ActorGetProfile(context.Background(), internal.BskyXrpcClient, did)
 	if err != nil {
 		return user, err
 	}
 
-	if response.StatusCode != 200 {
-		return user, fmt.Errorf("user.GetOrFetch: response status %s", response.Status)
+	user = User{Did: did, Handle: response.Handle}
+
+	if response.DisplayName != nil {
+		user.DisplayName = *response.DisplayName
 	}
 
-	user = User{}
-	err = json.NewDecoder(response.Body).Decode(&user)
-	if err != nil {
-		return user, err
-	}
-
-	if user.Avatar != "" {
+	if response.Avatar != nil {
 		slash := strings.LastIndex(user.Avatar, "/")
 		if slash != -1 {
 			at := strings.LastIndex(user.Avatar, "@")
