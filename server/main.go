@@ -39,10 +39,10 @@ var messagingClient *messaging.Client
 var querier *db.DBQuerier
 
 var endpoints []string = []string{
-	"jetstream1.us-east.bsky.network",
-	"jetstream2.us-east.bsky.network",
-	"jetstream1.us-west.bsky.network",
-	"jetstream2.us-west.bsky.network",
+	"wss://jetstream1.us-east.bsky.network/subscribe",
+	"wss://jetstream2.us-east.bsky.network/subscribe",
+	"wss://jetstream1.us-west.bsky.network/subscribe",
+	"wss://jetstream2.us-west.bsky.network/subscribe",
 }
 
 func loadEnv() {
