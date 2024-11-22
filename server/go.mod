@@ -6,6 +6,7 @@ require (
 	firebase.google.com/go/v4 v4.15.0
 	github.com/bluesky-social/indigo v0.0.0-20241122170530-feceb364ee49
 	github.com/gorilla/websocket v1.5.3
+	github.com/influxdata/influxdb-client-go/v2 v2.14.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/lpernett/godotenv v0.0.0-20230527005122-0de1d4c5ef5e
 	google.golang.org/api v0.209.0
@@ -28,6 +29,7 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.49.0 // indirect
 	github.com/MicahParks/keyfunc v1.9.0 // indirect
 	github.com/RussellLuo/slidingwindow v0.0.0-20200528002341-535bb99d338b // indirect
+	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/carlmjohnson/versioninfo v0.22.5 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.4.1 // indirect
@@ -59,6 +61,7 @@ require (
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/hashicorp/golang-lru/arc/v2 v2.0.7 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
+	github.com/influxdata/line-protocol v0.0.0-20210922203350-b1ad95c89adf // indirect
 	github.com/ipfs/bbloom v0.0.4 // indirect
 	github.com/ipfs/go-block-format v0.2.0 // indirect
 	github.com/ipfs/go-blockservice v0.5.2 // indirect
@@ -101,6 +104,7 @@ require (
 	github.com/multiformats/go-multihash v0.2.3 // indirect
 	github.com/multiformats/go-varint v0.0.7 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
+	github.com/oapi-codegen/runtime v1.1.1 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/petar/GoLLRB v0.0.0-20210522233825-ae3b015fd3e9 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

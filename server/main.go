@@ -14,7 +14,9 @@ import (
 	"os"
 	"runtime"
 	"slices"
+	"strconv"
 	"strings"
+	"time"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/errorutils"
@@ -29,6 +31,8 @@ import (
 	"github.com/bluesky-social/indigo/events/schedulers/parallel"
 	"github.com/bluesky-social/indigo/repo"
 	"github.com/gorilla/websocket"
+	influxdb "github.com/influxdata/influxdb-client-go/v2"
+	"github.com/influxdata/influxdb-client-go/v2/api"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lpernett/godotenv"
 	"google.golang.org/api/option"
@@ -36,11 +40,14 @@ import (
 
 var env = struct {
 	databaseUrl string
+	influxToken string
 }{}
 
 var messagingClient *messaging.Client
 
 var querier *db.DBQuerier
+
+var writeApi api.WriteAPIBlocking
 
 func loadEnv() error {
 	if _, err := os.Stat(".env"); err == nil {
@@ -52,6 +59,11 @@ func loadEnv() error {
 	env.databaseUrl = os.Getenv("DATABASE_URL")
 	if env.databaseUrl == "" {
 		return fmt.Errorf("loadEnv: environment variable DATABASE_URL is not set")
+	}
+
+	env.influxToken = os.Getenv("INFLUXDB_ADMIN_TOKEN")
+	if env.influxToken == "" {
+		return fmt.Errorf("loadEnv: environment variable INFLUXDB_ADMIN_TOKEN is not set")
 	}
 
 	return nil
@@ -72,6 +84,26 @@ func loadFirebase() error {
 	return nil
 }
 
+func loadInflux() {
+	client := influxdb.NewClient("http://influx:8086", env.influxToken)
+	writeApi = client.WriteAPIBlocking("skynotify", "notification")
+}
+
+func writePoint(notificationType string, success bool) error {
+	point := influxdb.NewPointWithMeasurement("sent")
+	point.AddTag("type", notificationType)
+	point.AddTag("success", strconv.FormatBool(success))
+	point.AddField("value", 1)
+	point.SetTime(time.Now())
+
+	err := writeApi.WritePoint(context.Background(), point)
+	if err != nil {
+		return fmt.Errorf("writePoint: %w", err)
+	}
+
+	return nil
+}
+
 func main() {
 	if err := loadEnv(); err != nil {
 		slog.Error("main", "error", err)
@@ -82,6 +114,8 @@ func main() {
 		slog.Error("main", "error", err)
 		os.Exit(1)
 	}
+
+	loadInflux()
 
 	dbpool, err := pgxpool.New(context.Background(), env.databaseUrl)
 	if err != nil {
@@ -179,7 +213,17 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 		// I think setting the Topic header might act like an FCM topic? Was getting RESOURCE_EXHAUSTED (QUOTA_EXCEEDED)
 		// message.Webpush.Headers["Topic"] = message.Data["tag"]
 		responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
+
+		tag, _, _ := strings.Cut(message.Data["tag"], "/")
+		if tag == "" {
+			tag = "unknown"
+		}
+
 		for i, response := range responses.Responses {
+			if err = writePoint(tag, response.Success); err != nil {
+				slog.Error("processCommit", "error", err)
+			}
+
 			if response.Success {
 				continue
 			}
