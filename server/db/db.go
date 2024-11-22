@@ -48,12 +48,12 @@ type GetSubscriptionsRow struct {
 func (q *DBQuerier) GetSubscriptions(ctx context.Context, did string) ([]GetSubscriptionsRow, error) {
 	rows, err := q.conn.Query(ctx, getSubscriptionsSQL, did)
 	if err != nil {
-		return nil, fmt.Errorf("query GetSubscriptions: %w", err)
+		return nil, fmt.Errorf("GetSubscriptions: %w", err)
 	}
 
 	subscriptions, err := pgx.CollectRows(rows, pgx.RowToStructByName[GetSubscriptionsRow])
 	if err != nil {
-		return nil, fmt.Errorf("CollectRows GetSubscriptions: %w", err)
+		return nil, fmt.Errorf("GetSubscriptions: %w", err)
 	}
 
 	return subscriptions, nil
@@ -64,7 +64,7 @@ const invalidateTokenSQL = `UPDATE token SET unregistered = NOW() WHERE token = 
 func (q *DBQuerier) InvalidateToken(ctx context.Context, token string) (pgconn.CommandTag, error) {
 	cmdTag, err := q.conn.Exec(ctx, invalidateTokenSQL, token)
 	if err != nil {
-		return cmdTag, fmt.Errorf("exec query InvalidateToken: %w", err)
+		return cmdTag, fmt.Errorf("InvalidateToken: %w", err)
 	}
 
 	return cmdTag, err

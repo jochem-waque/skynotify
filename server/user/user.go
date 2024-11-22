@@ -7,6 +7,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"sync"
 
@@ -45,7 +46,7 @@ func GetOrFetch(did string) (User, error) {
 
 	response, err := bsky.ActorGetProfile(context.Background(), internal.BskyXrpcClient, did)
 	if err != nil {
-		return user, err
+		return user, fmt.Errorf("user.GetOrFetch: %w", err)
 	}
 
 	user = User{Did: did, Handle: response.Handle}

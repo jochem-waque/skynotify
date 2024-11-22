@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"runtime"
@@ -42,41 +42,55 @@ var messagingClient *messaging.Client
 
 var querier *db.DBQuerier
 
-func loadEnv() {
+func loadEnv() error {
 	_, err := os.Stat(".env")
 	if err == nil {
 		err := godotenv.Load()
 		if err != nil {
-			log.Fatalln(err)
+			return fmt.Errorf("loadEnv: %w", err)
 		}
 	}
 
 	env.databaseUrl = os.Getenv("DATABASE_URL")
 	if env.databaseUrl == "" {
-		log.Fatalln("Environment variable DATABASE_URL is not set")
+		return fmt.Errorf("loadEnv: environment variable DATABASE_URL is not set")
 	}
+
+	return nil
 }
 
-func loadFirebase() {
+func loadFirebase() error {
 	opt := option.WithCredentialsFile("firebase.json")
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("loadFirebase: %w", err)
 	}
 
 	messagingClient, err = app.Messaging(context.Background())
 	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("loadFirebase: %w", err)
 	}
+
+	return nil
 }
 
 func main() {
-	loadEnv()
-	loadFirebase()
+	err := loadEnv()
+	if err != nil {
+		slog.Error("main", "error", err)
+		os.Exit(1)
+	}
+
+	err = loadFirebase()
+	if err != nil {
+		slog.Error("main", "error", err)
+		os.Exit(1)
+	}
 
 	dbpool, err := pgxpool.New(context.Background(), env.databaseUrl)
 	if err != nil {
-		log.Fatalf("Unable to create connection pool: %v\n", err)
+		slog.Error("main", "error", err)
+		os.Exit(1)
 	}
 	defer dbpool.Close()
 
@@ -85,7 +99,8 @@ func main() {
 	uri := "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos"
 	con, _, err := websocket.DefaultDialer.Dial(uri, http.Header{})
 	if err != nil {
-		log.Fatalln(err)
+		slog.Error("main", "error", err)
+		os.Exit(1)
 	}
 
 	rsc := &events.RepoStreamCallbacks{
@@ -96,19 +111,23 @@ func main() {
 		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
 			err := processCommit(evt)
 			if err != nil {
-				fmt.Println(err)
+				slog.Error("rsc.RepoCommit", "error", err)
 			}
 
 			return nil
 		},
 		Error: func(evt *events.ErrorFrame) error {
-			fmt.Printf("ERROR: %s (%s)\n", evt.Error, evt.Message)
+			slog.Error("rsc.Error", "error", evt.Error, "message", evt.Message)
 			return nil
 		},
 	}
 
 	sched := parallel.NewScheduler(runtime.NumCPU(), 500, "firehose", rsc.EventHandler)
-	events.HandleRepoStream(context.Background(), con, sched)
+	err = events.HandleRepoStream(context.Background(), con, sched)
+	if err != nil {
+		slog.Error("main", "error", err)
+		os.Exit(1)
+	}
 }
 
 func processIdentity(evt *atproto.SyncSubscribeRepos_Identity) {
@@ -147,7 +166,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 
 	rows, err := querier.GetSubscriptions(context.Background(), evt.Repo)
 	if err != nil {
-		return err
+		return fmt.Errorf("processCommit: %w", err)
 	}
 
 	if len(rows) == 0 && !user.Exists(evt.Repo) {
@@ -156,7 +175,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 
 	messages, err := processOps(evt, rows)
 	if err != nil {
-		return err
+		return fmt.Errorf("processCommit: %w", err)
 	}
 
 	for _, message := range messages {
@@ -172,18 +191,18 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			}
 
 			if !errorutils.IsNotFound(response.Error) {
-				fmt.Printf("%#v\n", response.Error)
+				slog.Error("processCommit", "error", response.Error)
 				continue
 			}
 
 			token := message.Tokens[i]
 			_, err := querier.InvalidateToken(context.Background(), token)
 			if err != nil {
-				fmt.Println(err)
+				slog.Error("processCommit", "error", response.Error)
 				continue
 			}
 
-			fmt.Printf("Invalidated token %s\n", token)
+			slog.Info("processCommit: invalidated token", "token", token)
 		}
 	}
 
@@ -198,7 +217,7 @@ func openRepo(evt *atproto.SyncSubscribeRepos_Commit, r **repo.Repo) error {
 	reader := bytes.NewReader(evt.Blocks)
 	newRepo, err := repo.ReadRepoFromCar(context.Background(), reader)
 	if err != nil {
-		return err
+		return fmt.Errorf("openRepo: %w", err)
 	}
 
 	*r = newRepo
@@ -211,30 +230,30 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 
 	userData, err := user.GetOrFetch(evt.Repo)
 	if err != nil {
-		fmt.Println(err)
-		userData.Did = evt.Repo
+		return messages, fmt.Errorf("processOps: %w", err)
 	}
 
 	for _, op := range evt.Ops {
 		if op.Action == "update" && op.Path == "app.bsky.actor.profile/self" {
 			err := openRepo(evt, &r)
 			if err != nil {
-				return messages, err
+				return messages, fmt.Errorf("processOps: %w", err)
+
 			}
 
 			_, rec, err := r.GetRecord(context.Background(), op.Path)
 			if err != nil {
-				return messages, err
+				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
 			pr, ok := rec.(*bsky.ActorProfile)
 			if !ok {
-				return messages, fmt.Errorf("couldn't read profile record")
+				return messages, fmt.Errorf("processOps: couldn't read profile record")
 			}
 
 			err = user.Update(evt.Repo, pr)
 			if err != nil {
-				return messages, err
+				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
 			continue
@@ -244,22 +263,22 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 			// TODO check applicable tokens early
 			err := openRepo(evt, &r)
 			if err != nil {
-				return messages, err
+				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
 			_, record, err := r.GetRecord(context.Background(), op.Path)
 			if err != nil {
-				return messages, err
+				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
 			rp, ok := record.(*bsky.FeedRepost)
 			if !ok {
-				return messages, fmt.Errorf("couldn't read repost record")
+				return messages, fmt.Errorf("processOps: couldn't read repost record")
 			}
 
 			message, err := repost.MakeMessage(userData, op.Path, rp)
 			if err != nil {
-				return messages, err
+				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
 			tokens := []string{}
@@ -281,22 +300,22 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 			// TODO check applicable tokens early
 			err := openRepo(evt, &r)
 			if err != nil {
-				return messages, err
+				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
 			_, record, err := r.GetRecord(context.Background(), op.Path)
 			if err != nil {
-				return messages, err
+				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
 			p, ok := record.(*bsky.FeedPost)
 			if !ok {
-				return messages, fmt.Errorf("couldn't read post record")
+				return messages, fmt.Errorf("processOps: couldn't read post record")
 			}
 
 			message, reply, err := post.MakeMessage(userData, op.Path, p)
 			if err != nil {
-				return messages, err
+				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
 			tokens := []string{}
@@ -315,5 +334,5 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 		}
 	}
 
-	return messages, err
+	return messages, nil
 }

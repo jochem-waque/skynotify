@@ -55,19 +55,19 @@ func MakeMessage(userData user.User, path string, repost *bsky.FeedRepost) (mess
 
 	timestamp, err := time.Parse(time.RFC3339, repost.CreatedAt)
 	if err != nil {
-		return message, err
+		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}
 
 	atUri, err := syntax.ParseATURI(repost.Subject.Uri)
 	if err != nil {
-		return message, err
+		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}
 
 	did := atUri.Authority().String()
 
 	author, err := user.GetOrFetch(did)
 	if err != nil {
-		return message, err
+		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}
 
 	// TODO this should just work no?
@@ -83,7 +83,7 @@ func MakeMessage(userData user.User, path string, repost *bsky.FeedRepost) (mess
 
 	response, err := internal.HttpClient.Get(fmt.Sprintf("https://bsky.social/xrpc/com.atproto.repo.getRecord?repo=%s&collection=%s&rkey=%s", author.Did, collection, rkey))
 	if err != nil {
-		return message, err
+		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}
 
 	if response.StatusCode != 200 {
@@ -93,7 +93,7 @@ func MakeMessage(userData user.User, path string, repost *bsky.FeedRepost) (mess
 	decoded := getRecord_Response{}
 	err = json.NewDecoder(response.Body).Decode(&decoded)
 	if err != nil {
-		return message, err
+		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}
 
 	message.Data = make(map[string]string)

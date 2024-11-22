@@ -24,12 +24,12 @@ func MakeMessage(userData user.User, path string, post *bsky.FeedPost) (messagin
 
 	_, pid, found := strings.Cut(path, "/")
 	if !found {
-		return message, false, fmt.Errorf("couldn't cut pid from %s", path)
+		return message, false, fmt.Errorf("post.MakeMessage: couldn't cut pid from %s", path)
 	}
 
 	timestamp, err := time.Parse(time.RFC3339, post.CreatedAt)
 	if err != nil {
-		return message, false, err
+		return message, false, fmt.Errorf("post.MakeMessage: %w", err)
 	}
 
 	message.Data = make(map[string]string)
@@ -57,7 +57,7 @@ func MakeMessage(userData user.User, path string, post *bsky.FeedPost) (messagin
 	if isReply {
 		parentUri, err := syntax.ParseATURI(post.Reply.Parent.Uri)
 		if err != nil {
-			return message, isReply, err
+			return message, isReply, fmt.Errorf("post.MakeMessage: %w", err)
 		}
 
 		message.FCMOptions.AnalyticsLabel = "reply"
@@ -66,7 +66,7 @@ func MakeMessage(userData user.User, path string, post *bsky.FeedPost) (messagin
 
 		parentUser, err := user.GetOrFetch(did)
 		if err != nil {
-			return message, isReply, err
+			return message, isReply, fmt.Errorf("post.MakeMessage: %w", err)
 		}
 
 		message.Data["title"] += " replied"
@@ -74,14 +74,14 @@ func MakeMessage(userData user.User, path string, post *bsky.FeedPost) (messagin
 	} else if quoted != "" {
 		quotedUri, err := syntax.ParseATURI(quoted)
 		if err != nil {
-			return message, isReply, err
+			return message, isReply, fmt.Errorf("post.MakeMessage: %w", err)
 		}
 
 		did := quotedUri.Authority().String()
 
 		quotedUser, err := user.GetOrFetch(did)
 		if err != nil {
-			return message, isReply, err
+			return message, isReply, fmt.Errorf("post.MakeMessage: %w", err)
 		}
 
 		message.Data["title"] += " quoted"
