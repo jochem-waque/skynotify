@@ -9,12 +9,12 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
+	"github.com/bluesky-social/indigo/util"
 	"github.com/bluesky-social/indigo/xrpc"
 )
 
-var HttpClient *http.Client = &http.Client{Timeout: time.Second * 30}
+var HttpClient *http.Client = util.RobustHTTPClient()
 var AtprotoXrpcClient *xrpc.Client = &xrpc.Client{Client: HttpClient, Host: "https://bsky.social"}
 var BskyXrpcClient *xrpc.Client = &xrpc.Client{Client: HttpClient, Host: "https://public.api.bsky.app"}
 
