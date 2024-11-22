@@ -6,112 +6,42 @@
 package post
 
 import (
-	"bytes"
-	"context"
+	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
-	"time"
 
 	"github.com/Jochem-W/skynotify/server/internal"
 	"github.com/Jochem-W/skynotify/server/user"
+	"github.com/bluesky-social/indigo/api/bsky"
+	"github.com/bluesky-social/jetstream/pkg/models"
 
 	"firebase.google.com/go/v4/messaging"
-	"github.com/ipld/go-car/v2/storage"
-	"github.com/ipld/go-ipld-prime/codec/dagcbor"
-	"github.com/ipld/go-ipld-prime/datamodel"
-	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-func ExtractCreatedAt(node datamodel.Node) (string, error) {
-	createdAt, err := node.LookupByString("createdAt")
-	if err != nil {
-		return "", err
-	}
-
-	createdAtStr, err := createdAt.AsString()
-	if err != nil {
-		return "", err
-	}
-
-	return createdAtStr, nil
-}
-
-func MakeMessage(car storage.ReadableCar, cid string, path string, userData user.User) (messaging.MulticastMessage, bool, error) {
+func MakeMessage(event *models.Event) (messaging.MulticastMessage, bool, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "post"}}
 
-	_, pid, found := strings.Cut(path, "/")
-	if !found {
-		return message, false, fmt.Errorf("couldn't cut pid from %s", path)
-	}
-
-	blk, err := car.Get(context.Background(), cid)
+	post := &bsky.FeedPost{}
+	err := json.Unmarshal(event.Commit.Record, &post)
 	if err != nil {
 		return message, false, err
 	}
 
-	reader := bytes.NewReader(blk)
-
-	nb := basicnode.Prototype.Any.NewBuilder()
-	err = dagcbor.Decode(nb, reader)
+	userData, err := user.GetOrFetch(event.Did)
 	if err != nil {
 		return message, false, err
-	}
-
-	n := nb.Build()
-	text, err := extractText(n)
-	if err != nil {
-		return message, false, err
-	}
-
-	imageRef, err := extractImageThumb(n, userData.Did)
-	if err != nil {
-		return message, false, err
-	}
-
-	if imageRef == "" {
-		imageRef, err = extractVideoThumbnail(n, userData.Did)
-		if err != nil {
-			return message, false, err
-		}
-	}
-
-	if imageRef == "" {
-		imageRef, err = extractExternalThumb(n, userData.Did)
-		if err != nil {
-			return message, false, err
-		}
-	}
-
-	createdAt, err := ExtractCreatedAt(n)
-	if err != nil {
-		return message, false, err
-	}
-
-	timestamp, err := time.Parse(time.RFC3339, createdAt)
-	if err != nil {
-		return message, false, err
-	}
-
-	quoted, err := extractQuote(n)
-	if err != nil {
-		return message, false, err
-	}
-
-	tag := path[strings.LastIndex(path, ".")+1:]
-	if len(tag) > 32 {
-		tag = tag[:32]
 	}
 
 	message.Data = make(map[string]string)
 	message.Data["title"] = userData.Handle
-	message.Data["body"] = text
-	message.Data["tag"] = tag
-	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", userData.Did, pid)
-	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
+	message.Data["body"] = post.Text
+	message.Data["tag"] = internal.GenerateTag(event)
+	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", userData.Did, event.Commit.RKey)
+	message.Data["timestamp"] = strconv.FormatInt(event.TimeUS/1000, 10)
 
-	if imageRef != "" {
-		message.Data["image"] = imageRef
+	image := ExtractImage(event.Did, post.Embed)
+	if image != "" {
+		message.Data["image"] = image
 	}
 
 	if userData.Avatar != "" {
@@ -122,249 +52,91 @@ func MakeMessage(car storage.ReadableCar, cid string, path string, userData user
 		message.Data["title"] = userData.DisplayName
 	}
 
-	parent, err := extractParentDid(n)
-	if err != nil {
-		return message, false, err
-	}
-
-	isReply := parent != ""
-	isQuote := quoted != ""
+	isReply := post.Reply != nil
+	quoted := extractQuoted(post.Embed)
 	if isReply {
+		parentUri, err := internal.CutAtUri(post.Reply.Parent.Uri)
+		if err != nil {
+			return message, isReply, err
+		}
+
 		message.FCMOptions.AnalyticsLabel = "reply"
 
-		parentUser, err := user.GetOrFetch(parent)
+		parentUser, err := user.GetOrFetch(parentUri.Did)
 		if err != nil {
 			return message, isReply, err
 		}
 
 		message.Data["title"] += " replied"
 		message.Data["body"] = fmt.Sprintf("@%s %s", parentUser.Handle, message.Data["body"])
-	} else if isQuote {
+	} else if quoted != "" {
+		quotedUri, err := internal.CutAtUri(quoted)
+		if err != nil {
+			return message, isReply, err
+		}
+
+		quotedUser, err := user.GetOrFetch(quotedUri.Did)
+		if err != nil {
+			return message, isReply, err
+		}
+
 		message.Data["title"] += " quoted"
-		message.Data["body"] = fmt.Sprintf("%s @%s", message.Data["body"], quoted)
+		message.Data["body"] = fmt.Sprintf("%s @%s", message.Data["body"], quotedUser.Handle)
 	}
 
 	return message, isReply, nil
 }
 
-func extractText(node datamodel.Node) (string, error) {
-	text, err := node.LookupByString("text")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
+func ExtractImage(did string, embed *bsky.FeedPost_Embed) string {
+	if embed == nil {
+		return ""
 	}
 
-	textstr, err := text.AsString()
-	if err != nil {
-		return "", err
+	if embed.EmbedImages != nil {
+		return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, embed.EmbedImages.Images[0].Image.Ref.String())
 	}
 
-	return textstr, nil
+	if embed.EmbedVideo != nil {
+		return fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", did, embed.EmbedVideo.Video.Ref.String())
+	}
+
+	if embed.EmbedExternal != nil && embed.EmbedExternal.External.Thumb != nil {
+		return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, embed.EmbedExternal.External.Thumb.Ref.String())
+	}
+
+	if embed.EmbedRecordWithMedia == nil {
+		return ""
+	}
+
+	media := embed.EmbedRecordWithMedia.Media
+
+	if media.EmbedImages != nil {
+		return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, media.EmbedImages.Images[0].Image.Ref.String())
+	}
+
+	if media.EmbedVideo != nil {
+		return fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", did, media.EmbedVideo.Video.Ref.String())
+	}
+
+	if media.EmbedExternal != nil && media.EmbedExternal.External.Thumb != nil {
+		return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, media.EmbedExternal.External.Thumb.Ref.String())
+	}
+
+	return ""
 }
 
-func extractParentDid(node datamodel.Node) (string, error) {
-	reply, err := node.LookupByString("reply")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
+func extractQuoted(embed *bsky.FeedPost_Embed) string {
+	if embed == nil {
+		return ""
 	}
 
-	parent, err := reply.LookupByString("parent")
-	if err != nil {
-		return "", err
+	if embed.EmbedRecord != nil {
+		return embed.EmbedRecord.Record.Uri
 	}
 
-	uri, err := parent.LookupByString("uri")
-	if err != nil {
-		return "", err
+	if embed.EmbedRecordWithMedia != nil {
+		return embed.EmbedRecordWithMedia.Record.Record.Uri
 	}
 
-	uriString, err := uri.AsString()
-	if err != nil {
-		return "", err
-	}
-
-	atUri, err := internal.CutAtUri(uriString)
-	if err != nil {
-		return "", err
-	}
-
-	return atUri.Did, nil
-}
-
-func extractQuote(node datamodel.Node) (string, error) {
-	embed, err := node.LookupByString("embed")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
-	}
-
-	record, err := embed.LookupByString("record")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
-	}
-
-	uri, err := record.LookupByString("uri")
-	if err != nil {
-		if !internal.IsNotExists(err) {
-			return "", err
-		}
-
-		record, err = record.LookupByString("record")
-		if err != nil {
-			return "", err
-		}
-
-		uri, err = record.LookupByString("uri")
-		if err != nil {
-			return "", err
-		}
-	}
-
-	uriString, err := uri.AsString()
-	if err != nil {
-		return "", err
-	}
-
-	atUri, err := internal.CutAtUri(uriString)
-	if err != nil {
-		return "", err
-	}
-
-	user, err := user.GetOrFetch(atUri.Did)
-	if err != nil {
-		return "", err
-	}
-
-	return user.Handle, nil
-}
-
-func extractImageThumb(node datamodel.Node, did string) (string, error) {
-	embed, err := node.LookupByString("embed")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
-	}
-
-	images, err := embed.LookupByString("images")
-	if err != nil {
-		if !internal.IsNotExists(err) {
-			return "", err
-		}
-
-		media, err := embed.LookupByString("media")
-		if err != nil {
-			return "", internal.IgnoreNotExists(err)
-		}
-
-		images, err = media.LookupByString("images")
-		if err != nil {
-			return "", internal.IgnoreNotExists(err)
-		}
-	}
-
-	it := images.ListIterator()
-	if it == nil {
-		return "", datamodel.ErrWrongKind{
-			TypeName:        "",
-			MethodName:      "ListIterator",
-			AppropriateKind: datamodel.KindSet{datamodel.Kind_List},
-			ActualKind:      images.Kind(),
-		}
-	}
-
-	_, entry, err := it.Next()
-	if err != nil {
-		return "", err
-	}
-
-	image, err := entry.LookupByString("image")
-	if err != nil {
-		return "", err
-	}
-
-	ref, err := image.LookupByString("ref")
-	if err != nil {
-		return "", err
-	}
-
-	linkNode, err := ref.AsLink()
-	if err != nil {
-		return "", err
-	}
-
-	return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, linkNode.String()), nil
-}
-
-func extractVideoThumbnail(node datamodel.Node, did string) (string, error) {
-	embed, err := node.LookupByString("embed")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
-	}
-
-	video, err := embed.LookupByString("video")
-	if err != nil {
-		if !internal.IsNotExists(err) {
-			return "", err
-		}
-
-		media, err := embed.LookupByString("media")
-		if err != nil {
-			return "", internal.IgnoreNotExists(err)
-		}
-
-		video, err = media.LookupByString("video")
-		if err != nil {
-			return "", internal.IgnoreNotExists(err)
-		}
-	}
-
-	ref, err := video.LookupByString("ref")
-	if err != nil {
-		return "", err
-	}
-
-	linkNode, err := ref.AsLink()
-	if err != nil {
-		return "", err
-	}
-
-	return fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", did, linkNode.String()), nil
-}
-
-func extractExternalThumb(node datamodel.Node, did string) (string, error) {
-	embed, err := node.LookupByString("embed")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
-	}
-
-	external, err := embed.LookupByString("external")
-	if err != nil {
-		if !internal.IsNotExists(err) {
-			return "", err
-		}
-
-		media, err := embed.LookupByString("media")
-		if err != nil {
-			return "", internal.IgnoreNotExists(err)
-		}
-
-		external, err = media.LookupByString("external")
-		if err != nil {
-			return "", internal.IgnoreNotExists(err)
-		}
-	}
-
-	thumb, err := external.LookupByString("thumb")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
-	}
-
-	ref, err := thumb.LookupByString("ref")
-	if err != nil {
-		return "", err
-	}
-
-	linkNode, err := ref.AsLink()
-	if err != nil {
-		return "", err
-	}
-
-	return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, linkNode.String()), nil
+	return ""
 }

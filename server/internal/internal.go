@@ -6,29 +6,15 @@
 package internal
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/bluesky-social/jetstream/pkg/models"
 )
 
 var HttpClient *http.Client = &http.Client{Timeout: time.Second * 30}
-
-func IgnoreNotExists(err error) error {
-	if IsNotExists(err) {
-		return nil
-	}
-
-	return err
-}
-
-func IsNotExists(err error) bool {
-	var notExists datamodel.ErrNotExists
-	return errors.As(err, &notExists)
-}
 
 type AtUri struct {
 	Did        string `json:"did"`
@@ -41,22 +27,31 @@ func CutAtUri(uri string) (AtUri, error) {
 
 	noPrefix, found := strings.CutPrefix(uri, "at://")
 	if !found {
-		return atUri, fmt.Errorf("SplitAtUri: couldn't cut prefix at:// from %s", noPrefix)
+		return atUri, fmt.Errorf("CutAtUri: couldn't cut prefix at:// from %s", noPrefix)
 	}
 
 	did, after, found := strings.Cut(noPrefix, "/")
 	if !found {
-		return atUri, fmt.Errorf("SplitAtUri: couldn't cut did from %s", noPrefix)
+		return atUri, fmt.Errorf("CutAtUri: couldn't cut did from %s", noPrefix)
 	}
 
 	atUri.Did = did
 
 	collection, rkey, found := strings.Cut(after, "/")
 	if !found {
-		return atUri, fmt.Errorf("SplitAtUri: couldn't cut collection from %s", after)
+		return atUri, fmt.Errorf("CutAtUri: couldn't cut collection from %s", after)
 	}
 
 	atUri.Collection = collection
 	atUri.RecordKey = rkey
 	return atUri, nil
+}
+
+func GenerateTag(event *models.Event) string {
+	tag := fmt.Sprintf("%s/%s", event.Commit.Collection[strings.LastIndex(event.Commit.Collection, ".")+1:], event.Commit.RKey)
+	if len(tag) > 32 {
+		tag = tag[:32]
+	}
+
+	return tag
 }
