@@ -57,11 +57,11 @@ func GetOrFetch(did string) (User, error) {
 	}
 
 	if response.Avatar != nil {
-		slash := strings.LastIndex(user.Avatar, "/")
+		slash := strings.LastIndex(*response.Avatar, "/")
 		if slash != -1 {
-			at := strings.LastIndex(user.Avatar, "@")
+			at := strings.LastIndex(*response.Avatar, "@")
 			if at != -1 {
-				user.Avatar = user.Avatar[slash+1 : at]
+				user.Avatar = (*response.Avatar)[slash+1 : at]
 			}
 		}
 	}
