@@ -14,6 +14,7 @@ import (
 	"github.com/Jochem-W/skynotify/server/internal"
 	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/bluesky-social/indigo/api/bsky"
+	"github.com/bluesky-social/indigo/atproto/syntax"
 
 	"firebase.google.com/go/v4/messaging"
 )
@@ -54,14 +55,16 @@ func MakeMessage(userData user.User, path string, post *bsky.FeedPost) (messagin
 	isReply := post.Reply != nil
 	quoted := extractQuoted(post.Embed)
 	if isReply {
-		parentUri, err := internal.CutAtUri(post.Reply.Parent.Uri)
+		parentUri, err := syntax.ParseATURI(post.Reply.Parent.Uri)
 		if err != nil {
 			return message, isReply, err
 		}
 
 		message.FCMOptions.AnalyticsLabel = "reply"
 
-		parentUser, err := user.GetOrFetch(parentUri.Did)
+		did := parentUri.Authority().String()
+
+		parentUser, err := user.GetOrFetch(did)
 		if err != nil {
 			return message, isReply, err
 		}
@@ -69,12 +72,14 @@ func MakeMessage(userData user.User, path string, post *bsky.FeedPost) (messagin
 		message.Data["title"] += " replied"
 		message.Data["body"] = fmt.Sprintf("@%s %s", parentUser.Handle, message.Data["body"])
 	} else if quoted != "" {
-		quotedUri, err := internal.CutAtUri(quoted)
+		quotedUri, err := syntax.ParseATURI(quoted)
 		if err != nil {
 			return message, isReply, err
 		}
 
-		quotedUser, err := user.GetOrFetch(quotedUri.Did)
+		did := quotedUri.Authority().String()
+
+		quotedUser, err := user.GetOrFetch(did)
 		if err != nil {
 			return message, isReply, err
 		}

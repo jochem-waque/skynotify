@@ -15,6 +15,7 @@ import (
 	"github.com/Jochem-W/skynotify/server/internal"
 	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/bluesky-social/indigo/api/bsky"
+	"github.com/bluesky-social/indigo/atproto/syntax"
 )
 
 type getRecord_Response struct {
@@ -57,12 +58,14 @@ func MakeMessage(userData user.User, path string, repost *bsky.FeedRepost) (mess
 		return message, err
 	}
 
-	atUri, err := internal.CutAtUri(repost.Subject.Uri)
+	atUri, err := syntax.ParseATURI(repost.Subject.Uri)
 	if err != nil {
 		return message, err
 	}
 
-	author, err := user.GetOrFetch(atUri.Did)
+	did := atUri.Authority().String()
+
+	author, err := user.GetOrFetch(did)
 	if err != nil {
 		return message, err
 	}
@@ -75,7 +78,10 @@ func MakeMessage(userData user.User, path string, repost *bsky.FeedRepost) (mess
 
 	// decoded := output.Value.Val.(*bsky.FeedPost)
 
-	response, err := internal.HttpClient.Get(fmt.Sprintf("https://bsky.social/xrpc/com.atproto.repo.getRecord?repo=%s&collection=%s&rkey=%s", atUri.Did, atUri.Collection, atUri.RecordKey))
+	collection := atUri.Collection().String()
+	rkey := atUri.RecordKey().String()
+
+	response, err := internal.HttpClient.Get(fmt.Sprintf("https://bsky.social/xrpc/com.atproto.repo.getRecord?repo=%s&collection=%s&rkey=%s", author.Did, collection, rkey))
 	if err != nil {
 		return message, err
 	}
@@ -94,7 +100,7 @@ func MakeMessage(userData user.User, path string, repost *bsky.FeedRepost) (mess
 	message.Data["title"] = userData.Handle
 	message.Data["body"] = fmt.Sprintf("@%s: %s", author.Handle, decoded.Value.Text)
 	message.Data["tag"] = internal.GenerateTag(path)
-	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", atUri.Did, atUri.RecordKey)
+	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", author.Did, rkey)
 	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
 	image := extractImage(author.Did, decoded)
