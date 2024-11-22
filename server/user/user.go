@@ -6,17 +6,14 @@
 package user
 
 import (
-	"bytes"
 	"context"
+	"encoding/json"
 	"strings"
 	"sync"
 
 	"github.com/Jochem-W/skynotify/server/internal"
 	"github.com/bluesky-social/indigo/api/bsky"
-	"github.com/ipld/go-car/v2/storage"
-	"github.com/ipld/go-ipld-prime/codec/dagcbor"
-	"github.com/ipld/go-ipld-prime/datamodel"
-	"github.com/ipld/go-ipld-prime/node/basicnode"
+	"github.com/bluesky-social/jetstream/pkg/models"
 )
 
 type User struct {
@@ -92,84 +89,33 @@ func UpdateHandle(did string, handle string) {
 	users.Unlock()
 }
 
-func Update(did string, car storage.ReadableCar, cid string) error {
+func Update(event *models.Event) error {
+	profile := bsky.ActorProfile{}
+
+	err := json.Unmarshal(event.Commit.Record, &profile)
+	if err != nil {
+		return err
+	}
+
 	users.RLock()
-	user, ok := users.m[did]
+	user, ok := users.m[event.Did]
 	users.RUnlock()
 
 	if !ok {
-		// TODO return because I'm not sure if the payload contains an entire user
 		return nil
 	}
 
-	blk, err := car.Get(context.Background(), cid)
-	if err != nil {
-		return err
+	if profile.DisplayName != nil {
+		user.DisplayName = *profile.DisplayName
 	}
 
-	reader := bytes.NewReader(blk)
-
-	nb := basicnode.Prototype.Any.NewBuilder()
-	err = dagcbor.Decode(nb, reader)
-	if err != nil {
-		return err
-	}
-
-	n := nb.Build()
-	displayName, err := extractDisplayName(n)
-	if err != nil {
-		return err
-	}
-
-	avatar, err := extractAvatar(n)
-	if err != nil {
-		return err
-	}
-
-	if displayName != "" {
-		user.DisplayName = displayName
-	}
-
-	if avatar != "" {
-		user.Avatar = avatar
+	if profile.Avatar != nil {
+		user.Avatar = profile.Avatar.Ref.String()
 	}
 
 	users.Lock()
-	users.m[did] = user
+	users.m[event.Did] = user
 	users.Unlock()
 
 	return nil
-}
-
-func extractAvatar(node datamodel.Node) (string, error) {
-	avatar, err := node.LookupByString("avatar")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
-	}
-
-	ref, err := avatar.LookupByString("ref")
-	if err != nil {
-		return "", err
-	}
-
-	linkNode, err := ref.AsLink()
-	if err != nil {
-		return "", err
-	}
-
-	return linkNode.String(), nil
-}
-
-func extractDisplayName(node datamodel.Node) (string, error) {
-	displayName, err := node.LookupByString("displayName")
-	if err != nil {
-		return "", internal.IgnoreNotExists(err)
-	}
-
-	displayNameStr, err := displayName.AsString()
-	if err != nil {
-		return "", err
-	}
-
-	return displayNameStr, nil
 }

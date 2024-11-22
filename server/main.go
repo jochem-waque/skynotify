@@ -6,15 +6,14 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"log"
-	"net/http"
+	"log/slog"
+	"math/rand/v2"
 	"os"
 	"runtime"
 	"slices"
-	"strings"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/errorutils"
@@ -23,12 +22,9 @@ import (
 	"github.com/Jochem-W/skynotify/server/post"
 	"github.com/Jochem-W/skynotify/server/repost"
 	"github.com/Jochem-W/skynotify/server/user"
-	"github.com/bluesky-social/indigo/api/atproto"
-	"github.com/bluesky-social/indigo/events"
-	"github.com/bluesky-social/indigo/events/schedulers/parallel"
-	"github.com/gorilla/websocket"
-	"github.com/ipfs/go-cid"
-	"github.com/ipld/go-car/v2/storage"
+	"github.com/bluesky-social/jetstream/pkg/client"
+	"github.com/bluesky-social/jetstream/pkg/client/schedulers/parallel"
+	"github.com/bluesky-social/jetstream/pkg/models"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lpernett/godotenv"
 	"google.golang.org/api/option"
@@ -41,6 +37,13 @@ var env = struct {
 var messagingClient *messaging.Client
 
 var querier *db.DBQuerier
+
+var endpoints []string = []string{
+	"jetstream1.us-east.bsky.network",
+	"jetstream2.us-east.bsky.network",
+	"jetstream1.us-west.bsky.network",
+	"jetstream2.us-west.bsky.network",
+}
 
 func loadEnv() {
 	_, err := os.Stat(".env")
@@ -82,183 +85,75 @@ func main() {
 
 	querier = db.NewQuerier(dbpool)
 
-	uri := "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos"
-	con, _, err := websocket.DefaultDialer.Dial(uri, http.Header{})
+	config := &client.ClientConfig{
+		Compress:          true,
+		WebsocketURL:      endpoints[rand.IntN(len(endpoints))],
+		WantedDids:        []string{},
+		WantedCollections: []string{"app.bsky.actor.profile", "app.bsky.feed.post", "app.bsky.feed.repost"},
+		MaxSize:           0,
+		ExtraHeaders: map[string]string{
+			"User-Agent": "Skynotify",
+		},
+	}
+
+	sched := parallel.NewScheduler(runtime.NumCPU(), "jetstream", slog.Default(), listener)
+
+	jetstream, err := client.NewClient(config, slog.Default(), sched)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	rsc := &events.RepoStreamCallbacks{
-		RepoIdentity: func(evt *atproto.SyncSubscribeRepos_Identity) error {
-			processIdentity(evt)
-			return nil
-		},
-		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
-			processCommit(evt)
-			return nil
-		},
-		Error: func(evt *events.ErrorFrame) error {
-			fmt.Printf("ERROR: %s (%s)\n", evt.Error, evt.Message)
-			return nil
-		},
-	}
-
-	sched := parallel.NewScheduler(runtime.NumCPU(), 500, "firehose", rsc.EventHandler)
-	events.HandleRepoStream(context.Background(), con, sched)
+	jetstream.ConnectAndRead(context.Background(), nil)
 }
 
-func processIdentity(evt *atproto.SyncSubscribeRepos_Identity) {
-	if evt.Handle != nil {
-		user.UpdateHandle(evt.Did, *evt.Handle)
-	}
-}
+func listener(context context.Context, event *models.Event) error {
+	var err error = nil
 
-func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
-	for _, op := range evt.Ops {
-		if op.Action == "update" && op.Path == "app.bsky.actor.profile/self" {
-			return true
-		}
-
-		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") {
-			return true
-		}
-
-		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
-			return true
-		}
-	}
-
-	return false
-}
-
-func processCommit(evt *atproto.SyncSubscribeRepos_Commit) {
-	if evt.TooBig {
-		// fmt.Println("skipping too big commit")
-		return
-	}
-
-	if !hasUsefulOp(evt) {
-		return
-	}
-
-	rows, err := querier.GetSubscriptions(context.Background(), evt.Repo)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	if len(rows) == 0 && !user.Exists(evt.Repo) {
-		return
-	}
-
-	userData, err := user.GetOrFetch(evt.Repo)
-	if err != nil {
-		fmt.Println(err)
-		userData.Did = evt.Repo
-	}
-
-	var car storage.ReadableCar
-	messages := []messaging.MulticastMessage{}
-
-	for _, op := range evt.Ops {
-		if op.Action == "update" && op.Path == "app.bsky.actor.profile/self" {
-			err := openCar(&car, evt)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			err = user.Update(evt.Repo, car, cid.MustParse(op.Cid.String()).KeyString())
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			continue
-		}
-
-		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") && len(rows) > 0 {
-			// TODO check applicable tokens early
-			err := openCar(&car, evt)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			err = processRepost(&messages, rows, userData, car, op)
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			continue
-		}
-
-		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") && len(rows) > 0 {
-			// TODO check applicable tokens early
-			err := openCar(&car, evt)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			err = processPost(&messages, rows, userData, car, op)
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			continue
-		}
-	}
-
-	for _, message := range messages {
-		message.Webpush = &messaging.WebpushConfig{Headers: make(map[string]string)}
-		message.Webpush.Headers["TTL"] = "43200" // 12 hours
-		message.Webpush.Headers["Urgency"] = "normal"
-		// I think setting the Topic header might act like an FCM topic? Was getting RESOURCE_EXHAUSTED (QUOTA_EXCEEDED)
-		// message.Webpush.Headers["Topic"] = message.Data["tag"]
-		responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
-		for i, response := range responses.Responses {
-			if response.Success {
-				continue
-			}
-
-			if !errorutils.IsNotFound(response.Error) {
-				fmt.Printf("%#v\n", response.Error)
-				continue
-			}
-
-			token := message.Tokens[i]
-			_, err := querier.InvalidateToken(context.Background(), token)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-
-			fmt.Printf("Invalidated token %s\n", token)
-		}
-	}
-}
-
-func openCar(car *storage.ReadableCar, evt *atproto.SyncSubscribeRepos_Commit) error {
-	if *car != nil {
+	switch event.Kind {
+	case models.EventKindCommit:
+		err = processCommitEvent(event)
+	case models.EventKindIdentity:
+		processIdentityEvent(event)
+	default:
 		return nil
 	}
 
-	reader := bytes.NewReader(evt.Blocks)
-	newCar, err := storage.OpenReadable(reader)
 	if err != nil {
-		return err
+		fmt.Println(err)
 	}
 
-	*car = newCar
 	return nil
 }
 
-func processPost(messages *[]messaging.MulticastMessage, rows []db.GetSubscriptionsRow, user user.User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
-	message, reply, err := post.MakeMessage(car, cid.MustParse(op.Cid.String()).KeyString(), op.Path, user)
+func processCommitEvent(event *models.Event) error {
+	switch event.Commit.Collection {
+	case "app.bsky.actor.profile":
+		return processProfileRecord(event)
+	case "app.bsky.feed.post":
+		return processPostRecord(event)
+	case "app.bsky.feed.repost":
+		return processRepostRecord(event)
+	default:
+		return nil
+	}
+}
+
+func processPostRecord(event *models.Event) error {
+	if event.Commit.Operation != models.CommitOperationCreate {
+		return nil
+	}
+
+	message, reply, err := post.MakeMessage(event)
 	if err != nil {
 		return err
 	}
 
+	rows, err := querier.GetSubscriptions(context.Background(), event.Did)
+	if err != nil {
+		return err
+	}
+
+	// TODO this can technically be done before post.MakeMessage
 	tokens := []string{}
 	for _, row := range rows {
 		if reply && row.Replies || !reply && row.Posts {
@@ -266,16 +161,27 @@ func processPost(messages *[]messaging.MulticastMessage, rows []db.GetSubscripti
 		}
 	}
 
+	if len(tokens) == 0 {
+		return nil
+	}
+
+	addWebpushConfig(&message)
+
 	for chunk := range slices.Chunk(tokens, 500) {
 		message.Tokens = chunk
-		*messages = append(*messages, message)
+		sendMessage(&message)
 	}
 
 	return nil
 }
 
-func processRepost(messages *[]messaging.MulticastMessage, rows []db.GetSubscriptionsRow, user user.User, car storage.ReadableCar, op *atproto.SyncSubscribeRepos_RepoOp) error {
-	message, err := repost.MakeMessage(car, cid.MustParse(op.Cid.String()).KeyString(), op.Path, user)
+func processRepostRecord(event *models.Event) error {
+	if event.Commit.Operation != models.CommitOperationCreate {
+		return nil
+	}
+
+	// TODO boolean param for reposts
+	rows, err := querier.GetSubscriptions(context.Background(), event.Did)
 	if err != nil {
 		return err
 	}
@@ -287,10 +193,63 @@ func processRepost(messages *[]messaging.MulticastMessage, rows []db.GetSubscrip
 		}
 	}
 
+	if len(tokens) == 0 {
+		return nil
+	}
+
+	message, err := repost.MakeMessage(event)
+	if err != nil {
+		return err
+	}
+
+	addWebpushConfig(&message)
+
 	for chunk := range slices.Chunk(tokens, 500) {
 		message.Tokens = chunk
-		*messages = append(*messages, message)
+		sendMessage(&message)
 	}
 
 	return nil
+}
+
+func processProfileRecord(event *models.Event) error {
+	return user.Update(event)
+}
+
+func processIdentityEvent(event *models.Event) {
+	if event.Identity.Handle != nil {
+		user.UpdateHandle(event.Identity.Did, *event.Identity.Handle)
+	}
+}
+
+func addWebpushConfig(message *messaging.MulticastMessage) *messaging.MulticastMessage {
+	message.Webpush = &messaging.WebpushConfig{Headers: make(map[string]string)}
+	message.Webpush.Headers["TTL"] = "43200" // 12 hours
+	message.Webpush.Headers["Urgency"] = "normal"
+	// I think setting the Topic header might act like an FCM topic? Was getting RESOURCE_EXHAUSTED (QUOTA_EXCEEDED)
+	// message.Webpush.Headers["Topic"] = message.Data["tag"]
+	return message
+}
+
+func sendMessage(message *messaging.MulticastMessage) {
+	responses, _ := messagingClient.SendEachForMulticast(context.Background(), message)
+	for i, response := range responses.Responses {
+		if response.Success {
+			continue
+		}
+
+		if !errorutils.IsNotFound(response.Error) {
+			fmt.Printf("%#v\n", response.Error)
+			continue
+		}
+
+		token := message.Tokens[i]
+		_, err := querier.InvalidateToken(context.Background(), token)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		fmt.Printf("Invalidated token %s\n", token)
+	}
 }
