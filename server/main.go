@@ -43,10 +43,8 @@ var messagingClient *messaging.Client
 var querier *db.DBQuerier
 
 func loadEnv() error {
-	_, err := os.Stat(".env")
-	if err == nil {
-		err := godotenv.Load()
-		if err != nil {
+	if _, err := os.Stat(".env"); err == nil {
+		if err = godotenv.Load(); err != nil {
 			return fmt.Errorf("loadEnv: %w", err)
 		}
 	}
@@ -75,14 +73,12 @@ func loadFirebase() error {
 }
 
 func main() {
-	err := loadEnv()
-	if err != nil {
+	if err := loadEnv(); err != nil {
 		slog.Error("main", "error", err)
 		os.Exit(1)
 	}
 
-	err = loadFirebase()
-	if err != nil {
+	if err := loadFirebase(); err != nil {
 		slog.Error("main", "error", err)
 		os.Exit(1)
 	}
@@ -109,8 +105,7 @@ func main() {
 			return nil
 		},
 		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
-			err := processCommit(evt)
-			if err != nil {
+			if err := processCommit(evt); err != nil {
 				slog.Error("rsc.RepoCommit", "error", err)
 			}
 
@@ -123,8 +118,7 @@ func main() {
 	}
 
 	sched := parallel.NewScheduler(runtime.NumCPU(), 500, "firehose", rsc.EventHandler)
-	err = events.HandleRepoStream(context.Background(), con, sched)
-	if err != nil {
+	if err = events.HandleRepoStream(context.Background(), con, sched); err != nil {
 		slog.Error("main", "error", err)
 		os.Exit(1)
 	}
@@ -196,8 +190,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			}
 
 			token := message.Tokens[i]
-			_, err := querier.InvalidateToken(context.Background(), token)
-			if err != nil {
+			if _, err = querier.InvalidateToken(context.Background(), token); err != nil {
 				slog.Error("processCommit", "error", response.Error)
 				continue
 			}
@@ -235,10 +228,8 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 
 	for _, op := range evt.Ops {
 		if op.Action == "update" && op.Path == "app.bsky.actor.profile/self" {
-			err := openRepo(evt, &r)
-			if err != nil {
+			if err = openRepo(evt, &r); err != nil {
 				return messages, fmt.Errorf("processOps: %w", err)
-
 			}
 
 			_, rec, err := r.GetRecord(context.Background(), op.Path)
@@ -251,8 +242,7 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 				return messages, fmt.Errorf("processOps: couldn't read profile record")
 			}
 
-			err = user.Update(evt.Repo, pr)
-			if err != nil {
+			if err = user.Update(evt.Repo, pr); err != nil {
 				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
@@ -261,8 +251,7 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 
 		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") && len(rows) > 0 {
 			// TODO check applicable tokens early
-			err := openRepo(evt, &r)
-			if err != nil {
+			if err = openRepo(evt, &r); err != nil {
 				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
@@ -298,8 +287,7 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 
 		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") && len(rows) > 0 {
 			// TODO check applicable tokens early
-			err := openRepo(evt, &r)
-			if err != nil {
+			if err = openRepo(evt, &r); err != nil {
 				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
