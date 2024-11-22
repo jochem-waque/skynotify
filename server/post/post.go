@@ -6,28 +6,27 @@
 package post
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/Jochem-W/skynotify/server/internal"
 	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/bluesky-social/indigo/api/bsky"
-	"github.com/bluesky-social/jetstream/pkg/models"
 
 	"firebase.google.com/go/v4/messaging"
 )
 
-func MakeMessage(event *models.Event) (messaging.MulticastMessage, bool, error) {
+func MakeMessage(userData user.User, path string, post *bsky.FeedPost) (messaging.MulticastMessage, bool, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "post"}}
 
-	post := &bsky.FeedPost{}
-	err := json.Unmarshal(event.Commit.Record, &post)
-	if err != nil {
-		return message, false, err
+	_, pid, found := strings.Cut(path, "/")
+	if !found {
+		return message, false, fmt.Errorf("couldn't cut pid from %s", path)
 	}
 
-	userData, err := user.GetOrFetch(event.Did)
+	timestamp, err := time.Parse(time.RFC3339, post.CreatedAt)
 	if err != nil {
 		return message, false, err
 	}
@@ -35,11 +34,11 @@ func MakeMessage(event *models.Event) (messaging.MulticastMessage, bool, error) 
 	message.Data = make(map[string]string)
 	message.Data["title"] = userData.Handle
 	message.Data["body"] = post.Text
-	message.Data["tag"] = internal.GenerateTag(event)
-	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", userData.Did, event.Commit.RKey)
-	message.Data["timestamp"] = strconv.FormatInt(event.TimeUS/1000, 10)
+	message.Data["tag"] = internal.GenerateTag(path)
+	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", userData.Did, pid)
+	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
-	image := ExtractImage(event.Did, post.Embed)
+	image := ExtractImage(userData.Did, post.Embed)
 	if image != "" {
 		message.Data["image"] = image
 	}

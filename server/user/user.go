@@ -7,13 +7,11 @@ package user
 
 import (
 	"context"
-	"encoding/json"
 	"strings"
 	"sync"
 
 	"github.com/Jochem-W/skynotify/server/internal"
 	"github.com/bluesky-social/indigo/api/bsky"
-	"github.com/bluesky-social/jetstream/pkg/models"
 )
 
 type User struct {
@@ -89,16 +87,9 @@ func UpdateHandle(did string, handle string) {
 	users.Unlock()
 }
 
-func Update(event *models.Event) error {
-	profile := bsky.ActorProfile{}
-
-	err := json.Unmarshal(event.Commit.Record, &profile)
-	if err != nil {
-		return err
-	}
-
+func Update(did string, profile *bsky.ActorProfile) error {
 	users.RLock()
-	user, ok := users.m[event.Did]
+	user, ok := users.m[did]
 	users.RUnlock()
 
 	if !ok {
@@ -114,7 +105,7 @@ func Update(event *models.Event) error {
 	}
 
 	users.Lock()
-	users.m[event.Did] = user
+	users.m[did] = user
 	users.Unlock()
 
 	return nil

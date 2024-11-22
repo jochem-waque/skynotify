@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/bluesky-social/indigo/xrpc"
-	"github.com/bluesky-social/jetstream/pkg/models"
 )
 
 var HttpClient *http.Client = &http.Client{Timeout: time.Second * 30}
@@ -50,8 +49,8 @@ func CutAtUri(uri string) (AtUri, error) {
 	return atUri, nil
 }
 
-func GenerateTag(event *models.Event) string {
-	tag := fmt.Sprintf("%s/%s", event.Commit.Collection[strings.LastIndex(event.Commit.Collection, ".")+1:], event.Commit.RKey)
+func GenerateTag(path string) string {
+	tag := path[strings.LastIndex(path, ".")+1:]
 	if len(tag) > 32 {
 		tag = tag[:32]
 	}

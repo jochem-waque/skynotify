@@ -9,12 +9,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"time"
 
 	"firebase.google.com/go/v4/messaging"
 	"github.com/Jochem-W/skynotify/server/internal"
 	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/bluesky-social/indigo/api/bsky"
-	"github.com/bluesky-social/jetstream/pkg/models"
 )
 
 type getRecord_Response struct {
@@ -49,16 +49,10 @@ type embedData struct {
 	} `json:"external,omitempty"`
 }
 
-func MakeMessage(event *models.Event) (messaging.MulticastMessage, error) {
+func MakeMessage(userData user.User, path string, repost *bsky.FeedRepost) (messaging.MulticastMessage, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "repost"}}
 
-	repost := &bsky.FeedRepost{}
-	err := json.Unmarshal(event.Commit.Record, &repost)
-	if err != nil {
-		return message, err
-	}
-
-	userData, err := user.GetOrFetch(event.Did)
+	timestamp, err := time.Parse(time.RFC3339, repost.CreatedAt)
 	if err != nil {
 		return message, err
 	}
@@ -99,9 +93,9 @@ func MakeMessage(event *models.Event) (messaging.MulticastMessage, error) {
 	message.Data = make(map[string]string)
 	message.Data["title"] = userData.Handle
 	message.Data["body"] = fmt.Sprintf("@%s: %s", author.Handle, decoded.Value.Text)
-	message.Data["tag"] = internal.GenerateTag(event)
+	message.Data["tag"] = internal.GenerateTag(path)
 	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", atUri.Did, atUri.RecordKey)
-	message.Data["timestamp"] = strconv.FormatInt(event.TimeUS/1000, 10)
+	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
 	image := extractImage(author.Did, decoded)
 	if image != "" {
