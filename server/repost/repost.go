@@ -6,18 +6,25 @@
 package repost
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
+	"time"
 
 	"firebase.google.com/go/v4/messaging"
 	"github.com/Jochem-W/skynotify/server/internal"
+	"github.com/Jochem-W/skynotify/server/post"
 	"github.com/Jochem-W/skynotify/server/user"
-	"github.com/bluesky-social/indigo/api/bsky"
-	"github.com/bluesky-social/jetstream/pkg/models"
+	"github.com/ipld/go-car/v2/storage"
+	"github.com/ipld/go-ipld-prime/codec/dagcbor"
+	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/ipld/go-ipld-prime/node/basicnode"
 )
 
-type getRecord_Response struct {
+type record struct {
 	Value struct {
 		Text  string `json:"text,omitempty"`
 		Embed struct {
@@ -49,37 +56,18 @@ type embedData struct {
 	} `json:"external,omitempty"`
 }
 
-func MakeMessage(event *models.Event) (messaging.MulticastMessage, error) {
+func MakeMessage(car storage.ReadableCar, cid string, path string, userData user.User) (messaging.MulticastMessage, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "repost"}}
 
-	repost := &bsky.FeedRepost{}
-	err := json.Unmarshal(event.Commit.Record, &repost)
+	uri, createdAt, err := parseRepostOp(car, cid)
 	if err != nil {
 		return message, err
 	}
 
-	userData, err := user.GetOrFetch(event.Did)
+	atUri, err := internal.CutAtUri(uri)
 	if err != nil {
 		return message, err
 	}
-
-	atUri, err := internal.CutAtUri(repost.Subject.Uri)
-	if err != nil {
-		return message, err
-	}
-
-	author, err := user.GetOrFetch(atUri.Did)
-	if err != nil {
-		return message, err
-	}
-
-	// TODO this should just work no?
-	// output, err := atproto.RepoGetRecord(context.Background(), internal.XrpcClient, "", atUri.Collection, atUri.Did, atUri.RecordKey)
-	// if err != nil {
-	// 	return message, err
-	// }
-
-	// decoded := output.Value.Val.(*bsky.FeedPost)
 
 	response, err := internal.HttpClient.Get(fmt.Sprintf("https://bsky.social/xrpc/com.atproto.repo.getRecord?repo=%s&collection=%s&rkey=%s", atUri.Did, atUri.Collection, atUri.RecordKey))
 	if err != nil {
@@ -90,22 +78,46 @@ func MakeMessage(event *models.Event) (messaging.MulticastMessage, error) {
 		return message, fmt.Errorf("repost.MakeMessage: response status %s", response.Status)
 	}
 
-	decoded := getRecord_Response{}
-	err = json.NewDecoder(response.Body).Decode(&decoded)
+	post := record{}
+	err = json.NewDecoder(response.Body).Decode(&post)
 	if err != nil {
 		return message, err
 	}
 
+	author, err := user.GetOrFetch(atUri.Did)
+	if err != nil {
+		return message, err
+	}
+
+	timestamp, err := time.Parse(time.RFC3339, createdAt)
+	if err != nil {
+		return message, err
+	}
+
+	tag := path[strings.LastIndex(path, ".")+1:]
+	if len(tag) > 32 {
+		tag = tag[:32]
+	}
+
 	message.Data = make(map[string]string)
 	message.Data["title"] = userData.Handle
-	message.Data["body"] = fmt.Sprintf("@%s: %s", author.Handle, decoded.Value.Text)
-	message.Data["tag"] = internal.GenerateTag(event)
+	message.Data["body"] = fmt.Sprintf("@%s: %s", author.Handle, post.Value.Text)
+	message.Data["tag"] = tag
 	message.Data["url"] = fmt.Sprintf("https://bsky.app/profile/%s/post/%s", atUri.Did, atUri.RecordKey)
-	message.Data["timestamp"] = strconv.FormatInt(event.TimeUS/1000, 10)
+	message.Data["timestamp"] = strconv.FormatInt(timestamp.UnixMilli(), 10)
 
-	image := extractImage(author.Did, decoded)
-	if image != "" {
-		message.Data["image"] = image
+	if len(post.Value.Embed.Images) > 0 {
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Images[0].Image.Ref.Link)
+	} else if len(post.Value.Embed.Media.Images) > 0 {
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Media.Images[0].Image.Ref.Link)
+	} else if post.Value.Embed.Video.Ref.Link != "" {
+		message.Data["image"] = fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", atUri.Did, post.Value.Embed.Video.Ref.Link)
+	} else if post.Value.Embed.Media.Video.Ref.Link != "" {
+		message.Data["image"] = fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", atUri.Did, post.Value.Embed.Media.Video.Ref.Link)
+	} else if post.Value.Embed.External.Thumb.Ref.Link != "" {
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.External.Thumb.Ref.Link)
+	} else if post.Value.Embed.Media.External.Thumb.Ref.Link != "" {
+		message.Data["image"] = fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", atUri.Did, post.Value.Embed.Media.External.Thumb.Ref.Link)
 	}
 
 	if userData.DisplayName != "" {
@@ -121,30 +133,49 @@ func MakeMessage(event *models.Event) (messaging.MulticastMessage, error) {
 	return message, nil
 }
 
-func extractImage(did string, record getRecord_Response) string {
-	if len(record.Value.Embed.Images) > 0 {
-		return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, record.Value.Embed.Images[0].Image.Ref.Link)
+func parseRepostOp(car storage.ReadableCar, cid string) (string, string, error) {
+	blk, err := car.Get(context.Background(), cid)
+	if err != nil {
+		return "", "", err
 	}
 
-	if record.Value.Embed.Video.Ref.Link != "" {
-		return fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", did, record.Value.Embed.Video.Ref.Link)
+	reader := bytes.NewReader(blk)
+
+	nb := basicnode.Prototype.Any.NewBuilder()
+	err = dagcbor.Decode(nb, reader)
+	if err != nil {
+		return "", "", err
 	}
 
-	if record.Value.Embed.External.Thumb.Ref.Link != "" {
-		return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, record.Value.Embed.External.Thumb.Ref.Link)
+	n := nb.Build()
+	uri, err := extractUri(n)
+	if err != nil {
+		return "", "", err
 	}
 
-	if len(record.Value.Embed.Media.Images) > 0 {
-		return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, record.Value.Embed.Media.Images[0].Image.Ref.Link)
+	createdAt, err := post.ExtractCreatedAt(n)
+	if err != nil {
+		return uri, "", err
 	}
 
-	if record.Value.Embed.Media.Video.Ref.Link != "" {
-		return fmt.Sprintf("https://video.bsky.app/watch/%s/%s/thumbnail.jpg", did, record.Value.Embed.Media.Video.Ref.Link)
+	return uri, createdAt, nil
+}
+
+func extractUri(node datamodel.Node) (string, error) {
+	subject, err := node.LookupByString("subject")
+	if err != nil {
+		return "", err
 	}
 
-	if record.Value.Embed.Media.External.Thumb.Ref.Link != "" {
-		return fmt.Sprintf("https://cdn.bsky.app/img/feed_thumbnail/plain/%s/%s@jpeg", did, record.Value.Embed.Media.External.Thumb.Ref.Link)
+	uri, err := subject.LookupByString("uri")
+	if err != nil {
+		return "", err
 	}
 
-	return ""
+	uriStr, err := uri.AsString()
+	if err != nil {
+		return "", err
+	}
+
+	return uriStr, nil
 }
