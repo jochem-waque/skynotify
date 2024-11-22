@@ -86,6 +86,8 @@ func MakeMessage(userData user.User, path string, repost *bsky.FeedRepost) (mess
 		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}
 
+	defer response.Body.Close()
+
 	if response.StatusCode != 200 {
 		return message, fmt.Errorf("repost.MakeMessage: response status %s", response.Status)
 	}
