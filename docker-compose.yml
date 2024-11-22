@@ -45,3 +45,5 @@ services:
 
 volumes:
   skynotify-data:
+  influx-data:
+  influx-config:
