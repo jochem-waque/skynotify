@@ -89,11 +89,11 @@ func loadInflux() {
 	writeApi = client.WriteAPIBlocking("skynotify", "notification")
 }
 
-func writePoint(notificationType string, success bool) error {
+func writePoint(notificationType string, success bool, value int) error {
 	point := influxdb.NewPointWithMeasurement("sent")
 	point.AddTag("type", notificationType)
 	point.AddTag("success", strconv.FormatBool(success))
-	point.AddField("value", 1)
+	point.AddField("value", value)
 	point.SetTime(time.Now())
 
 	err := writeApi.WritePoint(context.Background(), point)
@@ -214,19 +214,20 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 		// message.Webpush.Headers["Topic"] = message.Data["tag"]
 		responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
 
+		successCount := 0
+		failCount := 0
 		tag, _, _ := strings.Cut(message.Data["tag"], "/")
 		if tag == "" {
 			tag = "unknown"
 		}
 
 		for i, response := range responses.Responses {
-			if err = writePoint(tag, response.Success); err != nil {
-				slog.Error("processCommit", "error", err)
-			}
-
 			if response.Success {
+				successCount += 1
 				continue
 			}
+
+			failCount += 1
 
 			if !errorutils.IsNotFound(response.Error) {
 				slog.Error("processCommit", "error", response.Error)
@@ -240,6 +241,15 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			}
 
 			slog.Info("processCommit: invalidated token", "token", token)
+		}
+
+		if err = writePoint(tag, true, successCount); err != nil {
+			slog.Error("processCommit", "error", err)
+			continue
+		}
+
+		if err = writePoint(tag, true, failCount); err != nil {
+			slog.Error("processCommit", "error", err)
 		}
 	}
 
