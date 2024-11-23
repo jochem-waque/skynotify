@@ -8,6 +8,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -38,11 +39,6 @@ import (
 	"google.golang.org/api/option"
 )
 
-var env = struct {
-	databaseUrl string
-	influxToken string
-}{}
-
 var messagingClient *messaging.Client
 
 var querier *db.DBQuerier
@@ -50,20 +46,16 @@ var querier *db.DBQuerier
 var writeApi api.WriteAPIBlocking
 
 func loadEnv() error {
-	if _, err := os.Stat(".env"); err == nil {
-		if err = godotenv.Load(); err != nil {
-			return fmt.Errorf("loadEnv: %w", err)
+	if _, err := os.Stat(".env"); err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil
 		}
+
+		return fmt.Errorf("loadEnv: %w", err)
 	}
 
-	env.databaseUrl = os.Getenv("DATABASE_URL")
-	if env.databaseUrl == "" {
-		return fmt.Errorf("loadEnv: environment variable DATABASE_URL is not set")
-	}
-
-	env.influxToken = os.Getenv("INFLUXDB_ADMIN_TOKEN")
-	if env.influxToken == "" {
-		return fmt.Errorf("loadEnv: environment variable INFLUXDB_ADMIN_TOKEN is not set")
+	if err := godotenv.Load(); err != nil {
+		return fmt.Errorf("loadEnv: %w", err)
 	}
 
 	return nil
@@ -84,9 +76,31 @@ func loadFirebase() error {
 	return nil
 }
 
-func loadInflux() {
-	client := influxdb.NewClient("http://influx:8086", env.influxToken)
+func loadQuerier() (*pgxpool.Pool, error) {
+	url := os.Getenv("DATABASE_URL")
+	if url == "" {
+		return nil, fmt.Errorf("loadQuerier: environment variable DATABASE_URL is not set")
+	}
+
+	dbpool, err := pgxpool.New(context.Background(), url)
+	if err != nil {
+		return nil, fmt.Errorf("loadQuerier: %w", err)
+	}
+
+	return dbpool, nil
+}
+
+func loadInflux() error {
+	token := os.Getenv("INFLUXDB_ADMIN_TOKEN")
+
+	if token == "" {
+		return fmt.Errorf("loadInflux: environment variable INFLUXDB_ADMIN_TOKEN is not set")
+	}
+
+	client := influxdb.NewClient("http://influx:8086", token)
 	writeApi = client.WriteAPIBlocking("skynotify", "notification")
+
+	return nil
 }
 
 func writePoint(notificationType string, success bool, value int) error {
@@ -107,7 +121,6 @@ func writePoint(notificationType string, success bool, value int) error {
 func main() {
 	if err := loadEnv(); err != nil {
 		slog.Error("main", "error", err)
-		os.Exit(1)
 	}
 
 	if err := loadFirebase(); err != nil {
@@ -115,16 +128,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	loadInflux()
-
-	dbpool, err := pgxpool.New(context.Background(), env.databaseUrl)
+	pool, err := loadQuerier()
 	if err != nil {
 		slog.Error("main", "error", err)
 		os.Exit(1)
 	}
-	defer dbpool.Close()
 
-	querier = db.NewQuerier(dbpool)
+	defer pool.Close()
+
+	if err = loadInflux(); err != nil {
+		slog.Error("main", "error", err)
+	}
 
 	uri := "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos"
 	con, _, err := websocket.DefaultDialer.Dial(uri, http.Header{})
@@ -241,6 +255,10 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			}
 
 			slog.Info("processCommit: invalidated token", "token", token)
+		}
+
+		if writeApi == nil {
+			continue
 		}
 
 		if err = writePoint(tag, true, successCount); err != nil {
