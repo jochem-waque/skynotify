@@ -232,7 +232,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 
 		successCount := 0
 		failCount := 0
-		tag, _, _ := strings.Cut(message.Data["tag"], "/")
+		tag := message.FCMOptions.AnalyticsLabel
 		if tag == "" {
 			tag = "unknown"
 		}
