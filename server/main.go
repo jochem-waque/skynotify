@@ -87,6 +87,8 @@ func loadQuerier() (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("loadQuerier: %w", err)
 	}
 
+	querier = db.NewQuerier(dbpool)
+
 	return dbpool, nil
 }
 
