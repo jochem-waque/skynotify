@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@atproto/api':
-        specifier: ^0.13.17
-        version: 0.13.17
+        specifier: ^0.13.18
+        version: 0.13.18
       '@atproto/xrpc':
         specifier: ^0.6.4
         version: 0.6.4
@@ -71,8 +71,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2
       '@types/node':
-        specifier: ^22.9.1
-        version: 22.9.1
+        specifier: ^22.9.3
+        version: 22.9.3
       '@types/react':
         specifier: npm:types-react@19.0.0-rc.1
         version: types-react@19.0.0-rc.1
@@ -119,8 +119,8 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@atproto/api@0.13.17':
-    resolution: {integrity: sha512-yfNBb7U4Ma1q3vYUdpvE4JeoR6RAKtVZKMgQnayVRpz4+0vVY3VjTYzNrrHi8cw4+NQyikzk1LU+Sw0luliXiA==}
+  '@atproto/api@0.13.18':
+    resolution: {integrity: sha512-rrl5HhzGYWZ7fiC965TPBUOVItq9M4dxMb6qz8IvAVQliSkrJrKc7UD0QWL89QiiXaOBuX8w+4i5r4wrfBGddg==}
 
   '@atproto/common-web@0.3.1':
     resolution: {integrity: sha512-N7wiTnus5vAr+lT//0y8m/FaHHLJ9LpGuEwkwDAeV3LCiPif4m/FS8x/QOYrx1PdZQwKso95RAPzCGWQBH5j6Q==}
@@ -1065,8 +1065,8 @@ packages:
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
 
-  '@types/node@22.9.1':
-    resolution: {integrity: sha512-p8Yy/8sw1caA8CdRIQBG5tiLHmxtQKObCijiAa9Ez+d4+PRffM4054xbju0msf+cvhJpnFEeNjxmVT/0ipktrg==}
+  '@types/node@22.9.3':
+    resolution: {integrity: sha512-F3u1fs/fce3FFk+DAxbxc78DF8x0cY09RRL8GnXLmkJ1jvx3TtPdWoTT5/NiYfI5ASqXBmfqJi9dZ3gxMx4lzw==}
 
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
@@ -2690,8 +2690,8 @@ packages:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
 
-  type-fest@4.27.0:
-    resolution: {integrity: sha512-3IMSWgP7C5KSQqmo1wjhKrwsvXAtF33jO3QY+Uy++ia7hqvgSK6iXbbg5PbDBc1P2ZbNEDgejOrN4YooXvhwCw==}
+  type-fest@4.27.1:
+    resolution: {integrity: sha512-3Ta7CyV6daqpwuGJMJKABaUChZZejpzysZkQg1//bLRg2wKQ4duwsg3MMIsHuElq58iDqizg4DBUmK8H8wExJg==}
     engines: {node: '>=16'}
 
   typed-array-buffer@1.0.2:
@@ -2706,8 +2706,8 @@ packages:
     resolution: {integrity: sha512-GsvTyUHTriq6o/bHcTd0vM7OQ9JEdlvluu9YISaA7+KzDzPaIzEeDFNkTfhdE3MYcNhNi0vq/LlegYgIs5yPAw==}
     engines: {node: '>= 0.4'}
 
-  typed-array-length@1.0.6:
-    resolution: {integrity: sha512-/OxDN6OtAk5KBpGb28T+HZc2M+ADtvRxXrKKbUwtsLgdoxgX13hyy7ek6bFRl5+aBs2yZzB0c4CnQfAtVypW/g==}
+  typed-array-length@1.0.7:
+    resolution: {integrity: sha512-3KS2b+kL7fsuk/eJZ7EQdnEmQoaho/r6KUef7hxvltNA5DR8NAUM+8wJMbJyZ4G9/7i3v5zPBIMN5aybAh2/Jg==}
     engines: {node: '>= 0.4'}
 
   types-react-dom@19.0.0-rc.1:
@@ -2841,7 +2841,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@atproto/api@0.13.17':
+  '@atproto/api@0.13.18':
     dependencies:
       '@atproto/common-web': 0.3.1
       '@atproto/lexicon': 0.4.3
@@ -3475,7 +3475,7 @@ snapshots:
   '@grpc/grpc-js@1.9.15':
     dependencies:
       '@grpc/proto-loader': 0.7.13
-      '@types/node': 22.9.1
+      '@types/node': 22.9.3
 
   '@grpc/proto-loader@0.7.13':
     dependencies:
@@ -3759,7 +3759,7 @@ snapshots:
 
   '@types/json5@0.0.29': {}
 
-  '@types/node@22.9.1':
+  '@types/node@22.9.3':
     dependencies:
       undici-types: 6.19.8
 
@@ -4017,7 +4017,7 @@ snapshots:
       camelcase: 8.0.0
       map-obj: 5.0.0
       quick-lru: 6.1.2
-      type-fest: 4.27.0
+      type-fest: 4.27.1
 
   camelcase@8.0.0: {}
 
@@ -4217,7 +4217,7 @@ snapshots:
       typed-array-buffer: 1.0.2
       typed-array-byte-length: 1.0.1
       typed-array-byte-offset: 1.0.3
-      typed-array-length: 1.0.6
+      typed-array-length: 1.0.7
       unbox-primitive: 1.0.2
       which-typed-array: 1.1.15
 
@@ -5180,7 +5180,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.9.1
+      '@types/node': 22.9.3
       long: 5.2.3
 
   punycode@2.3.1: {}
@@ -5520,7 +5520,7 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
 
-  type-fest@4.27.0: {}
+  type-fest@4.27.1: {}
 
   typed-array-buffer@1.0.2:
     dependencies:
@@ -5546,14 +5546,14 @@ snapshots:
       is-typed-array: 1.1.13
       reflect.getprototypeof: 1.0.6
 
-  typed-array-length@1.0.6:
+  typed-array-length@1.0.7:
     dependencies:
       call-bind: 1.0.7
       for-each: 0.3.3
       gopd: 1.0.1
-      has-proto: 1.0.3
       is-typed-array: 1.1.13
       possible-typed-array-names: 1.0.0
+      reflect.getprototypeof: 1.0.6
 
   types-react-dom@19.0.0-rc.1:
     dependencies:
