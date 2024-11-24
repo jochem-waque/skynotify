@@ -123,7 +123,7 @@ func loadInflux() error {
 		return nil
 	}
 
-	if !errors.Is(err, fmt.Errorf("bucket 'firehose' not found")) {
+	if err.Error() != "bucket 'firehose' not found" {
 		return fmt.Errorf("loadInflux: %w", err)
 	}
 
