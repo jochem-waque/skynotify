@@ -34,6 +34,7 @@ import (
 	"github.com/gorilla/websocket"
 	influxdb "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/influxdata/influxdb-client-go/v2/api"
+	"github.com/influxdata/influxdb-client-go/v2/api/write"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lpernett/godotenv"
 	"google.golang.org/api/option"
@@ -43,7 +44,9 @@ var messagingClient *messaging.Client
 
 var querier *db.DBQuerier
 
-var writeApi api.WriteAPIBlocking
+var influxClient influxdb.Client
+var nWriteApi api.WriteAPI
+var fWriteApi api.WriteAPI
 
 func loadEnv() error {
 	if _, err := os.Stat(".env"); err != nil {
@@ -99,23 +102,73 @@ func loadInflux() error {
 		return fmt.Errorf("loadInflux: environment variable INFLUXDB_ADMIN_TOKEN is not set")
 	}
 
-	client := influxdb.NewClient("http://influx:8086", token)
-	writeApi = client.WriteAPIBlocking("skynotify", "notification")
+	influxClient = influxdb.NewClient("http://influx:8086", token)
 
+	nWriteApi = influxClient.WriteAPI("skynotify", "notification")
+
+	organizations := influxClient.OrganizationsAPI()
+	org, err := organizations.FindOrganizationByName(context.Background(), "skynotify")
+	if err != nil {
+		return fmt.Errorf("loadInflux: %w", err)
+	}
+
+	buckets := influxClient.BucketsAPI()
+	buc, err := buckets.FindBucketByName(context.Background(), "firehose")
+	if err == nil {
+		if buc.OrgID == nil || org.Id == nil || *buc.OrgID != *org.Id {
+			return fmt.Errorf("loadInflux: bucket 'firehose' is not part of the 'skynotify' organization")
+		}
+
+		fWriteApi = influxClient.WriteAPI("skynotify", "firehose")
+		return nil
+	}
+
+	if !errors.Is(err, fmt.Errorf("bucket 'firehose' not found")) {
+		return fmt.Errorf("loadInflux: %w", err)
+	}
+
+	_, err = buckets.CreateBucketWithName(context.Background(), org, "firehose")
+	if err != nil {
+		return fmt.Errorf("loadInflux: %w", err)
+	}
+
+	fWriteApi = influxClient.WriteAPI("skynotify", "firehose")
 	return nil
 }
 
-func writePoint(notificationType string, success bool, value int) error {
-	point := influxdb.NewPointWithMeasurement("sent")
-	point.AddTag("type", notificationType)
-	point.AddTag("success", strconv.FormatBool(success))
-	point.AddField("value", value)
-	point.SetTime(time.Now())
-
-	err := writeApi.WritePoint(context.Background(), point)
-	if err != nil {
-		return fmt.Errorf("writePoint: %w", err)
+func writeNotificationPoint(notificationType string, success bool, value int) {
+	if nWriteApi == nil {
+		return
 	}
+
+	nWriteApi.WritePoint(write.NewPoint("sent", map[string]string{
+		"type":    notificationType,
+		"success": strconv.FormatBool(success),
+	}, map[string]interface{}{
+		"value": value,
+	}, time.Now()))
+}
+
+func writeCommitPoint(evt *atproto.SyncSubscribeRepos_Commit) error {
+	if fWriteApi == nil {
+		return nil
+	}
+
+	t, err := time.Parse(time.RFC3339, evt.Time)
+	if err != nil {
+		return fmt.Errorf("writeCommitPoint: %w", err)
+	}
+
+	p := write.NewPoint("commit", map[string]string{
+		"tooBig": strconv.FormatBool(evt.TooBig),
+	}, map[string]interface{}{
+		"value": 1,
+	}, t)
+	if evt.Ops != nil {
+		p.AddField("ops", len(evt.Ops))
+	}
+
+	fWriteApi.WritePoint(p)
 
 	return nil
 }
@@ -140,6 +193,28 @@ func main() {
 
 	if err = loadInflux(); err != nil {
 		slog.Error("main", "error", err)
+	}
+
+	if influxClient != nil {
+		defer influxClient.Close()
+	}
+
+	if nWriteApi != nil {
+		nErrorsCh := nWriteApi.Errors()
+		go func() {
+			for err := range nErrorsCh {
+				slog.Error("nWriteApi", "error", err)
+			}
+		}()
+	}
+
+	if fWriteApi != nil {
+		fErrorsCh := fWriteApi.Errors()
+		go func() {
+			for err := range fErrorsCh {
+				slog.Error("fWriteApi", "error", err)
+			}
+		}()
 	}
 
 	uri := "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos"
@@ -170,7 +245,14 @@ func main() {
 	sched := parallel.NewScheduler(runtime.NumCPU(), 500, "firehose", rsc.EventHandler)
 	if err = events.HandleRepoStream(context.Background(), con, sched); err != nil {
 		slog.Error("main", "error", err)
-		os.Exit(1)
+	}
+
+	if nWriteApi != nil {
+		nWriteApi.Flush()
+	}
+
+	if fWriteApi != nil {
+		fWriteApi.Flush()
 	}
 }
 
@@ -199,6 +281,11 @@ func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
 }
 
 func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
+	err := writeCommitPoint(evt)
+	if err != nil {
+		slog.Error("processCommit", "error", err)
+	}
+
 	if evt.TooBig {
 		// fmt.Println("skipping too big commit")
 		return nil
@@ -259,18 +346,8 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			slog.Info("processCommit: invalidated token", "token", token)
 		}
 
-		if writeApi == nil {
-			continue
-		}
-
-		if err = writePoint(tag, true, successCount); err != nil {
-			slog.Error("processCommit", "error", err)
-			continue
-		}
-
-		if err = writePoint(tag, true, failCount); err != nil {
-			slog.Error("processCommit", "error", err)
-		}
+		writeNotificationPoint(tag, true, successCount)
+		writeNotificationPoint(tag, true, failCount)
 	}
 
 	return nil
