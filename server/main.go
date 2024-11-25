@@ -25,6 +25,7 @@ import (
 	"firebase.google.com/go/v4/errorutils"
 	"firebase.google.com/go/v4/messaging"
 	"github.com/Jochem-W/skynotify/server/db"
+	"github.com/Jochem-W/skynotify/server/heartbeat"
 	"github.com/Jochem-W/skynotify/server/post"
 	"github.com/Jochem-W/skynotify/server/repost"
 	"github.com/Jochem-W/skynotify/server/user"
@@ -276,14 +277,19 @@ func main() {
 
 	defer con.Close()
 
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	h, hCtx := heartbeat.NewHeartbeat(time.Minute * 5)
+	ctx, cancel := signal.NotifyContext(hCtx, os.Interrupt, syscall.SIGTERM)
 
 	rsc := &events.RepoStreamCallbacks{
 		RepoIdentity: func(evt *atproto.SyncSubscribeRepos_Identity) error {
+			h.Reset()
+
 			processIdentity(evt)
 			return nil
 		},
 		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
+			h.Reset()
+
 			if err := processCommit(evt); err != nil {
 				slog.Error("rsc.RepoCommit", "error", err)
 			}
