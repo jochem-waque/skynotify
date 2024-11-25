@@ -21,12 +21,12 @@ export default function Page() {
       <Header></Header>
       <main className="flex grow flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <div className="max-w-xl rounded-lg bg-yellow-400 p-2 dark:bg-yellow-600">
+          {/* <div className="max-w-xl rounded-lg bg-yellow-400 p-2 dark:bg-yellow-600">
             <span>
               Due to increased load on Bluesky, some notifications might be
               dropped.
             </span>
-          </div>
+          </div> */}
           <h2 className="text-2xl">Settings</h2>
           <div className="flex gap-2 text-lg">
             <span>Redirect mode: </span>
