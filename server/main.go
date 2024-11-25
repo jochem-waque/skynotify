@@ -224,6 +224,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	defer con.Close()
+
 	ctx, cancel := context.WithCancel(context.Background())
 
 	rsc := &events.RepoStreamCallbacks{
