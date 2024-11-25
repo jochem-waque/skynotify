@@ -184,7 +184,7 @@ func getLastSeq(client influxdb.Client) (int64, error) {
   |> range(start: -1h)
   |> filter(fn: (r) => r._measurement == "commit")
   |> filter(fn: (r) => r._field == "seq")
-  |> sort(columns: ["_time"])
+  |> sort(columns: ["_value"])
   |> last()`)
 	if err != nil {
 		return 0, fmt.Errorf("getLastSeq: %w", err)
