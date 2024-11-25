@@ -173,6 +173,40 @@ func writeCommitPoint(evt *atproto.SyncSubscribeRepos_Commit) error {
 	return nil
 }
 
+func getLastSeq(client influxdb.Client) (int64, error) {
+	if client == nil {
+		return 0, nil
+	}
+
+	q := client.QueryAPI("skynotify")
+	// range could be up to 3d, but is very slow and would be very spammy
+	res, err := q.Query(context.Background(), `from(bucket: "firehose")
+  |> range(start: -1h)
+  |> filter(fn: (r) => r._measurement == "commit")
+  |> filter(fn: (r) => r._field == "seq")
+  |> sort(columns: ["_time"])
+  |> last()`)
+	if err != nil {
+		return 0, fmt.Errorf("getLastSeq: %w", err)
+	}
+
+	if !res.Next() {
+		return 0, nil
+	}
+
+	val := res.Record().Value()
+	if val == nil {
+		return 0, nil
+	}
+
+	seq, ok := val.(int64)
+	if !ok {
+		return 0, fmt.Errorf("getLastSeq: couldn't read seq field as int64")
+	}
+
+	return seq, nil
+}
+
 func main() {
 	if err := loadEnv(); err != nil {
 		slog.Error("main", "error", err)
@@ -201,30 +235,10 @@ func main() {
 
 	if influx != nil {
 		defer influx.Close()
-
-		q := influx.QueryAPI("skynotify")
-		// range could be up to 3d, but is very slow and would be very spammy
-		res, err := q.Query(context.Background(), `from(bucket: "firehose")
-  |> range(start: -1h)
-  |> filter(fn: (r) => r._measurement == "commit")
-  |> filter(fn: (r) => r._field == "seq")
-  |> sort(columns: ["_time"])
-  |> last()`)
+		seq, err = getLastSeq(influx)
 		if err != nil {
 			slog.Error("main", "error", err)
 			os.Exit(1)
-		}
-
-		if res.Next() {
-			val := res.Record().Value()
-			if val != nil {
-				var ok bool
-				seq, ok = res.Record().Value().(int64)
-				if !ok {
-					slog.Error("main: couldn't read seq field as int64")
-					os.Exit(1)
-				}
-			}
 		}
 	}
 
