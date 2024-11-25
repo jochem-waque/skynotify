@@ -249,14 +249,6 @@ func main() {
 	if err = events.HandleRepoStream(ctx, con, sched); err != nil {
 		slog.Error("main", "error", err)
 	}
-
-	if nWriteApi != nil {
-		nWriteApi.Flush()
-	}
-
-	if fWriteApi != nil {
-		fWriteApi.Flush()
-	}
 }
 
 func processIdentity(evt *atproto.SyncSubscribeRepos_Identity) {
