@@ -8,8 +8,8 @@ self-hostable.
 
 1. Install Docker and Docker Compose
 2. Clone or download the repository
-3. Copy `example.env` to `.env` and fill in the empty values
-4. Create a Firebase project with Cloud Messaging turned on
+3. Create a Firebase project with Cloud Messaging turned on
+4. Copy `example.env` to `.env` and fill in the empty values
 5. Place Firebase Admin SDK credentials in `server/firebase.json`
 6. Place Firebase Web SDK credentials in `app/firebase.ts`
 7. Set a subscription limit in `app/config.ts`
@@ -24,6 +24,14 @@ accessible from the outside on port 80, the following can be added to `app` in
 ports:
   - "80:3000"
 ```
+
+### InfluxDB
+
+For monitoring and statistics, InfluxDB has been integrated into the Compose
+file and Go application. Data is collected on the amount of notifications sent
+and the amount of operations processed from the Bluesky firehose. This data is
+also used to keep track of the last processed commit, which allows for the
+application to be restarted without dropping notifications.
 
 ## Contributing
 
