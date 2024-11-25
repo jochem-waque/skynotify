@@ -301,6 +301,8 @@ func main() {
 	if err = events.HandleRepoStream(ctx, con, sched); err != nil {
 		slog.Error("main", "error", err)
 	}
+
+	slog.Info("main: graceful exit")
 }
 
 func processIdentity(evt *atproto.SyncSubscribeRepos_Identity) {
