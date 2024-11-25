@@ -44,7 +44,6 @@ var messagingClient *messaging.Client
 
 var querier *db.DBQuerier
 
-var influxClient influxdb.Client
 var nWriteApi api.WriteAPI
 var fWriteApi api.WriteAPI
 
@@ -95,45 +94,45 @@ func loadQuerier() (*pgxpool.Pool, error) {
 	return dbpool, nil
 }
 
-func loadInflux() error {
+func loadInflux() (influxdb.Client, error) {
 	token := os.Getenv("INFLUXDB_ADMIN_TOKEN")
 
 	if token == "" {
-		return fmt.Errorf("loadInflux: environment variable INFLUXDB_ADMIN_TOKEN is not set")
+		return nil, fmt.Errorf("loadInflux: environment variable INFLUXDB_ADMIN_TOKEN is not set")
 	}
 
-	influxClient = influxdb.NewClient("http://influx:8086", token)
+	influxClient := influxdb.NewClient("http://influx:8086", token)
 
 	nWriteApi = influxClient.WriteAPI("skynotify", "notification")
 
 	organizations := influxClient.OrganizationsAPI()
 	org, err := organizations.FindOrganizationByName(context.Background(), "skynotify")
 	if err != nil {
-		return fmt.Errorf("loadInflux: %w", err)
+		return influxClient, fmt.Errorf("loadInflux: %w", err)
 	}
 
 	buckets := influxClient.BucketsAPI()
 	buc, err := buckets.FindBucketByName(context.Background(), "firehose")
 	if err == nil {
 		if buc.OrgID == nil || org.Id == nil || *buc.OrgID != *org.Id {
-			return fmt.Errorf("loadInflux: bucket 'firehose' is not part of the 'skynotify' organization")
+			return influxClient, fmt.Errorf("loadInflux: bucket 'firehose' is not part of the 'skynotify' organization")
 		}
 
 		fWriteApi = influxClient.WriteAPI("skynotify", "firehose")
-		return nil
+		return influxClient, nil
 	}
 
 	if err.Error() != "bucket 'firehose' not found" {
-		return fmt.Errorf("loadInflux: %w", err)
+		return influxClient, fmt.Errorf("loadInflux: %w", err)
 	}
 
 	_, err = buckets.CreateBucketWithName(context.Background(), org, "firehose")
 	if err != nil {
-		return fmt.Errorf("loadInflux: %w", err)
+		return influxClient, fmt.Errorf("loadInflux: %w", err)
 	}
 
 	fWriteApi = influxClient.WriteAPI("skynotify", "firehose")
-	return nil
+	return influxClient, nil
 }
 
 func writeNotificationPoint(notificationType string, success bool, value int) {
@@ -191,12 +190,13 @@ func main() {
 
 	defer pool.Close()
 
-	if err = loadInflux(); err != nil {
+	influx, err := loadInflux()
+	if err != nil {
 		slog.Error("main", "error", err)
 	}
 
-	if influxClient != nil {
-		defer influxClient.Close()
+	if influx != nil {
+		defer influx.Close()
 	}
 
 	if nWriteApi != nil {
