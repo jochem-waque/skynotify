@@ -162,6 +162,7 @@ func writeCommitPoint(evt *atproto.SyncSubscribeRepos_Commit) error {
 		"tooBig": strconv.FormatBool(evt.TooBig),
 	}, map[string]interface{}{
 		"value": 1,
+		"seq":   evt.Seq,
 	}, t)
 	if evt.Ops != nil {
 		p.AddField("ops", len(evt.Ops))
@@ -196,8 +197,35 @@ func main() {
 		os.Exit(1)
 	}
 
+	var seq int64 = 0
+
 	if influx != nil {
 		defer influx.Close()
+
+		q := influx.QueryAPI("skynotify")
+		// range could be up to 3d, but is very slow and would be very spammy
+		res, err := q.Query(context.Background(), `from(bucket: "firehose")
+  |> range(start: -1h)
+  |> filter(fn: (r) => r._measurement == "commit")
+  |> filter(fn: (r) => r._field == "seq")
+  |> sort(columns: ["_time"])
+  |> last()`)
+		if err != nil {
+			slog.Error("main", "error", err)
+			os.Exit(1)
+		}
+
+		if res.Next() {
+			val := res.Record().Value()
+			if val != nil {
+				var ok bool
+				seq, ok = res.Record().Value().(int64)
+				if !ok {
+					slog.Error("main: couldn't read seq field as int64")
+					os.Exit(1)
+				}
+			}
+		}
 	}
 
 	if nWriteApi != nil {
@@ -219,6 +247,11 @@ func main() {
 	}
 
 	uri := "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos"
+	if seq != 0 {
+		slog.Info("main: resuming from", "seq", seq)
+		uri = fmt.Sprintf("%s?cursor=%d", uri, seq)
+	}
+
 	con, _, err := websocket.DefaultDialer.Dial(uri, http.Header{})
 	if err != nil {
 		slog.Error("main", "error", err)
