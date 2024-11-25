@@ -17,7 +17,15 @@ export default function Page() {
     <>
       <Header></Header>
       <main className="flex grow flex-col gap-4">
-        <h2 className="text-2xl">Privacy Policy</h2>
+        <div className="flex flex-col">
+          <h2 className="text-2xl">Privacy Policy</h2>
+          <span className="text-sm opacity-50">
+            Last updated:{" "}
+            <Link className="underline" href="privacy/changes">
+              2024-11-25
+            </Link>
+          </span>
+        </div>
         <div className="flex flex-col gap-1">
           <h3 className="text-xl">Cookies and local data storage</h3>
           <p>
@@ -47,7 +55,7 @@ export default function Page() {
           <p>
             To enable the receiving of push notifications, the Firebase
             installation ID is processed and stored by Google Firebase, as
-            listed in the{" "}
+            listed on the{" "}
             <Link
               className="text-blue-500 underline transition-opacity hover:opacity-75"
               href="https://firebase.google.com/support/privacy"
@@ -57,6 +65,12 @@ export default function Page() {
             page. This data might be transferred, stored or processed outside of
             the EU, and is automatically deleted when the app is no longer
             installed for a prolonged time.
+          </p>
+          <p>
+            Furthermore, the total amount and types of notifications sent on a
+            day is stored by Google Firebase as part of the Firebase Cloud
+            Messaging analytics. This data is anonymous, and might be
+            transferred, stored or processed outside of the EU.
           </p>
         </div>
         <div className="flex flex-col gap-1">
@@ -94,6 +108,11 @@ export default function Page() {
             speed at which the website loads is stored or processed by
             Cloudflare. This data might be transferred, stored or processed
             outside of the EU.
+          </p>
+          <p>
+            To monitor the operation of the backend, the amount and types of
+            notifications are stored and retained indefinitely. This data is
+            anonymous, and stored and processed in the EU.
           </p>
         </div>
         <div className="flex flex-col gap-1">
