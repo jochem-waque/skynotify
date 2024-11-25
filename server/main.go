@@ -13,10 +13,12 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
 	"runtime"
 	"slices"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	firebase "firebase.google.com/go/v4"
@@ -274,7 +276,7 @@ func main() {
 
 	defer con.Close()
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 
 	rsc := &events.RepoStreamCallbacks{
 		RepoIdentity: func(evt *atproto.SyncSubscribeRepos_Identity) error {
