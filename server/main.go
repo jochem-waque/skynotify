@@ -224,6 +224,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
+
 	rsc := &events.RepoStreamCallbacks{
 		RepoIdentity: func(evt *atproto.SyncSubscribeRepos_Identity) error {
 			processIdentity(evt)
@@ -238,12 +240,13 @@ func main() {
 		},
 		Error: func(evt *events.ErrorFrame) error {
 			slog.Error("rsc.Error", "error", evt.Error, "message", evt.Message)
+			cancel()
 			return nil
 		},
 	}
 
 	sched := parallel.NewScheduler(runtime.NumCPU(), 500, "firehose", rsc.EventHandler)
-	if err = events.HandleRepoStream(context.Background(), con, sched); err != nil {
+	if err = events.HandleRepoStream(ctx, con, sched); err != nil {
 		slog.Error("main", "error", err)
 	}
 
