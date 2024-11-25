@@ -193,6 +193,7 @@ func main() {
 	influx, err := loadInflux()
 	if err != nil {
 		slog.Error("main", "error", err)
+		os.Exit(1)
 	}
 
 	if influx != nil {
