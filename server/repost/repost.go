@@ -50,7 +50,7 @@ type embedData struct {
 	} `json:"external,omitempty"`
 }
 
-func MakeMessage(userData user.User, path string, repost *bsky.FeedRepost) (messaging.MulticastMessage, error) {
+func MakeMessage(userData *user.User, path string, repost *bsky.FeedRepost) (messaging.MulticastMessage, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "repost"}}
 
 	timestamp, err := time.Parse(time.RFC3339, repost.CreatedAt)
