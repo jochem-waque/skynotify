@@ -3,6 +3,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+type Action = "like" | "repost" | "unlike" | "unrepost"
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -31,8 +33,18 @@ declare global {
     >
   }
 
+  interface Notification {
+    image: string
+    timestamp: number
+    actions: { action: Action; title: string; icon?: string }[]
+  }
+
+  interface NotificationEvent {
+    action: Action
+  }
+
   interface NotificationOptions {
-    actions?: { action: string; title: string; icon?: string }[]
+    actions?: { action: Action; title: string; icon?: string }[]
     badge?: string
     body?: string
     data?: unknown

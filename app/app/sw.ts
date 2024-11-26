@@ -10,7 +10,12 @@ import { get } from "idb-keyval"
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist"
 import { Serwist } from "serwist"
 
-const Actions = { Like: "like", Repost: "repost" }
+const Actions = {
+  Like: "like",
+  Unlike: "unlike",
+  Repost: "repost",
+  Unrepost: "unrepost",
+}
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -28,27 +33,41 @@ const serwist = new Serwist({
   runtimeCaching: defaultCache,
 })
 
+async function like(notification: Notification) {
+  await self.registration.showNotification(notification.title, {
+    badge: "/badge.png",
+    body: `Liked a post from ${notification.title}`,
+    icon: notification.icon,
+    silent: true,
+    tag: notification.tag,
+    timestamp: notification.timestamp,
+  })
+
+  await new Promise((resolve) => setTimeout(resolve, 2500))
+
+  await self.registration.showNotification(notification.title, {
+    badge: "/badge.png",
+    body: notification.body,
+    data: notification.data,
+    icon: notification.icon,
+    image: notification.image,
+    silent: true,
+    tag: notification.tag,
+    timestamp: notification.timestamp,
+    actions: notification.actions.map((action) =>
+      action.action === "like"
+        ? { action: "unlike", title: "Remove like" }
+        : action.action === "unlike"
+          ? { action: "like", title: "Like" }
+          : action,
+    ),
+  })
+}
+
 self.addEventListener("notificationclick", (event) => {
   switch (event.action) {
-    case Actions.Like:
-      // do a thing
-      console.log(event.notification)
-      event.waitUntil(
-        self.registration.showNotification(
-          event.notification.title,
-          event.notification,
-        ),
-      )
-      return
-    case Actions.Repost:
-      // do a thing
-      console.log(event.notification)
-      event.waitUntil(
-        self.registration.showNotification(
-          event.notification.title,
-          event.notification,
-        ),
-      )
+    case "like":
+      event.waitUntil(like(event.notification))
       return
     default:
       break
