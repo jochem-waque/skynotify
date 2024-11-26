@@ -12,6 +12,7 @@ import ImportFollowingSuspenseful from "./importFollowingSuspenseful"
 
 export const metadata: Metadata = {
   title: "Import following | SkyNotify",
+  robots: "none",
 }
 
 export default function Page() {

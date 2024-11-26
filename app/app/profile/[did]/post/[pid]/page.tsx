@@ -12,6 +12,7 @@ import Redirect from "./redirect"
 
 export const metadata: Metadata = {
   title: "Redirecting to post | SkyNotify",
+  robots: "none",
 }
 
 export default async function Page({

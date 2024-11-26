@@ -9,6 +9,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Liability Disclaimer | SkyNotify",
+  robots: "none",
 }
 
 export default function Page() {

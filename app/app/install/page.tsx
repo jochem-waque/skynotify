@@ -14,6 +14,7 @@ import { UAParser } from "ua-parser-js"
 
 export const metadata: Metadata = {
   title: "Install | SkyNotify",
+  robots: "none",
 }
 
 async function parseUserAgent(): Promise<Platform> {

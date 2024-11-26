@@ -16,6 +16,7 @@ import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Select profiles | SkyNotify",
+  robots: "none",
 }
 
 export default function Page() {

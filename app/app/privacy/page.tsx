@@ -10,6 +10,7 @@ import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Privacy Policy | SkyNotify",
+  robots: "none",
 }
 
 export default function Page() {

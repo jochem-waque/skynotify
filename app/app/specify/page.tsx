@@ -14,6 +14,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Set notifications | SkyNotify",
+  robots: "none",
 }
 
 export default function Page() {
