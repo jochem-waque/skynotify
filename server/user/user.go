@@ -136,6 +136,4 @@ func Update(did string, profile *bsky.ActorProfile) {
 	users.Lock()
 	users.m[did] = &newUser
 	users.Unlock()
-
-	return
 }
