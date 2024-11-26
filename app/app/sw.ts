@@ -10,6 +10,8 @@ import { get } from "idb-keyval"
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist"
 import { Serwist } from "serwist"
 
+const Actions = { Like: "like", Repost: "repost" }
+
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
     __SW_MANIFEST: (PrecacheEntry | string)[] | undefined
@@ -27,6 +29,31 @@ const serwist = new Serwist({
 })
 
 self.addEventListener("notificationclick", (event) => {
+  switch (event.action) {
+    case Actions.Like:
+      // do a thing
+      console.log(event.notification)
+      event.waitUntil(
+        self.registration.showNotification(
+          event.notification.title,
+          event.notification,
+        ),
+      )
+      return
+    case Actions.Repost:
+      // do a thing
+      console.log(event.notification)
+      event.waitUntil(
+        self.registration.showNotification(
+          event.notification.title,
+          event.notification,
+        ),
+      )
+      return
+    default:
+      break
+  }
+
   const url = new URL(event.notification.data.FCM_MSG.notification.click_action)
   if (url.protocol !== "https:") {
     return event.waitUntil(self.clients.openWindow(url))
@@ -71,6 +98,10 @@ onBackgroundMessage(messaging, (payload) => {
     silent: true,
     tag,
     timestamp: Number(timestamp),
+    actions: [
+      { action: Actions.Like, title: "Like" },
+      { action: Actions.Repost, title: "Repost" },
+    ],
   })
 })
 
