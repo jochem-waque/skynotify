@@ -8,7 +8,6 @@ import OpenBackgroundNotifications from "@/components/openBackgroundNotification
 import UpdateToken from "@/components/updateToken"
 import { Metadata, Viewport } from "next"
 import { Noto_Sans, Noto_Sans_Mono } from "next/font/google"
-import Head from "next/head"
 import "./globals.css"
 
 const font = Noto_Sans({
@@ -57,7 +56,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${font.variable} ${mono.variable} font-sans`}>
-      <Head>
+      <body className="mx-auto flex min-h-[100svh] flex-col items-center p-4">
         <script
           key="website-data"
           type="application/ld+json"
@@ -70,8 +69,6 @@ export default function RootLayout({
             }),
           }}
         ></script>
-      </Head>
-      <body className="mx-auto flex min-h-[100svh] flex-col items-center p-4">
         <div className="container relative flex max-w-xl grow flex-col gap-4">
           {children}
         </div>
