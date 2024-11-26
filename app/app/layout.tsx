@@ -58,14 +58,18 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${font.variable} ${mono.variable} font-sans`}>
       <Head>
-        <script key="website-data" type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "SkyNotify",
-            url: "https://${process.env.NEXT_PUBLIC_HOSTNAME}/",
-          })}
-        </script>
+        <script
+          key="website-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "SkyNotify",
+              url: `https://${process.env.NEXT_PUBLIC_HOSTNAME}/`,
+            }),
+          }}
+        ></script>
       </Head>
       <body className="mx-auto flex min-h-[100svh] flex-col items-center p-4">
         <div className="container relative flex max-w-xl grow flex-col gap-4">
