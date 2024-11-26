@@ -284,7 +284,10 @@ func main() {
 		RepoIdentity: func(evt *atproto.SyncSubscribeRepos_Identity) error {
 			h.Reset()
 
-			processIdentity(evt)
+			if err := user.UpdateIdentity(evt.Did, evt); err != nil {
+				slog.Error("rsc.RepoIdentity", "error", err)
+			}
+
 			return nil
 		},
 		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
@@ -309,12 +312,6 @@ func main() {
 	}
 
 	slog.Info("main: graceful exit")
-}
-
-func processIdentity(evt *atproto.SyncSubscribeRepos_Identity) {
-	if evt.Handle != nil {
-		user.UpdateHandle(evt.Did, *evt.Handle)
-	}
 }
 
 func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
@@ -448,9 +445,7 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 				return messages, fmt.Errorf("processOps: couldn't read profile record")
 			}
 
-			if err = user.Update(evt.Repo, pr); err != nil {
-				return messages, fmt.Errorf("processOps: %w", err)
-			}
+			user.Update(evt.Repo, pr)
 
 			continue
 		}

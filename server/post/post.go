@@ -19,7 +19,7 @@ import (
 	"firebase.google.com/go/v4/messaging"
 )
 
-func MakeMessage(userData user.User, path string, post *bsky.FeedPost) (messaging.MulticastMessage, bool, error) {
+func MakeMessage(userData *user.User, path string, post *bsky.FeedPost) (messaging.MulticastMessage, bool, error) {
 	message := messaging.MulticastMessage{FCMOptions: &messaging.FCMOptions{AnalyticsLabel: "post"}}
 
 	_, pid, found := strings.Cut(path, "/")

@@ -13,9 +13,8 @@ import (
 	"github.com/bluesky-social/indigo/xrpc"
 )
 
-var HttpClient *http.Client = util.RobustHTTPClient()
-var AtprotoXrpcClient *xrpc.Client = &xrpc.Client{Client: HttpClient, Host: "https://bsky.social"}
-var BskyXrpcClient *xrpc.Client = &xrpc.Client{Client: HttpClient, Host: "https://public.api.bsky.app"}
+// sharing the client should be fine
+var httpClient *http.Client = util.RobustHTTPClient()
 
 func GenerateTag(path string) string {
 	tag := path[strings.LastIndex(path, ".")+1:]
@@ -24,4 +23,11 @@ func GenerateTag(path string) string {
 	}
 
 	return tag
+}
+
+func NewXrpcClient(pds string) *xrpc.Client {
+	return &xrpc.Client{
+		Client: httpClient,
+		Host:   pds,
+	}
 }
