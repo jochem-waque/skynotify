@@ -13,9 +13,12 @@ import (
 	"github.com/Jochem-W/skynotify/server/internal"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/api/bsky"
+	"github.com/bluesky-social/indigo/atproto/identity"
 	"github.com/bluesky-social/indigo/atproto/syntax"
 	"github.com/bluesky-social/indigo/xrpc"
 )
+
+var directory = identity.DefaultDirectory()
 
 type User struct {
 	Did         string
@@ -47,7 +50,7 @@ func GetOrFetch(did string) (*User, error) {
 		return user, nil
 	}
 
-	id, err := internal.Directory.LookupDID(context.Background(), syntax.DID(did))
+	id, err := directory.LookupDID(context.Background(), syntax.DID(did))
 	if err != nil {
 		return user, fmt.Errorf("user.GetOrFetch: %w", err)
 	}
@@ -55,7 +58,7 @@ func GetOrFetch(did string) (*User, error) {
 	user = &User{
 		Did:    id.DID.String(),
 		Handle: id.Handle.String(),
-		Client: &xrpc.Client{Client: internal.HttpClient, Host: id.PDSEndpoint()},
+		Client: internal.NewXrpcClient(id.PDSEndpoint()),
 	}
 
 	rec, err := atproto.RepoGetRecord(context.Background(), user.Client, "", "app.bsky.actor.profile", user.Did, "self")
@@ -97,7 +100,7 @@ func UpdateIdentity(did string, evt *atproto.SyncSubscribeRepos_Identity) error 
 		newUser.Handle = *evt.Handle
 	}
 
-	id, err := internal.Directory.LookupDID(context.Background(), syntax.DID(did))
+	id, err := directory.LookupDID(context.Background(), syntax.DID(did))
 	if err != nil {
 		return fmt.Errorf("user.UpdateIdentity: %w", err)
 	}

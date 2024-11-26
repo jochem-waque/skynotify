@@ -9,12 +9,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/bluesky-social/indigo/atproto/identity"
 	"github.com/bluesky-social/indigo/util"
+	"github.com/bluesky-social/indigo/xrpc"
 )
 
-var HttpClient *http.Client = util.RobustHTTPClient()
-var Directory = identity.DefaultDirectory()
+// sharing the client should be fine
+var httpClient *http.Client = util.RobustHTTPClient()
 
 func GenerateTag(path string) string {
 	tag := path[strings.LastIndex(path, ".")+1:]
@@ -23,4 +23,11 @@ func GenerateTag(path string) string {
 	}
 
 	return tag
+}
+
+func NewXrpcClient(pds string) *xrpc.Client {
+	return &xrpc.Client{
+		Client: httpClient,
+		Host:   pds,
+	}
 }
