@@ -101,7 +101,7 @@ func loadInflux() (influxdb.Client, error) {
 	token := os.Getenv("INFLUXDB_ADMIN_TOKEN")
 
 	if token == "" {
-		return nil, fmt.Errorf("loadInflux: environment variable INFLUXDB_ADMIN_TOKEN is not set")
+		return nil, nil
 	}
 
 	influxClient := influxdb.NewClient("http://influx:8086", token)
