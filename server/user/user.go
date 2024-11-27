@@ -7,6 +7,7 @@ package user
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 
@@ -62,6 +63,15 @@ func GetOrFetch(did string) (*User, error) {
 	}
 
 	rec, err := atproto.RepoGetRecord(context.Background(), user.Client, "", "app.bsky.actor.profile", user.Did, "self")
+	var xerr *xrpc.Error
+	if errors.As(err, &xerr) && xerr.StatusCode == 400 {
+		users.Lock()
+		users.m[user.Did] = user
+		users.Unlock()
+
+		return user, nil
+	}
+
 	if err != nil {
 		return user, fmt.Errorf("user.GetOrFetch: %w", err)
 	}
