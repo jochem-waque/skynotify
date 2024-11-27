@@ -43,7 +43,7 @@ func MakeMessage(userData *user.User, path string, repost *bsky.FeedRepost) (mes
 	collection := atUri.Collection().String()
 	rkey := atUri.RecordKey().String()
 
-	rec, err := atproto.RepoGetRecord(context.Background(), author.Client, "", collection, author.Did, rkey)
+	rec, err := atproto.RepoGetRecord(context.Background(), author.Client, repost.Subject.Cid, collection, author.Did, rkey)
 	if err != nil {
 		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}
