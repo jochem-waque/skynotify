@@ -53,7 +53,7 @@ func GetOrFetch(did string) (*User, error) {
 
 	id, err := directory.LookupDID(context.Background(), syntax.DID(did))
 	if err != nil {
-		return user, fmt.Errorf("user.GetOrFetch: %w", err)
+		return nil, fmt.Errorf("user.GetOrFetch: %w", err)
 	}
 
 	user = &User{
@@ -73,12 +73,12 @@ func GetOrFetch(did string) (*User, error) {
 	}
 
 	if err != nil {
-		return user, fmt.Errorf("user.GetOrFetch: %w", err)
+		return nil, fmt.Errorf("user.GetOrFetch: %w", err)
 	}
 
 	pr, ok := rec.Value.Val.(*bsky.ActorProfile)
 	if !ok {
-		return user, fmt.Errorf("user.GetOrFetch: couldn't decode record to Profile")
+		return nil, fmt.Errorf("user.GetOrFetch: couldn't decode record to Profile")
 	}
 
 	if pr.DisplayName != nil {
