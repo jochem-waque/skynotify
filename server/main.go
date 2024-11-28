@@ -115,26 +115,45 @@ func loadInflux() (influxdb.Client, error) {
 	}
 
 	buckets := influxClient.BucketsAPI()
-	buc, err := buckets.FindBucketByName(context.Background(), "firehose")
-	if err == nil {
-		if buc.OrgID == nil || org.Id == nil || *buc.OrgID != *org.Id {
-			return influxClient, fmt.Errorf("loadInflux: bucket 'firehose' is not part of the 'skynotify' organization")
+	_, err = buckets.FindBucketByName(context.Background(), "firehose")
+	if err != nil {
+		if err.Error() != "bucket 'firehose' not found" {
+			return influxClient, fmt.Errorf("loadInflux: %w", err)
 		}
 
-		fWriteApi = influxClient.WriteAPI("skynotify", "firehose")
-		return influxClient, nil
+		_, err = buckets.CreateBucketWithName(context.Background(), org, "firehose")
+		if err != nil {
+			return influxClient, fmt.Errorf("loadInflux: %w", err)
+		}
+
+		_, err = buckets.CreateBucketWithName(context.Background(), org, "firehose-downsampled")
+		if err != nil {
+			return influxClient, fmt.Errorf("loadInflux: %w", err)
+		}
 	}
 
-	if err.Error() != "bucket 'firehose' not found" {
-		return influxClient, fmt.Errorf("loadInflux: %w", err)
-	}
-
-	_, err = buckets.CreateBucketWithName(context.Background(), org, "firehose")
+	tasksApi := influxClient.TasksAPI()
+	tasks, err := tasksApi.FindTasks(context.Background(), &api.TaskFilter{Name: "firehose-downsample"})
 	if err != nil {
 		return influxClient, fmt.Errorf("loadInflux: %w", err)
 	}
 
-	fWriteApi = influxClient.WriteAPI("skynotify", "firehose")
+	for _, task := range tasks {
+		if task.Name == "firehose-downsample" {
+			return influxClient, nil
+		}
+	}
+
+	_, err = tasksApi.CreateTaskWithEvery(context.Background(), "firehose-downsample", `from(bucket: "firehose")
+  |> range(start: -task.every)
+  |> filter(fn: (r) => r._measurement == "commit" and r._field == "ops")
+  |> aggregateWindow(every: 1s, fn: sum)
+  |> to(bucket: "firehose-downsampled")`, "1m", *org.Id)
+
+	if err != nil {
+		return influxClient, fmt.Errorf("loadInflux: %w", err)
+	}
+
 	return influxClient, nil
 }
 
