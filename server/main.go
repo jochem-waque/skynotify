@@ -125,6 +125,13 @@ func loadInflux() (influxdb.Client, error) {
 		if err != nil {
 			return influxClient, fmt.Errorf("loadInflux: %w", err)
 		}
+	}
+
+	_, err = buckets.FindBucketByName(context.Background(), "firehose-downsampled")
+	if err != nil {
+		if err.Error() != "bucket 'firehose-downsampled' not found" {
+			return influxClient, fmt.Errorf("loadInflux: %w", err)
+		}
 
 		_, err = buckets.CreateBucketWithName(context.Background(), org, "firehose-downsampled")
 		if err != nil {
