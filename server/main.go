@@ -127,6 +127,8 @@ func loadInflux() (influxdb.Client, error) {
 		}
 	}
 
+	fWriteApi = influxClient.WriteAPI("skynotify", "firehose")
+
 	_, err = buckets.FindBucketByName(context.Background(), "firehose-downsampled")
 	if err != nil {
 		if err.Error() != "bucket 'firehose-downsampled' not found" {
