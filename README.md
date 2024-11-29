@@ -28,10 +28,11 @@ ports:
 ### InfluxDB
 
 For monitoring and statistics, InfluxDB has been integrated into the Compose
-file and Go application. The amount and types of notifications sent
-and the amount of operations processed from the Bluesky firehose are stored for displaying in a graph. This latter is
-also used to keep track of the last processed commit, which allows for the
-application to be restarted without dropping notifications.
+file and Go application. The amount and types of notifications sent and the
+amount of operations processed from the Bluesky firehose are stored for
+displaying in a graph. This latter is also used to keep track of the last
+processed commit, which allows for the application to be restarted without
+dropping notifications.
 
 ## Contributing
 
