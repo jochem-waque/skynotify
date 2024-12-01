@@ -8,6 +8,7 @@ package repost
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"strconv"
 	"time"
 
@@ -44,6 +45,11 @@ func MakeMessage(userData *user.User, path string, repost *bsky.FeedRepost) (mes
 	rkey := atUri.RecordKey().String()
 
 	rec, err := atproto.RepoGetRecord(context.Background(), author.Client, repost.Subject.Cid, collection, author.Did, rkey)
+	if err != nil {
+		slog.Warn("repost.MakeMessage", "error", err)
+		rec, err = atproto.RepoGetRecord(context.Background(), author.Client, "", collection, author.Did, rkey)
+	}
+
 	if err != nil {
 		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}
