@@ -19,7 +19,6 @@ export default async function Page() {
       <div className="flex grow flex-col justify-between gap-4">
         <div></div>
         <main className="flex grow flex-col items-center justify-center gap-2">
-          <RedirectFromRoot></RedirectFromRoot>
           <div className="text-center">
             <h1 className="text-4xl">SkyNotify</h1>
             <p className="opacity-50">
@@ -48,6 +47,7 @@ export default async function Page() {
         </main>
         <Footer></Footer>
       </div>
+      <RedirectFromRoot></RedirectFromRoot>
     </>
   )
 }

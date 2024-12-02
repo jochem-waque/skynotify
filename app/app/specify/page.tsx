@@ -20,7 +20,6 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <NoFollowing></NoFollowing>
       <Header></Header>
       <main className="flex grow flex-col gap-4">
         <InstructionList step="set">
@@ -53,6 +52,7 @@ export default function Page() {
         </InstructionList>
       </main>
       <Footer></Footer>
+      <NoFollowing></NoFollowing>
     </>
   )
 }

@@ -48,7 +48,6 @@ export default async function Page({
 
   return (
     <>
-      <Redirect href={redirectUrl.toString()}></Redirect>
       <div className="flex grow flex-col items-center justify-center gap-1">
         <h1 className="text-center text-3xl">Redirecting to Bluesky</h1>
         <Link
@@ -59,6 +58,7 @@ export default async function Page({
         </Link>
       </div>
       <Footer></Footer>
+      <Redirect href={redirectUrl.toString()}></Redirect>
     </>
   )
 }
