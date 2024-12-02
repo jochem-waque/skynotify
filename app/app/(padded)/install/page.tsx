@@ -66,10 +66,9 @@ export default async function Page() {
 
   return (
     <>
-      <main className="flex flex-col gap-4">
+      <main className="flex grow flex-col gap-4">
         <h1 className="text-2xl">Installation</h1>
         <div className="flex flex-col gap-2">
-          <p>First, let&apos;s get this app installed on your device.</p>
           <InstallationContent defaultPlatform={platform}></InstallationContent>
           <p className="underline">
             To continue, please open the installed app.
