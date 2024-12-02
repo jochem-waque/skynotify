@@ -19,6 +19,7 @@ import (
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/api/bsky"
 	"github.com/bluesky-social/indigo/atproto/syntax"
+	"github.com/bluesky-social/indigo/xrpc"
 )
 
 func MakeMessage(userData *user.User, path string, repost *bsky.FeedRepost) (messaging.MulticastMessage, error) {
@@ -46,8 +47,13 @@ func MakeMessage(userData *user.User, path string, repost *bsky.FeedRepost) (mes
 
 	rec, err := atproto.RepoGetRecord(context.Background(), author.Client, repost.Subject.Cid, collection, author.Did, rkey)
 	if err != nil {
-		slog.Warn("repost.MakeMessage", "error", err)
-		rec, err = atproto.RepoGetRecord(context.Background(), author.Client, "", collection, author.Did, rkey)
+		slog.Warn("repost.MakeMessage", "uri", atUri, "error", err)
+		params := map[string]interface{}{
+			"collection": collection,
+			"repo":       author.Did,
+			"rkey":       rkey,
+		}
+		err = author.Client.Do(context.Background(), xrpc.Query, "", "com.atproto.repo.getRecord", params, nil, rec)
 	}
 
 	if err != nil {
