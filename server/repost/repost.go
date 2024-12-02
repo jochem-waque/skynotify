@@ -60,7 +60,10 @@ func MakeMessage(userData *user.User, path string, repost *bsky.FeedRepost) (mes
 		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}
 
-	decoded := rec.Value.Val.(*bsky.FeedPost)
+	decoded, ok := rec.Value.Val.(*bsky.FeedPost)
+	if !ok {
+		return message, fmt.Errorf("repost.MakeMessage: failed to decode response to FeedPost")
+	}
 
 	message.Data = make(map[string]string)
 	message.Data["title"] = userData.Handle
