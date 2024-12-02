@@ -17,12 +17,12 @@ export default function RedirectFromRoot() {
       const subscription = await registration.pushManager.getSubscription()
 
       if (subscription) {
-        router.replace("overview")
+        router.replace("/home")
         return
       }
 
       if (event.matches) {
-        router.replace("import")
+        router.replace("/import")
       }
     }
 

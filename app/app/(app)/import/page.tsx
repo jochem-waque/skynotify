@@ -3,9 +3,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Footer from "@/components/footer"
-import Header from "@/components/header"
-import InstructionList from "@/components/instructionList"
 import ProgressBar from "@/components/progressBar"
 import { Metadata } from "next"
 import ImportFollowingSuspenseful from "./importFollowingSuspenseful"
@@ -18,15 +15,14 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <Header></Header>
       <main className="flex grow flex-col gap-4">
-        <InstructionList step="import">
-          <p>Next, let&apos;s import your Bluesky following.</p>
+        <h1 className="text-2xl">Import following</h1>
+        <div className="flex flex-col gap-2">
+          <p>Let&apos;s import your Bluesky following!</p>
           <ProgressBar></ProgressBar>
           <ImportFollowingSuspenseful></ImportFollowingSuspenseful>
-        </InstructionList>
+        </div>
       </main>
-      <Footer></Footer>
     </>
   )
 }

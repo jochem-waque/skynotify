@@ -5,10 +5,10 @@
  */
 "use client"
 
-import PlatformInstructionList from "@/app/install/platformInstructionList"
 import { Platform } from "@/util/platform"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import PlatformInstructionList from "./platformInstructionList"
 
 export default function InstallationContent({
   defaultPlatform,
@@ -28,7 +28,7 @@ export default function InstallationContent({
   useEffect(() => {
     function listener(event: MediaQueryListEvent | MediaQueryList) {
       if (event.matches) {
-        router.replace("import")
+        router.replace("/import")
       }
     }
 

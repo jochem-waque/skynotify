@@ -65,7 +65,7 @@ export default function ImportFollowing() {
       setFollowsCount(followCount)
       setActor(actor)
       fetchProfiles(actor)
-      router.push("select")
+      router.push("/import/select")
     },
     [fetchProfiles, router, setActor, setFollowsCount],
   )
@@ -88,7 +88,7 @@ export default function ImportFollowing() {
     if (actor && params.has("continue") && trySkip.current) {
       trySkip.current = false
       removedParam.current = true
-      router.replace("import")
+      router.replace("/import")
     }
 
     if (actor && !params.has("continue") && removedParam.current) {

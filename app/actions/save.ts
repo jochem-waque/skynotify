@@ -52,5 +52,5 @@ export async function save(
     return
   }
 
-  redirect("/overview")
+  redirect("/home")
 }

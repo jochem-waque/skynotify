@@ -14,7 +14,7 @@ export default function ReturnToSetup() {
 
   function click() {
     loadSaved()
-    router.push("import?continue")
+    router.push("/import?continue")
   }
 
   return (

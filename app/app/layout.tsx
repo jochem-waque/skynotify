@@ -57,7 +57,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${font.variable} ${mono.variable} font-sans`}>
-      <body className="mx-auto flex min-h-[100svh] flex-col items-center p-4">
+      <body>
         <script
           key="website-data"
           type="application/ld+json"
@@ -70,7 +70,7 @@ export default function RootLayout({
             }),
           }}
         ></script>
-        <div className="container relative flex max-w-xl grow flex-col gap-4">
+        <div className="relative flex min-h-[100svh] w-full grow flex-col">
           {children}
         </div>
         <OpenBackgroundNotifications></OpenBackgroundNotifications>

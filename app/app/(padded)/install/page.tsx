@@ -3,14 +3,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import InstallationContent from "@/app/install/installationContent"
 import Footer from "@/components/footer"
-import Header from "@/components/header"
-import InstructionList from "@/components/instructionList"
 import { Browser, OS, Platform, simplifyPlatform } from "@/util/platform"
 import { Metadata } from "next"
 import { headers } from "next/headers"
 import { UAParser } from "ua-parser-js"
+import InstallationContent from "./installationContent"
 
 export const metadata: Metadata = {
   title: "Install | SkyNotify",
@@ -68,15 +66,15 @@ export default async function Page() {
 
   return (
     <>
-      <Header></Header>
-      <main className="flex grow flex-col gap-4">
-        <InstructionList step="installation">
+      <main className="flex flex-col gap-4">
+        <h1 className="text-2xl">Installation</h1>
+        <div className="flex flex-col gap-2">
           <p>First, let&apos;s get this app installed on your device.</p>
           <InstallationContent defaultPlatform={platform}></InstallationContent>
           <p className="underline">
             To continue, please open the installed app.
           </p>
-        </InstructionList>
+        </div>
       </main>
       <Footer></Footer>
     </>

@@ -4,7 +4,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Footer from "@/components/footer"
-import Header from "@/components/header"
 import { Metadata } from "next"
 import Link from "next/link"
 
@@ -16,10 +15,9 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <Header></Header>
       <main className="flex grow flex-col gap-4">
         <div className="flex flex-col">
-          <h2 className="text-2xl">Privacy Policy</h2>
+          <h1 className="text-2xl">Privacy Policy</h1>
           <span className="text-sm opacity-50">
             Last updated:{" "}
             <Link className="underline" href="privacy/changes">

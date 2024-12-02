@@ -5,9 +5,9 @@
  */
 "use client"
 
-import NotificationChipInput from "@/app/specify/notificationChipInput"
 import Profile from "@/components/profile"
 import { useDataStore } from "@/util/store"
+import NotificationChipInput from "./notificationChipInput"
 
 // TODO in the future, this might need infinite scroll and a searchbar too
 export default function ProfileListWithChip() {
