@@ -11,7 +11,6 @@ import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { parse, stringify } from "superjson"
 import { create, StateCreator } from "zustand"
 import { combine, persist, PersistStorage } from "zustand/middleware"
-import { SubscriptionLimit } from "../config"
 
 export type Profile = {
   handle: string
@@ -249,7 +248,7 @@ const combined = combine(
     saveCurrent: () =>
       set(({ notifyPosts, notifyReposts, notifyReplies, selected }) => ({
         savedConfiguration: new Map(
-          [...selected.values()].slice(0, SubscriptionLimit).map((did) => [
+          [...selected.values()].map((did) => [
             did,
             {
               posts: notifyPosts.has(did),

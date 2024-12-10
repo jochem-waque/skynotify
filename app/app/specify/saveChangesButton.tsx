@@ -6,7 +6,6 @@
 "use client"
 
 import { save } from "@/actions/save"
-import { SubscriptionLimit } from "@/config"
 import FirebaseApp from "@/util/firebase"
 import { useDataStore } from "@/util/store"
 import { FirebaseError } from "firebase/app"
@@ -36,7 +35,7 @@ export default function SaveChangesButton() {
     saveCurrent()
     await save(
       token,
-      [...selected.values()].slice(0, SubscriptionLimit).map((did) => ({
+      [...selected.values()].map((did) => ({
         target: did,
         posts: notifyPosts.has(did),
         reposts: notifyReposts.has(did),
