@@ -6,18 +6,26 @@
 "use client"
 
 import { useDataStore } from "@/util/store"
+import { useMemo } from "react"
 
 export default function DeselectAll() {
   const deselectAll = useDataStore((state) => state.deselectAll)
+  const selectAll = useDataStore((state) => state.selectAll)
   const selected = useDataStore((state) => state.selected)
+  const profiles = useDataStore((state) => state.profiles)
+
+  const overlap = useMemo(
+    () => selected.intersection(profiles).size > 0,
+    [selected, profiles],
+  )
 
   return (
     <button
-      onClick={() => deselectAll()}
-      className={`${selected.size > 0 ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-100 dark:bg-neutral-800"} self-start rounded-full px-3 py-1 transition-[opacity,background-color] hover:opacity-75`}
+      onClick={() => (overlap ? deselectAll() : selectAll())}
+      className={`${overlap ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-100 dark:bg-neutral-800"} self-start rounded-full px-3 py-1 transition-[opacity,background-color] hover:opacity-75`}
       type="button"
     >
-      Deselect all
+      {overlap ? "Deselect all" : "Select all"}
     </button>
   )
 }
