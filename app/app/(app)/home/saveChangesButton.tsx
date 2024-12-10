@@ -88,13 +88,7 @@ export default function SaveChangesButton() {
       {error && <p className="z-10 text-red-500">{error}</p>}
       <button
         onClick={click}
-        disabled={
-          saving ||
-          (selected.size > 0 &&
-            selected.intersection(
-              notifyPosts.union(notifyReplies).union(notifyReposts),
-            ).size === 0)
-        }
+        disabled={saving}
         type="button"
         className={`${saving ? "cursor-wait" : ""} z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600`}
       >

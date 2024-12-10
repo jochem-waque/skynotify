@@ -6,7 +6,11 @@
 "use client"
 
 import { updateToken } from "@/actions/updateToken"
-import { AppBskyGraphGetFollows, AtpAgent } from "@atproto/api"
+import {
+  AppBskyActorGetProfiles,
+  AppBskyGraphGetFollows,
+  AtpAgent,
+} from "@atproto/api"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { parse, stringify } from "superjson"
 import { create, StateCreator } from "zustand"
@@ -106,7 +110,44 @@ const combined = combine(
       }),
     setActor: (actor: string) => set({ actor }),
     setFollowsCount: (followsCount: number) => set({ followsCount }),
-    fetchProfiles: async (actor: string) => {
+    fetchSelected: async () => {
+      const { fetching, selected } = get()
+      if (fetching) {
+        return
+      }
+
+      set({ fetching: true, profiles: new Map(), fetchError: false })
+
+      const agent = new AtpAgent({
+        service: "https://public.api.bsky.app/",
+      })
+
+      const actors = [...selected]
+      for (let i = 0; i < actors.length; i += 25) {
+        let response: AppBskyActorGetProfiles.Response | undefined = undefined
+        try {
+          response = await agent.getProfiles({
+            actors: actors.slice(i, i + 25),
+          })
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {
+          set({ fetchError: true, fetching: false })
+          return
+        }
+
+        set(({ profiles: oldProfiles }) => ({
+          profiles: new Map([
+            ...oldProfiles.entries(),
+            ...response!.data.profiles.map(
+              (follow) => [follow.did, pickProfile(follow)] as const,
+            ),
+          ]),
+        }))
+      }
+
+      set({ fetchError: false, fetching: false })
+    },
+    fetchFollowing: async (actor: string) => {
       if (get().fetching) {
         return
       }
@@ -247,18 +288,25 @@ const combined = combine(
         return { notifyReplies: new Set(selected), allnotifyReplies: true }
       }),
     saveCurrent: () =>
-      set(({ notifyPosts, notifyReposts, notifyReplies, selected }) => ({
-        savedConfiguration: new Map(
-          [...selected.values()].slice(0, SubscriptionLimit).map((did) => [
-            did,
-            {
-              posts: notifyPosts.has(did),
-              reposts: notifyReposts.has(did),
-              replies: notifyReplies.has(did),
-            },
-          ]),
-        ),
-      })),
+      set(
+        ({ profiles, notifyPosts, notifyReposts, notifyReplies, selected }) => {
+          return {
+            profiles: new Map(
+              [...profiles].filter(([did]) => selected.has(did)),
+            ),
+            savedConfiguration: new Map(
+              [...selected].slice(0, SubscriptionLimit).map((did) => [
+                did,
+                {
+                  posts: notifyPosts.has(did),
+                  reposts: notifyReposts.has(did),
+                  replies: notifyReplies.has(did),
+                },
+              ]),
+            ),
+          }
+        },
+      ),
     loadSaved: () =>
       set(({ savedConfiguration }) => ({
         selected: new Set(savedConfiguration.keys()),

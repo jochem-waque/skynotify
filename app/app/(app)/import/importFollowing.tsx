@@ -12,7 +12,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react"
 
 export default function ImportFollowing() {
-  const fetchProfiles = useDataStore((state) => state.fetchProfiles)
+  const fetchFollowing = useDataStore((state) => state.fetchFollowing)
   const setActor = useDataStore((state) => state.setActor)
   const setFollowsCount = useDataStore((state) => state.setFollowsCount)
   const actor = useDataStore((state) => state.actor)
@@ -64,10 +64,10 @@ export default function ImportFollowing() {
       setError("")
       setFollowsCount(followCount)
       setActor(actor)
-      fetchProfiles(actor)
+      fetchFollowing(actor)
       router.push("/import/select")
     },
-    [fetchProfiles, router, setActor, setFollowsCount],
+    [fetchFollowing, router, setActor, setFollowsCount],
   )
 
   function click() {
