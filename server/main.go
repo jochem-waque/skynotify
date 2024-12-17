@@ -335,7 +335,7 @@ func main() {
 	}
 
 	sched := parallel.NewScheduler(runtime.NumCPU(), 500, "firehose", rsc.EventHandler)
-	if err = events.HandleRepoStream(ctx, con, sched); err != nil {
+	if err = events.HandleRepoStream(ctx, con, sched, slog.Default()); err != nil {
 		slog.Error("main", "error", err)
 	}
 
