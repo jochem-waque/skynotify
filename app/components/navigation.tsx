@@ -11,8 +11,6 @@ import { usePathname } from "next/navigation"
 export default function Navigation() {
   const pathname = usePathname()
 
-  console.log(pathname)
-
   return (
     <nav className="sticky bottom-0 z-20 flex w-full justify-center gap-2 bg-neutral-100 py-1 dark:bg-neutral-950">
       <Link
