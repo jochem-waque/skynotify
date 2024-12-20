@@ -8,6 +8,7 @@ import OpenBackgroundNotifications from "@/components/openBackgroundNotification
 import UpdateToken from "@/components/updateToken"
 import { Metadata, Viewport } from "next"
 import { Noto_Sans, Noto_Sans_Mono } from "next/font/google"
+import Script from "next/script"
 import "./globals.css"
 
 const font = Noto_Sans({
@@ -57,6 +58,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${font.variable} ${mono.variable} font-sans`}>
+      {process.env.NODE_ENV === "development" ? (
+        <head>
+          <Script
+            src="https://unpkg.com/react-scan/dist/auto.global.js"
+            strategy="beforeInteractive"
+          ></Script>
+        </head>
+      ) : null}
       <body>
         <script
           key="website-data"
