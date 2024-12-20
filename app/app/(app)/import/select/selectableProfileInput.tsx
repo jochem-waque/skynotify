@@ -7,7 +7,7 @@
 
 import { useDataStore } from "@/util/store"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 
 export default function SelectableProfileInput({
   did,
@@ -16,6 +16,10 @@ export default function SelectableProfileInput({
   const setNotifyPosts = useDataStore((state) => state.setNotifyPosts)
   const isSelected = useDataStore((state) => state.isSelected)
   const [thisSelected, setThisSelected] = useState(isSelected(did))
+
+  useEffect(() => {
+    setThisSelected(isSelected(did))
+  }, [did, isSelected])
 
   function change(event: ChangeEvent<HTMLInputElement>) {
     setThisSelected(event.currentTarget.checked)

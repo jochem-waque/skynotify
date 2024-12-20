@@ -5,11 +5,10 @@
  */
 import NoFollowing from "@/components/noFollowing"
 import ProgressBar from "@/components/progressBar"
-import { SubscriptionLimit } from "@/config"
 import { Metadata } from "next"
 import Link from "next/link"
-import DeselectAll from "./deselectAll"
 import SearchableProfileList from "./searchableProfileList"
+import ToggleSelectAll from "./toggleSelectAll"
 
 export const metadata: Metadata = {
   title: "Select profiles | SkyNotify",
@@ -23,11 +22,11 @@ export default function Page() {
         <h1 className="text-2xl">Select profiles</h1>
         <div className="flex flex-col gap-2">
           <p>
-            Select up to {SubscriptionLimit} profiles you&apos;d like to receive
-            notifications for. You&apos;ll be able to specify the kinds of
-            notifications you&apos;d like to receive from each profile later.
+            Select all the profiles you&apos;d like to receive notifications
+            for. You&apos;ll be able to specify the kinds of notifications
+            you&apos;d like to receive from each profile later.
           </p>
-          <DeselectAll></DeselectAll>
+          <ToggleSelectAll></ToggleSelectAll>
           <ProgressBar></ProgressBar>
           <SearchableProfileList></SearchableProfileList>
           <div className="sticky bottom-16 flex w-full after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white after:dark:bg-neutral-900">

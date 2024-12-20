@@ -5,7 +5,6 @@
  */
 "use server"
 
-import { SubscriptionLimit } from "@/config"
 import Drizzle from "@/util/db"
 import { subscriptionTable, tokenTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
@@ -41,9 +40,10 @@ export async function save(
       await tx
         .insert(subscriptionTable)
         .values(
-          subscriptions
-            .slice(0, SubscriptionLimit)
-            .map((subscription) => ({ ...subscription, token: user.id })),
+          subscriptions.map((subscription) => ({
+            ...subscription,
+            token: user.id,
+          })),
         )
         .onConflictDoNothing()
     })

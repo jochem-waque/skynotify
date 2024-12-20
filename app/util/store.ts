@@ -66,6 +66,7 @@ const combined = combine(
     notifyReposts: new Set<string>(),
     notifyReplies: new Set<string>(),
     unsaved: false,
+    allSelected: false,
   },
   (set, get) => ({
     setToken: (token: string) =>
@@ -164,7 +165,7 @@ const combined = combine(
       }))
     },
     setSelected: (did: string, value?: boolean) =>
-      set(({ selected }) => {
+      set(({ selected, profiles }) => {
         const current = selected.has(did)
         if (value === current) {
           return {}
@@ -175,12 +176,15 @@ const combined = combine(
         }
 
         if (value) {
-          const newSelected = new Set(selected).add(did)
-          return { selected: newSelected }
+          selected.add(did)
+        } else {
+          selected.delete(did)
         }
 
-        selected.delete(did)
-        return { selected: new Set(selected) }
+        return {
+          selected: new Set(selected),
+          allSelected: new Set(profiles.keys()).difference(selected).size === 0,
+        }
       }),
     setNotifyPosts: (did: string, value?: boolean) =>
       set(({ notifyPosts, selected }) => {
@@ -252,6 +256,23 @@ const combined = combine(
           allNotifyReplies:
             notifyReplies.size >= selected.size &&
             selected.difference(notifyReplies).size === 0,
+        }
+      }),
+    toggleSelectAll: () =>
+      set(({ profiles, selected, notifyPosts }) => {
+        const profileDids = new Set(profiles.keys())
+        const allSelected = profileDids.difference(selected).size === 0
+
+        return {
+          selected: allSelected ? new Set() : profileDids,
+          isSelected: (did: string) => {
+            const { selected } = get()
+            return selected.has(did)
+          },
+          allSelected: !allSelected,
+          notifyPosts: allSelected
+            ? notifyPosts
+            : notifyPosts.union(profileDids),
         }
       }),
     deselectAll: () => set(({}) => ({ selected: new Set() })),
