@@ -302,6 +302,12 @@ const combined = combine(
         ),
       })
     },
+    pruneProfiles: () =>
+      set(({ profiles, selected }) => ({
+        profiles: new Map(
+          [...profiles.entries()].filter(([did]) => selected.has(did)),
+        ),
+      })),
   }),
 )
 

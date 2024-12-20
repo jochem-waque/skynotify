@@ -5,6 +5,7 @@
  */
 import { Metadata } from "next"
 import Configuration from "./configuration"
+import PruneProfiles from "./pruneProfiles"
 import SaveChangesButton from "./saveChangesButton"
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function Page() {
             You&apos;re currently receiving notifications for the following
             accounts:
           </p>
+          <PruneProfiles></PruneProfiles>
           <Configuration></Configuration>
           <SaveChangesButton></SaveChangesButton>
         </div>
