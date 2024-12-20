@@ -41,7 +41,7 @@ export default function Page() {
           <div className="flex flex-col gap-2">
             <ProfileListWithChip></ProfileListWithChip>
           </div>
-          <div className="sticky bottom-2 flex w-full flex-col gap-2 after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
+          <div className="sticky bottom-16 flex w-full flex-col gap-2 after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
             <SaveChangesButton></SaveChangesButton>
           </div>
         </div>
