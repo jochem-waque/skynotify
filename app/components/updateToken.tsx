@@ -8,12 +8,13 @@
 import FirebaseApp from "@/util/firebase"
 import { useDataStore } from "@/util/store"
 import { getMessaging, getToken } from "firebase/messaging"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 export default function UpdateToken() {
   const setToken = useDataStore((state) => state.setToken)
   const loadSaved = useDataStore((state) => state.loadSaved)
   const fetchSelected = useDataStore((state) => state.fetchSelected)
+  const once = useRef(true)
 
   useEffect(() => {
     async function updateToken() {
@@ -34,7 +35,10 @@ export default function UpdateToken() {
       loadSaved(token).then(() => fetchSelected())
     }
 
-    updateToken()
+    if (once.current) {
+      once.current = false
+      updateToken()
+    }
   }, [setToken, fetchSelected, loadSaved])
 
   return null
