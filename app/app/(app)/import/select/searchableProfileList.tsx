@@ -43,7 +43,10 @@ export default function SearchableProfileList() {
           onChange={change}
         ></input>
       </div>
-      <SelectableProfileList query={query}></SelectableProfileList>
+      <SelectableProfileList
+        query={query}
+        chunkSize={10}
+      ></SelectableProfileList>
     </>
   )
 }

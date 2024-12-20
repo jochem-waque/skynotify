@@ -11,7 +11,13 @@ import Fuse from "fuse.js"
 import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 import SelectableProfileInput from "./selectableProfileInput"
 
-export default function SelectableProfileList({ query }: { query: string }) {
+export default function SelectableProfileList({
+  query,
+  chunkSize,
+}: {
+  query: string
+  chunkSize: number
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const profiles = useDataStore((state) => state.profiles)
   const [lower, setLower] = useState(0)
@@ -79,18 +85,20 @@ export default function SelectableProfileList({ query }: { query: string }) {
         }
 
         const profileHeight = rect.height / size.current
-        const lower = Math.floor(Math.max(0, -rect.y) / profileHeight)
-        setLower(Math.max(0, lower - 10))
-        const upper = lower + Math.floor(window.innerHeight / profileHeight)
-        setUpper(upper + 10)
+
+        const exactLower = Math.floor(Math.max(0, -rect.y) / profileHeight)
+        const exactUpper =
+          exactLower + Math.ceil(window.innerHeight / profileHeight)
+        setLower(Math.max(0, Math.floor(exactLower / chunkSize)) * chunkSize)
+        setUpper(Math.ceil(exactUpper / chunkSize) * chunkSize)
         throttled.current = false
       })
     }
 
-    document.addEventListener("scroll", listener, { capture: true })
+    document.addEventListener("scroll", listener)
 
-    return document.removeEventListener("scroll", listener)
-  }, [])
+    return () => document.removeEventListener("scroll", listener)
+  }, [chunkSize])
 
   return (
     <div
