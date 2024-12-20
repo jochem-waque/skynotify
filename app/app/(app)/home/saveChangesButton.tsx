@@ -19,6 +19,7 @@ export default function SaveChangesButton() {
   const notifyReposts = useDataStore((state) => state.notifyReposts)
   const notifyReplies = useDataStore((state) => state.notifyReplies)
   const setToken = useDataStore((state) => state.setToken)
+  const unsaved = useDataStore((state) => state.unsaved)
   const [error, setError] = useState("")
   const [saving, setSaving] = useState(false)
 
@@ -86,7 +87,7 @@ export default function SaveChangesButton() {
       {error && <p className="z-10 text-red-500">{error}</p>}
       <button
         onClick={click}
-        disabled={saving}
+        disabled={saving || !unsaved}
         type="button"
         className={`${saving ? "cursor-wait" : ""} z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600`}
       >

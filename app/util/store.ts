@@ -88,6 +88,7 @@ const combined = combine(
     notifyPosts: new Set<string>(),
     notifyReposts: new Set<string>(),
     notifyReplies: new Set<string>(),
+    unsaved: false,
   },
   (set, get) => ({
     setToken: (token: string) =>
@@ -308,6 +309,7 @@ const combined = combine(
           [...profiles.entries()].filter(([did]) => selected.has(did)),
         ),
       })),
+    setUnsaved: (value?: boolean) => set({ unsaved: value ?? true }),
   }),
 )
 

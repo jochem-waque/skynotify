@@ -13,9 +13,11 @@ export default function EditableProfile({
 }) {
   const setSelected = useDataStore((state) => state.setSelected)
   const selected = useDataStore((state) => state.selected)
+  const setUnsaved = useDataStore((state) => state.setUnsaved)
 
   function click() {
     setSelected(did)
+    setUnsaved()
   }
 
   return (

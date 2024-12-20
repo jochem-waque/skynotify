@@ -40,12 +40,14 @@ export default function NotificationChipInput({
       : type === "reposts"
         ? updateAllNotifyReposts
         : updateAllNotifyReplies
+  const setUnsaved = useDataStore((state) => state.setUnsaved)
 
   useEffect(() => update(), [update])
 
   function change(event: ChangeEvent<HTMLInputElement>) {
     setPreference(did, event.currentTarget.checked)
     update()
+    setUnsaved()
   }
 
   return (
