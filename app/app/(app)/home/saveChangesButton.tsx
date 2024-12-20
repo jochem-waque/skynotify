@@ -29,9 +29,12 @@ export default function SaveChangesButton() {
 
     setToken(token)
 
-    await save(token, exportMap())
-
-    setSaving(false)
+    try {
+      await save(token, exportMap())
+    } catch (e) {
+      setSaving(false)
+      throw e
+    }
 
     // redirect works by throwing an error that Next handles
     setError(
