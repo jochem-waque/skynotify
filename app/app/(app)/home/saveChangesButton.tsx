@@ -6,7 +6,6 @@
 "use client"
 
 import { save } from "@/actions/save"
-import { SubscriptionLimit } from "@/config"
 import FirebaseApp from "@/util/firebase"
 import { useDataStore } from "@/util/store"
 import { FirebaseError } from "firebase/app"
@@ -14,10 +13,7 @@ import { getMessaging, getToken } from "firebase/messaging"
 import { useState } from "react"
 
 export default function SaveChangesButton() {
-  const selected = useDataStore((state) => state.selected)
-  const notifyPosts = useDataStore((state) => state.notifyPosts)
-  const notifyReposts = useDataStore((state) => state.notifyReposts)
-  const notifyReplies = useDataStore((state) => state.notifyReplies)
+  const exportMap = useDataStore((state) => state.exportMap)
   const setToken = useDataStore((state) => state.setToken)
   const unsaved = useDataStore((state) => state.unsaved)
   const [error, setError] = useState("")
@@ -33,15 +29,7 @@ export default function SaveChangesButton() {
 
     setToken(token)
 
-    await save(
-      token,
-      [...selected.values()].slice(0, SubscriptionLimit).map((did) => ({
-        target: did,
-        posts: notifyPosts.has(did),
-        reposts: notifyReposts.has(did),
-        replies: notifyReplies.has(did),
-      })),
-    )
+    await save(token, exportMap())
 
     setSaving(false)
 

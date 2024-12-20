@@ -310,6 +310,15 @@ const combined = combine(
         ),
       })),
     setUnsaved: (value?: boolean) => set({ unsaved: value ?? true }),
+    exportMap: () => {
+      const { selected, notifyPosts, notifyReposts, notifyReplies } = get()
+      return [...selected.values()].map((did) => ({
+        target: did,
+        posts: notifyPosts.has(did),
+        reposts: notifyReposts.has(did),
+        replies: notifyReplies.has(did),
+      }))
+    },
   }),
 )
 
