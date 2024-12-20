@@ -73,6 +73,10 @@ export default function SaveChangesButton() {
     return token
   }
 
+  if (!unsaved) {
+    return null
+  }
+
   return (
     <>
       {error && <p className="z-10 text-red-500">{error}</p>}
