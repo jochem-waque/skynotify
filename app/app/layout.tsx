@@ -3,7 +3,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import LoadConfig from "@/components/loadConfig"
 import OpenBackgroundNotifications from "@/components/openBackgroundNotifications"
 import UpdateToken from "@/components/updateToken"
 import { Metadata, Viewport } from "next"
@@ -83,7 +82,6 @@ export default function RootLayout({
           {children}
         </div>
         <OpenBackgroundNotifications></OpenBackgroundNotifications>
-        <LoadConfig></LoadConfig>
         <UpdateToken></UpdateToken>
       </body>
     </html>
