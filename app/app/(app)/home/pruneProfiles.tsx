@@ -5,8 +5,12 @@ import { useEffect } from "react"
 
 export default function PruneProfiles() {
   const pruneProfiles = useDataStore((state) => state.pruneProfiles)
+  const setUnsaved = useDataStore((state) => state.setUnsaved)
 
-  useEffect(() => pruneProfiles())
+  useEffect(() => {
+    pruneProfiles()
+    setUnsaved(false)
+  })
 
   return null
 }
