@@ -5,9 +5,12 @@
  */
 import NoFollowing from "@/components/noFollowing"
 import { Metadata } from "next"
-import NotifyAllChipInput from "./notifyAllChipInput"
+import NotifyAllPostsInput from "./notifyAllPostsInput"
+import NotifyAllRepliesInput from "./notifyAllRepliesInput"
+import NotifyAllRepostsInput from "./notifyAllRepostsInput"
 import ProfileListWithChip from "./profileListWithChip"
 import SaveChangesButton from "./saveChangesButton"
+import UpdateNotifyAll from "./updateNotifyAll"
 
 export const metadata: Metadata = {
   title: "Set notifications | SkyNotify",
@@ -26,15 +29,15 @@ export default function Page() {
           </p>
           <div className="flex flex-wrap gap-2">
             <label className="flex cursor-pointer items-center rounded-full bg-neutral-100 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
-              <NotifyAllChipInput type={"posts"}></NotifyAllChipInput>
+              <NotifyAllPostsInput></NotifyAllPostsInput>
               <span className="select-none">Posts</span>
             </label>
             <label className="flex cursor-pointer items-center rounded-full bg-neutral-100 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
-              <NotifyAllChipInput type={"reposts"}></NotifyAllChipInput>
+              <NotifyAllRepostsInput></NotifyAllRepostsInput>
               <span className="select-none">Reposts</span>
             </label>
             <label className="flex cursor-pointer items-center rounded-full bg-neutral-100 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600">
-              <NotifyAllChipInput type={"replies"}></NotifyAllChipInput>
+              <NotifyAllRepliesInput></NotifyAllRepliesInput>
               <span className="select-none">Replies</span>
             </label>
           </div>
@@ -47,6 +50,7 @@ export default function Page() {
         </div>
       </main>
       <NoFollowing></NoFollowing>
+      <UpdateNotifyAll></UpdateNotifyAll>
     </>
   )
 }

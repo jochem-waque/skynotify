@@ -41,29 +41,6 @@ export function pickProfile({
   }
 }
 
-export function updateAllNotifyPosts() {
-  useDataStore.setState(({ notifyPosts, selected }) => ({
-    allNotifyPosts:
-      notifyPosts.size >= selected.size &&
-      selected.difference(notifyPosts).size === 0,
-  }))
-}
-
-export function updateAllNotifyReposts() {
-  useDataStore.setState(({ notifyReposts, selected }) => ({
-    allNotifyReposts:
-      notifyReposts.size >= selected.size &&
-      selected.difference(notifyReposts).size === 0,
-  }))
-}
-
-export function updateAllNotifyReplies() {
-  useDataStore.setState(({ notifyReplies, selected }) => ({
-    allNotifyReplies:
-      notifyReplies.size >= selected.size &&
-      selected.difference(notifyReplies).size === 0,
-  }))
-}
 type Write<T, U> = Omit<T, keyof U> & U
 type StateFromCombine<T> =
   T extends StateCreator<infer U>
@@ -206,7 +183,7 @@ const combined = combine(
         return { selected: new Set(selected) }
       }),
     setNotifyPosts: (did: string, value?: boolean) =>
-      set(({ notifyPosts }) => {
+      set(({ notifyPosts, selected }) => {
         const current = notifyPosts.has(did)
         if (value === current) {
           return {}
@@ -217,14 +194,20 @@ const combined = combine(
         }
 
         if (value) {
-          return { notifyPosts: new Set(notifyPosts).add(did) }
+          notifyPosts.add(did)
+        } else {
+          notifyPosts.delete(did)
         }
 
-        notifyPosts.delete(did)
-        return { notifyPosts: new Set(notifyPosts) }
+        return {
+          notifyPosts: new Set(notifyPosts),
+          allNotifyPosts:
+            notifyPosts.size >= selected.size &&
+            selected.difference(notifyPosts).size === 0,
+        }
       }),
     setNotifyReposts: (did: string, value?: boolean) =>
-      set(({ notifyReposts }) => {
+      set(({ notifyReposts, selected }) => {
         const current = notifyReposts.has(did)
         if (value === current) {
           return {}
@@ -235,14 +218,20 @@ const combined = combine(
         }
 
         if (value) {
-          return { notifyReposts: new Set(notifyReposts).add(did) }
+          notifyReposts.add(did)
+        } else {
+          notifyReposts.delete(did)
         }
 
-        notifyReposts.delete(did)
-        return { notifyReposts: new Set(notifyReposts) }
+        return {
+          notifyReposts: new Set(notifyReposts),
+          allNotifyReposts:
+            notifyReposts.size >= selected.size &&
+            selected.difference(notifyReposts).size === 0,
+        }
       }),
     setNotifyReplies: (did: string, value?: boolean) =>
-      set(({ notifyReplies }) => {
+      set(({ notifyReplies, selected }) => {
         const current = notifyReplies.has(did)
         if (value === current) {
           return {}
@@ -253,36 +242,57 @@ const combined = combine(
         }
 
         if (value) {
-          return { notifyReplies: new Set(notifyReplies).add(did) }
+          notifyReplies.add(did)
+        } else {
+          notifyReplies.delete(did)
         }
 
-        notifyReplies.delete(did)
-        return { notifyReplies: new Set(notifyReplies) }
+        return {
+          notifyReplies: new Set(notifyReplies),
+          allNotifyReplies:
+            notifyReplies.size >= selected.size &&
+            selected.difference(notifyReplies).size === 0,
+        }
       }),
     deselectAll: () => set(({}) => ({ selected: new Set() })),
     toggleNotifyPostsAll: () =>
       set(({ notifyPosts, selected }) => {
-        if (selected.difference(notifyPosts).size === 0) {
-          return { notifyPosts: new Set(), allnotifyPosts: false }
-        }
+        const allNotifyPosts = selected.difference(notifyPosts).size > 0
 
-        return { notifyPosts: new Set(selected), allnotifyPosts: true }
+        return {
+          notifyPosts: allNotifyPosts ? new Set(selected) : new Set(),
+          allNotifyPosts,
+          isNotifyPosts: (did: string) => {
+            const { notifyPosts } = get()
+            return notifyPosts.has(did)
+          },
+        }
       }),
     toggleNotifyRepostsAll: () =>
       set(({ notifyReposts, selected }) => {
-        if (selected.difference(notifyReposts).size === 0) {
-          return { notifyReposts: new Set(), allnotifyReposts: false }
-        }
+        const allNotifyReposts = selected.difference(notifyReposts).size > 0
 
-        return { notifyReposts: new Set(selected), allnotifyReposts: true }
+        return {
+          notifyReposts: allNotifyReposts ? new Set(selected) : new Set(),
+          allNotifyReposts,
+          isNotifyReposts: (did: string) => {
+            const { notifyReposts } = get()
+            return notifyReposts.has(did)
+          },
+        }
       }),
     toggleNotifyRepliesAll: () =>
       set(({ notifyReplies, selected }) => {
-        if (selected.difference(notifyReplies).size === 0) {
-          return { notifyReplies: new Set(), allnotifyReplies: false }
-        }
+        const allNotifyReplies = selected.difference(notifyReplies).size > 0
 
-        return { notifyReplies: new Set(selected), allnotifyReplies: true }
+        return {
+          notifyReplies: allNotifyReplies ? new Set(selected) : new Set(),
+          allNotifyReplies,
+          isNotifyReplies: (did: string) => {
+            const { notifyReplies } = get()
+            return notifyReplies.has(did)
+          },
+        }
       }),
     loadSaved: async (token: string | null) => {
       if (!token) {
@@ -319,6 +329,34 @@ const combined = combine(
         replies: notifyReplies.has(did),
       }))
     },
+    isSelected: (did: string) => {
+      const { selected } = get()
+      return selected.has(did)
+    },
+    isNotifyPosts: (did: string) => {
+      const { notifyPosts } = get()
+      return notifyPosts.has(did)
+    },
+    isNotifyReposts: (did: string) => {
+      const { notifyReposts } = get()
+      return notifyReposts.has(did)
+    },
+    isNotifyReplies: (did: string) => {
+      const { notifyReplies } = get()
+      return notifyReplies.has(did)
+    },
+    updateNotifyAll: () =>
+      set(({ selected, notifyPosts, notifyReplies, notifyReposts }) => ({
+        allNotifyPosts:
+          notifyPosts.size >= selected.size &&
+          selected.difference(notifyPosts).size === 0,
+        allNotifyReposts:
+          notifyReposts.size >= selected.size &&
+          selected.difference(notifyReposts).size === 0,
+        allNotifyReplies:
+          notifyReplies.size >= selected.size &&
+          selected.difference(notifyReplies).size === 0,
+      })),
   }),
 )
 

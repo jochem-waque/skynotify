@@ -7,7 +7,9 @@
 
 import Profile from "@/components/profile"
 import { useDataStore } from "@/util/store"
-import NotificationChipInput from "./notificationChipInput"
+import NotifyPostsInput from "./notifyPostsInput"
+import NotifyRepliesInput from "./notifyRepliesInput"
+import NotifyRepostsInput from "./notifyRepostsInput"
 
 // TODO in the future, this might need infinite scroll and a searchbar too
 export default function ProfileListWithChip() {
@@ -32,24 +34,15 @@ export default function ProfileListWithChip() {
             <form className="flex flex-wrap gap-2">
               <label className="flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-700 dark:outline-white has-[:checked]:dark:bg-blue-600">
                 <span className="select-none">Posts</span>
-                <NotificationChipInput
-                  did={did}
-                  type={"posts"}
-                ></NotificationChipInput>
+                <NotifyPostsInput did={did}></NotifyPostsInput>
               </label>
               <label className="flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-700 dark:outline-white has-[:checked]:dark:bg-blue-600">
                 <span className="select-none">Reposts</span>
-                <NotificationChipInput
-                  did={did}
-                  type={"reposts"}
-                ></NotificationChipInput>
+                <NotifyRepostsInput did={did}></NotifyRepostsInput>
               </label>
               <label className="flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-700 dark:outline-white has-[:checked]:dark:bg-blue-600">
                 <span className="select-none">Replies</span>
-                <NotificationChipInput
-                  did={did}
-                  type={"replies"}
-                ></NotificationChipInput>
+                <NotifyRepliesInput did={did}></NotifyRepliesInput>
               </label>
             </form>
           </div>
