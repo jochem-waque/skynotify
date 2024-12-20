@@ -10,10 +10,11 @@ import { useRouter } from "next/navigation"
 
 export default function ReturnToSetup() {
   const loadSaved = useDataStore((state) => state.loadSaved)
+  const token = useDataStore((state) => state.token)
   const router = useRouter()
 
   function click() {
-    loadSaved()
+    loadSaved(token)
     router.push("/import?continue")
   }
 

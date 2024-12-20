@@ -5,6 +5,7 @@
  */
 "use client"
 
+import { load } from "@/actions/load"
 import { updateToken } from "@/actions/updateToken"
 import {
   AppBskyActorGetProfiles,
@@ -15,7 +16,6 @@ import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { parse, stringify } from "superjson"
 import { create, StateCreator } from "zustand"
 import { combine, persist, PersistStorage } from "zustand/middleware"
-import { SubscriptionLimit } from "../config"
 
 export type Profile = {
   handle: string
@@ -88,10 +88,6 @@ const combined = combine(
     notifyPosts: new Set<string>(),
     notifyReposts: new Set<string>(),
     notifyReplies: new Set<string>(),
-    savedConfiguration: new Map<
-      string,
-      { posts: boolean; replies: boolean; reposts: boolean }
-    >(),
   },
   (set, get) => ({
     setToken: (token: string) =>
@@ -287,45 +283,25 @@ const combined = combine(
 
         return { notifyReplies: new Set(selected), allnotifyReplies: true }
       }),
-    saveCurrent: () =>
-      set(
-        ({ profiles, notifyPosts, notifyReposts, notifyReplies, selected }) => {
-          return {
-            profiles: new Map(
-              [...profiles].filter(([did]) => selected.has(did)),
-            ),
-            savedConfiguration: new Map(
-              [...selected].slice(0, SubscriptionLimit).map((did) => [
-                did,
-                {
-                  posts: notifyPosts.has(did),
-                  reposts: notifyReposts.has(did),
-                  replies: notifyReplies.has(did),
-                },
-              ]),
-            ),
-          }
-        },
-      ),
-    loadSaved: () =>
-      set(({ savedConfiguration }) => ({
-        selected: new Set(savedConfiguration.keys()),
+    loadSaved: async (token: string | null) => {
+      if (!token) {
+        return
+      }
+
+      const result = await load(token)
+      set({
+        selected: new Set(result.map(({ target }) => target)),
         notifyPosts: new Set(
-          [...savedConfiguration.entries()]
-            .filter(([, { posts }]) => posts)
-            .map(([did]) => did),
+          result.filter(({ posts }) => posts).map(({ target }) => target),
         ),
         notifyReplies: new Set(
-          [...savedConfiguration.entries()]
-            .filter(([, { replies }]) => replies)
-            .map(([did]) => did),
+          result.filter(({ replies }) => replies).map(({ target }) => target),
         ),
         notifyReposts: new Set(
-          [...savedConfiguration.entries()]
-            .filter(([, { reposts }]) => reposts)
-            .map(([did]) => did),
+          result.filter(({ reposts }) => reposts).map(({ target }) => target),
         ),
-      })),
+      })
+    },
   }),
 )
 
@@ -350,7 +326,6 @@ export const useDataStore = create(
     storage,
     partialize: (state) => ({
       actor: state.actor,
-      savedConfiguration: state.savedConfiguration,
       token: state.token,
     }),
   }),

@@ -11,11 +11,11 @@ import { useEffect } from "react"
 export default function LoadConfig() {
   const loadSaved = useDataStore((state) => state.loadSaved)
   const fetchSelected = useDataStore((state) => state.fetchSelected)
+  const token = useDataStore((state) => state.token)
 
   useEffect(() => {
-    loadSaved()
-    fetchSelected()
-  }, [loadSaved, fetchSelected])
+    loadSaved(token).then(() => fetchSelected())
+  }, [loadSaved, fetchSelected, token])
 
   return null
 }
