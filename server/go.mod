@@ -4,7 +4,7 @@ go 1.23.2
 
 require (
 	firebase.google.com/go/v4 v4.15.1
-	github.com/bluesky-social/indigo v0.0.0-20241218201130-17593f7fa5f1
+	github.com/bluesky-social/indigo v0.0.0-20241220235325-82305ef00362
 	github.com/gorilla/websocket v1.5.3
 	github.com/influxdata/influxdb-client-go/v2 v2.14.0
 	github.com/jackc/pgx/v5 v5.7.1

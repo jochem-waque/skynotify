@@ -49,8 +49,8 @@ github.com/benbjohnson/clock v1.3.0 h1:ip6w0uFQkncKQ979AypyG0ER7mqUSBdKLOgAle/AT
 github.com/benbjohnson/clock v1.3.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
-github.com/bluesky-social/indigo v0.0.0-20241218201130-17593f7fa5f1 h1:gGp5kyds5JlyeDjag627xZSx6feecO9nhlU5Ex2NEXo=
-github.com/bluesky-social/indigo v0.0.0-20241218201130-17593f7fa5f1/go.mod h1:SNFzA8zY8amwZzBvPfctX5DOpAG0OHan9qfbqCSTe2w=
+github.com/bluesky-social/indigo v0.0.0-20241220235325-82305ef00362 h1:QluBro4jkncKLRwL9vYep1z/DQlCj4W+B2oInTilg6w=
+github.com/bluesky-social/indigo v0.0.0-20241220235325-82305ef00362/go.mod h1:SNFzA8zY8amwZzBvPfctX5DOpAG0OHan9qfbqCSTe2w=
 github.com/bmatcuk/doublestar v1.1.1/go.mod h1:UD6OnuiIn0yFxxA2le/rnRU1G4RaI4UvFv1sNto9p6w=
 github.com/carlmjohnson/versioninfo v0.22.5 h1:O00sjOLUAFxYQjlN/bzYTuZiS0y6fWDQjMRvwtKgwwc=
 github.com/carlmjohnson/versioninfo v0.22.5/go.mod h1:QT9mph3wcVfISUKd0i9sZfVrPviHuSF+cUtLjm2WSf8=

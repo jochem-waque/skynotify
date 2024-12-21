@@ -35,7 +35,7 @@
     "start:docker": "node migrate.mjs && next build --experimental-build-mode generate && next start"
   },
   "dependencies": {
-    "@atproto/api": "^0.13.21",
+    "@atproto/api": "^0.13.22",
     "@atproto/xrpc": "^0.6.5",
     "@serwist/next": "^9.0.11",
     "camelcase-keys": "^9.1.3",
