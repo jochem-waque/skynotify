@@ -413,7 +413,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 			failCount += 1
 
 			if !errorutils.IsNotFound(response.Error) {
-				slog.Error("processCommit", "error", response.Error, "response", response, "message", message)
+				slog.Error("processCommit", "error", response.Error)
 				continue
 			}
 
