@@ -15,7 +15,7 @@ export default function PruneProfiles() {
   useEffect(() => {
     pruneProfiles()
     setUnsaved(false)
-  })
+  }, [pruneProfiles, setUnsaved])
 
   return null
 }
