@@ -22,7 +22,7 @@ require (
 	cloud.google.com/go/iam v1.3.0 // indirect
 	cloud.google.com/go/longrunning v0.6.3 // indirect
 	cloud.google.com/go/monitoring v1.22.0 // indirect
-	cloud.google.com/go/storage v1.48.0 // indirect
+	cloud.google.com/go/storage v1.49.0 // indirect
 	github.com/DataDog/zstd v1.5.6 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.25.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.49.0 // indirect
