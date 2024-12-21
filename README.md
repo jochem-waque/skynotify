@@ -9,7 +9,7 @@ self-hostable.
 1. Install Docker and Docker Compose
 2. Clone or download the repository
 3. Create a Firebase project with Cloud Messaging turned on
-4. Copy `example.env` to `.env` and fill in the empty values
+4. Copy `example.env` to `.env` and fill in all `REPLACE_ME` values
 5. Place Firebase Admin SDK credentials in `server/firebase.json`
 6. Run `docker compose build`
 7. Run `docker compose up -d`
