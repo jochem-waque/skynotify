@@ -6,15 +6,15 @@
 "use client"
 
 import { save } from "@/actions/save"
-import FirebaseApp from "@/util/firebase"
 import { useDataStore } from "@/util/store"
 import { FirebaseError } from "firebase/app"
-import { getMessaging, getToken } from "firebase/messaging"
+import { getToken } from "firebase/messaging"
 import { useState } from "react"
 
 export default function SaveChangesButton() {
   const exportMap = useDataStore((state) => state.exportMap)
   const setToken = useDataStore((state) => state.setToken)
+  const getMessaging = useDataStore((state) => state.getMessaging)
   const unsaved = useDataStore((state) => state.unsaved)
   const [error, setError] = useState("")
   const [saving, setSaving] = useState(false)
@@ -45,7 +45,7 @@ export default function SaveChangesButton() {
   async function subscribeToPush() {
     const registration = await navigator.serviceWorker.ready
 
-    const messaging = getMessaging(FirebaseApp)
+    const messaging = getMessaging()
     let token
     try {
       token = await getToken(messaging, {

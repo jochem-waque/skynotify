@@ -5,13 +5,14 @@
  */
 "use client"
 
-import FirebaseApp from "@/util/firebase"
-import { getMessaging, onMessage } from "firebase/messaging"
+import { useDataStore } from "@/util/store"
+import { onMessage } from "firebase/messaging"
 import { get } from "idb-keyval"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef } from "react"
 
 export default function OpenBackgroundNotifications() {
+  const getMessaging = useDataStore((state) => state.getMessaging)
   const router = useRouter()
   const registration = useRef<ServiceWorkerRegistration>(null)
 
@@ -63,7 +64,7 @@ export default function OpenBackgroundNotifications() {
   }, [])
 
   useEffect(() => {
-    const messaging = getMessaging(FirebaseApp)
+    const messaging = getMessaging()
     return onMessage(messaging, (payload) => {
       if (!payload.data || !registration.current) {
         return
@@ -85,7 +86,7 @@ export default function OpenBackgroundNotifications() {
         timestamp: Number(timestamp),
       })
     })
-  }, [])
+  }, [getMessaging])
 
   return null
 }

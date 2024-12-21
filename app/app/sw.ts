@@ -3,8 +3,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import FirebaseApp from "@/util/firebase"
 import { defaultCache } from "@serwist/next/worker"
+import { initializeApp } from "firebase/app"
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw"
 import { get } from "idb-keyval"
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist"
@@ -50,7 +50,16 @@ self.addEventListener("notificationclick", (event) => {
   )
 })
 
-const messaging = getMessaging(FirebaseApp)
+const firebaseApp = initializeApp({
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+})
+const messaging = getMessaging(firebaseApp)
 
 onBackgroundMessage(messaging, (payload) => {
   if (!payload.data) {

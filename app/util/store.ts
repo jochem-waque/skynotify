@@ -13,6 +13,8 @@ import {
   AtpAgent,
 } from "@atproto/api"
 import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
+import { initializeApp } from "firebase/app"
+import { getMessaging, Messaging } from "firebase/messaging"
 import { parse, stringify } from "superjson"
 import { create, StateCreator } from "zustand"
 import { combine, persist, PersistStorage } from "zustand/middleware"
@@ -67,6 +69,7 @@ const combined = combine(
     notifyReplies: new Set<string>(),
     unsaved: false,
     allSelected: false,
+    messaging: null as Messaging | null,
   },
   (set, get) => ({
     setToken: async (token: string) => {
@@ -376,6 +379,27 @@ const combined = combine(
           notifyReplies.size >= selected.size &&
           selected.difference(notifyReplies).size === 0,
       })),
+    getMessaging: () => {
+      let { messaging } = get()
+      if (messaging) {
+        return messaging
+      }
+
+      const firebaseApp = initializeApp({
+        apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+        appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+        measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+        messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      })
+      messaging = getMessaging(firebaseApp)
+
+      set({ messaging })
+
+      return messaging
+    },
   }),
 )
 

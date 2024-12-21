@@ -5,15 +5,15 @@
  */
 "use client"
 
-import FirebaseApp from "@/util/firebase"
 import { useDataStore } from "@/util/store"
-import { getMessaging, getToken } from "firebase/messaging"
+import { getToken } from "firebase/messaging"
 import { useEffect, useRef } from "react"
 
 export default function UpdateToken() {
   const setToken = useDataStore((state) => state.setToken)
   const loadSaved = useDataStore((state) => state.loadSaved)
   const fetchSelected = useDataStore((state) => state.fetchSelected)
+  const getMessaging = useDataStore((state) => state.getMessaging)
   const once = useRef(true)
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function UpdateToken() {
         return
       }
 
-      const messaging = getMessaging(FirebaseApp)
+      const messaging = getMessaging()
 
       const token = await getToken(messaging, {
         serviceWorkerRegistration: registration,
@@ -39,7 +39,7 @@ export default function UpdateToken() {
       once.current = false
       updateToken()
     }
-  }, [setToken, fetchSelected, loadSaved])
+  }, [setToken, fetchSelected, loadSaved, getMessaging])
 
   return null
 }
