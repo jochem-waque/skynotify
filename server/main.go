@@ -427,7 +427,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 		}
 
 		writeNotificationPoint(tag, true, successCount)
-		writeNotificationPoint(tag, true, failCount)
+		writeNotificationPoint(tag, false, failCount)
 	}
 
 	return nil
