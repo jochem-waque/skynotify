@@ -30,9 +30,9 @@ export default function UpdateToken() {
         serviceWorkerRegistration: registration,
         vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
       })
-      // TODO race condition: if the token changes, the config might not be fetched correctly
       setToken(token)
-      loadSaved(token).then(() => fetchSelected())
+        .then(() => loadSaved(token))
+        .then(() => fetchSelected())
     }
 
     if (once.current) {

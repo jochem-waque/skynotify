@@ -69,20 +69,18 @@ const combined = combine(
     allSelected: false,
   },
   (set, get) => ({
-    setToken: (token: string) =>
-      set(({ token: previous }) => {
-        if (token === previous) {
-          return {}
-        }
+    setToken: async (token: string) => {
+      const { token: previous } = get()
+      if (token === previous) {
+        return
+      }
 
-        if (previous === null) {
-          return { token }
-        }
+      if (previous !== null) {
+        await updateToken(previous, token)
+      }
 
-        // TODO cursed, but seems to work
-        updateToken(previous, token).catch(console.error)
-        return { token }
-      }),
+      set({ token })
+    },
     setActor: (actor: string) => set({ actor }),
     setFollowsCount: (followsCount: number) => set({ followsCount }),
     fetchSelected: async () => {

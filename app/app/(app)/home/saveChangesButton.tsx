@@ -27,7 +27,7 @@ export default function SaveChangesButton() {
       return
     }
 
-    setToken(token)
+    await setToken(token)
 
     try {
       await save(token, exportMap())
