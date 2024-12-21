@@ -13,7 +13,7 @@ export default function NavigationButton() {
   return (
     <svg
       onClick={() => router.back()}
-      className="w-4 flex-shrink-0 cursor-pointer fill-current"
+      className="w-4 shrink-0 cursor-pointer fill-current"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="15.6 15.3 18.4 19.4"
     >

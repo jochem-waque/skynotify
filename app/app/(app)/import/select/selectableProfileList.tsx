@@ -110,7 +110,7 @@ export default function SelectableProfileList({
         <Fragment key={did}>
           <label
             style={{ top: `${(i + lower) * 4.5}rem` }}
-            className="absolute flex min-h-16 w-full cursor-pointer select-none items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:disabled]:opacity-75 has-[:focus-visible]:opacity-75 has-[:focus-visible]:outline dark:bg-neutral-800 dark:outline-white has-[:checked]:dark:bg-blue-600"
+            className="absolute flex min-h-16 w-full cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 transition select-none hover:opacity-75 has-checked:bg-blue-400 has-focus-visible:opacity-75 has-focus-visible:outline-2 has-disabled:opacity-75 dark:bg-neutral-800 dark:has-checked:bg-blue-600"
           >
             <Profile
               avatar={profile.avatar}

@@ -33,7 +33,7 @@ export default function EditableProfile({
   return (
     <div
       aria-disabled={!thisSelected}
-      className="group flex items-center justify-between rounded-lg bg-neutral-100 p-2 transition-colors aria-disabled:bg-opacity-50 dark:bg-neutral-800"
+      className="group aria-disabled:bg-opacity-50 flex items-center justify-between rounded-lg bg-neutral-100 p-2 transition-colors dark:bg-neutral-800"
     >
       <div className="flex flex-col gap-2 transition-opacity group-aria-disabled:pointer-events-none group-aria-disabled:opacity-50">
         <Profile
@@ -42,22 +42,22 @@ export default function EditableProfile({
           displayName={profile.displayName}
         ></Profile>
         <form className="flex flex-wrap gap-2">
-          <label className="flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-700 dark:outline-white has-[:checked]:dark:bg-blue-600">
+          <label className="flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 transition hover:opacity-75 has-checked:bg-blue-400 has-focus-visible:outline-2 dark:bg-neutral-700 dark:has-checked:bg-blue-600">
             <span className="select-none">Posts</span>
             <NotifyPostsInput did={did}></NotifyPostsInput>
           </label>
-          <label className="flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-700 dark:outline-white has-[:checked]:dark:bg-blue-600">
+          <label className="flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 transition hover:opacity-75 has-checked:bg-blue-400 has-focus-visible:outline-2 dark:bg-neutral-700 dark:has-checked:bg-blue-600">
             <span className="select-none">Reposts</span>
             <NotifyRepostsInput did={did}></NotifyRepostsInput>
           </label>
-          <label className="flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 outline-2 outline-black transition hover:opacity-75 has-[:checked]:bg-blue-400 has-[:focus-visible]:outline dark:bg-neutral-700 dark:outline-white has-[:checked]:dark:bg-blue-600">
+          <label className="flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 transition hover:opacity-75 has-checked:bg-blue-400 has-focus-visible:outline-2 dark:bg-neutral-700 dark:has-checked:bg-blue-600">
             <span className="select-none">Replies</span>
             <NotifyRepliesInput did={did}></NotifyRepliesInput>
           </label>
         </form>
       </div>
       <button
-        className="aspect-square min-w-8 rounded-full bg-neutral-200 transition hover:opacity-75 group-aria-disabled:rotate-45 dark:bg-neutral-700"
+        className="aspect-square min-w-8 rounded-full bg-neutral-200 transition group-aria-disabled:rotate-45 hover:opacity-75 dark:bg-neutral-700"
         type="button"
         onClick={click}
       >

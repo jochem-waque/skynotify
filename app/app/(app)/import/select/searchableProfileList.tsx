@@ -27,7 +27,7 @@ export default function SearchableProfileList() {
 
   return (
     <>
-      <div className="sticky top-2 z-10 flex rounded-lg after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white after:dark:bg-neutral-900">
+      <div className="sticky top-2 z-10 flex rounded-lg after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white dark:after:bg-neutral-900">
         <svg
           onClick={click}
           className="z-10 box-content w-5 cursor-pointer rounded-l-lg bg-neutral-100 fill-current p-2 dark:bg-neutral-800"
