@@ -363,7 +363,7 @@ func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
 func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 	err := writeCommitPoint(evt)
 	if err != nil {
-		slog.Error("processCommit", "error", err)
+		slog.Warn("processCommit", "error", err)
 	}
 
 	if evt.TooBig {
