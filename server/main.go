@@ -479,7 +479,17 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 		}
 
 		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") && len(rows) > 0 {
-			// TODO check applicable tokens early
+			tokens := []string{}
+			for _, row := range rows {
+				if row.Reposts {
+					tokens = append(tokens, row.Token)
+				}
+			}
+
+			if len(tokens) == 0 {
+				continue
+			}
+
 			if err = openRepo(evt, &r); err != nil {
 				return messages, fmt.Errorf("processOps: %w", err)
 			}
@@ -499,13 +509,6 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 				return messages, fmt.Errorf("processOps: %w", err)
 			}
 
-			tokens := []string{}
-			for _, row := range rows {
-				if row.Reposts {
-					tokens = append(tokens, row.Token)
-				}
-			}
-
 			for chunk := range slices.Chunk(tokens, 500) {
 				message.Tokens = chunk
 				messages = append(messages, message)
@@ -515,7 +518,6 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 		}
 
 		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") && len(rows) > 0 {
-			// TODO check applicable tokens early
 			if err = openRepo(evt, &r); err != nil {
 				return messages, fmt.Errorf("processOps: %w", err)
 			}
