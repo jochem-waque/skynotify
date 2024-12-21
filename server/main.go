@@ -52,7 +52,7 @@ var nWriteApi api.WriteAPI
 var fWriteApi api.WriteAPI
 
 var retryMessages *retry.RetryMessages = &retry.RetryMessages{
-	Retries: 3,
+	Retries: 10,
 	Delay:   5 * time.Minute,
 	Action:  sendMessage,
 }
