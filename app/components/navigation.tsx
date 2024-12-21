@@ -12,7 +12,7 @@ export default function Navigation() {
   const pathname = usePathname()
 
   return (
-    <nav className="sticky bottom-0 z-20 flex w-full justify-center gap-2 bg-neutral-100 py-1 dark:bg-neutral-950">
+    <nav className="sticky bottom-0 z-20 flex w-full justify-center gap-2 bg-neutral-100 py-2 pb-4 sm:pb-2 dark:bg-neutral-950">
       <Link
         className={`${pathname === "/home" ? "bg-neutral-200 dark:bg-neutral-900" : ""} flex h-12 w-20 flex-col items-center justify-center rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-900`}
         href="/home"
