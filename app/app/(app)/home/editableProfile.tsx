@@ -6,7 +6,8 @@
 "use client"
 
 import Profile from "@/components/profile"
-import { Profile as ProfileData, useDataStore } from "@/util/store"
+import type { Profile as ProfileData } from "@/util/profile"
+import { useDataStore } from "@/util/store"
 import { useState } from "react"
 import NotifyPostsInput from "../import/specify/notifyPostsInput"
 import NotifyRepliesInput from "../import/specify/notifyRepliesInput"

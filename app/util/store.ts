@@ -12,36 +12,12 @@ import {
   AppBskyGraphGetFollows,
   AtpAgent,
 } from "@atproto/api"
-import { ProfileView } from "@atproto/api/dist/client/types/app/bsky/actor/defs"
 import { initializeApp } from "firebase/app"
 import { getMessaging, Messaging } from "firebase/messaging"
 import { parse, stringify } from "superjson"
 import { create, StateCreator } from "zustand"
 import { combine, persist, PersistStorage } from "zustand/middleware"
-
-export type Profile = {
-  handle: string
-  displayName?: string
-  description?: string
-  avatar?: string
-}
-
-export function pickProfile({
-  handle,
-  displayName,
-  description,
-  avatar,
-}: Pick<
-  ProfileView,
-  "handle" | "displayName" | "description" | "avatar"
->): Profile {
-  return {
-    handle,
-    displayName,
-    description,
-    avatar: avatar?.replace("/avatar/", "/avatar_thumbnail/"),
-  }
-}
+import { pickProfile, Profile } from "./profile"
 
 type Write<T, U> = Omit<T, keyof U> & U
 type StateFromCombine<T> =
