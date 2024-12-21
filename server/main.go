@@ -419,7 +419,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 
 			token := message.Tokens[i]
 			if _, err = querier.InvalidateToken(context.Background(), token); err != nil {
-				slog.Error("processCommit", "error", response.Error)
+				slog.Error("processCommit", "error", err)
 				continue
 			}
 
