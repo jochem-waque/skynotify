@@ -28,6 +28,7 @@ import (
 	"github.com/Jochem-W/skynotify/server/heartbeat"
 	"github.com/Jochem-W/skynotify/server/post"
 	"github.com/Jochem-W/skynotify/server/repost"
+	"github.com/Jochem-W/skynotify/server/retry"
 	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/api/bsky"
@@ -49,6 +50,12 @@ var querier *db.DBQuerier
 
 var nWriteApi api.WriteAPI
 var fWriteApi api.WriteAPI
+
+var retryMessages *retry.RetryMessages = &retry.RetryMessages{
+	Retries: 3,
+	Delay:   5 * time.Minute,
+	Action:  sendMessage,
+}
 
 func loadEnv() error {
 	if _, err := os.Stat(".env"); err != nil {
@@ -390,47 +397,72 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 	}
 
 	for _, message := range messages {
+		// I think setting the Topic header might act like an FCM topic? Was getting RESOURCE_EXHAUSTED (QUOTA_EXCEEDED)
+		// message.Webpush.Headers["Topic"] = message.Data["tag"]
 		message.Webpush = &messaging.WebpushConfig{Headers: make(map[string]string)}
 		message.Webpush.Headers["TTL"] = "43200" // 12 hours
 		message.Webpush.Headers["Urgency"] = "normal"
-		// I think setting the Topic header might act like an FCM topic? Was getting RESOURCE_EXHAUSTED (QUOTA_EXCEEDED)
-		// message.Webpush.Headers["Topic"] = message.Data["tag"]
-		responses, _ := messagingClient.SendEachForMulticast(context.Background(), &message)
-
-		successCount := 0
-		failCount := 0
-		tag := message.FCMOptions.AnalyticsLabel
-		if tag == "" {
-			tag = "unknown"
-		}
-
-		for i, response := range responses.Responses {
-			if response.Success {
-				successCount += 1
-				continue
-			}
-
-			failCount += 1
-
-			if !errorutils.IsNotFound(response.Error) {
-				slog.Error("processCommit", "error", response.Error)
-				continue
-			}
-
-			token := message.Tokens[i]
-			if _, err = querier.InvalidateToken(context.Background(), token); err != nil {
-				slog.Error("processCommit", "error", err)
-				continue
-			}
-
-			slog.Info("processCommit: invalidated token", "token", token)
-		}
-
-		writeNotificationPoint(tag, true, successCount)
-		writeNotificationPoint(tag, false, failCount)
+		sendMulticast(&message)
 	}
 
 	return nil
+}
+
+func sendMulticast(message *messaging.MulticastMessage) {
+	responses, _ := messagingClient.SendEachForMulticast(context.Background(), message)
+
+	successCount := 0
+	failCount := 0
+	tag := message.FCMOptions.AnalyticsLabel
+	if tag == "" {
+		tag = "unknown"
+	}
+
+	for i, response := range responses.Responses {
+		if response.Success {
+			successCount += 1
+			continue
+		}
+
+		failCount += 1
+
+		if !errorutils.IsNotFound(response.Error) {
+			slog.Error("processCommit", "error", response.Error)
+			singleMessage := messaging.Message{
+				Data:         message.Data,
+				Notification: message.Notification,
+				Android:      message.Android,
+				Webpush:      message.Webpush,
+				APNS:         message.APNS,
+				FCMOptions:   message.FCMOptions,
+				Token:        message.Tokens[i],
+			}
+			retryMessages.Retry(&singleMessage)
+			continue
+		}
+
+		token := message.Tokens[i]
+		if _, err := querier.InvalidateToken(context.Background(), token); err != nil {
+			slog.Error("processCommit", "error", err)
+			continue
+		}
+
+		slog.Info("processCommit: invalidated token", "token", token)
+	}
+
+	writeNotificationPoint(tag, true, successCount)
+	writeNotificationPoint(tag, false, failCount)
+}
+
+func sendMessage(message *messaging.Message) error {
+	_, err := messagingClient.Send(context.Background(), message)
+	tag := message.FCMOptions.AnalyticsLabel
+	if tag == "" {
+		tag = "unknown"
+	}
+
+	writeNotificationPoint(tag, err == nil, 1)
+	return fmt.Errorf("sendMessage: %w", err)
 }
 
 func openRepo(evt *atproto.SyncSubscribeRepos_Commit, r **repo.Repo) error {
