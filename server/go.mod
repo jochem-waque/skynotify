@@ -7,7 +7,7 @@ require (
 	github.com/bluesky-social/indigo v0.0.0-20241220235325-82305ef00362
 	github.com/gorilla/websocket v1.5.3
 	github.com/influxdata/influxdb-client-go/v2 v2.14.0
-	github.com/jackc/pgx/v5 v5.7.1
+	github.com/jackc/pgx/v5 v5.7.2
 	github.com/lpernett/godotenv v0.0.0-20230527005122-0de1d4c5ef5e
 	google.golang.org/api v0.214.0
 )
