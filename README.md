@@ -40,7 +40,7 @@ you'll need to install the following:
 
 - Go
 - Node.js
-  - Node.js 23 is currently not supported
+  - Latest LTS or newer
 - pnpm
 
 ## License
