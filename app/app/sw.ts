@@ -3,10 +3,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { NotificationPayload } from "@/util/notification"
 import { defaultCache } from "@serwist/next/worker"
 import { initializeApp } from "firebase/app"
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw"
-import { get } from "idb-keyval"
+import { get, update } from "idb-keyval"
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist"
 import { Serwist } from "serwist"
 
@@ -70,6 +71,11 @@ onBackgroundMessage(messaging, (payload) => {
   if (!title) {
     return
   }
+
+  update<NotificationPayload[]>("history", (old) => [
+    { title, body, icon, image, tag, timestamp, url },
+    ...(old ?? []),
+  ])
 
   self.registration.showNotification(title, {
     badge: "/badge.png",
