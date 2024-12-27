@@ -27,6 +27,12 @@ export default function manifest(): MetadataRoute.Manifest {
         url: `https://${process.env.NEXT_PUBLIC_HOSTNAME}/manifest.webmanifest`,
       },
     ],
+    protocol_handlers: [
+      {
+        protocol: "web+skynotify",
+        url: "/link/url=%s",
+      },
+    ],
     icons: [
       {
         src: "/icon-192x192.png",
