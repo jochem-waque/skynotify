@@ -34,19 +34,36 @@ var users = struct {
 	m map[string]*User
 }{m: make(map[string]*User)}
 
-func Exists(did string) bool {
+func read(did string) (*User, bool) {
 	users.RLock()
-	_, ok := users.m[did]
+
+	user, ok := users.m[did]
+
 	users.RUnlock()
+
+	return user, ok
+}
+
+func write(user *User) {
+	users.Lock()
+
+	if user.Handle == "handle.invalid" {
+		delete(users.m, user.Did)
+	} else {
+		users.m[user.Did] = user
+	}
+
+	users.Unlock()
+}
+
+func Exists(did string) bool {
+	_, ok := read(did)
 
 	return ok
 }
 
 func GetOrFetch(did string) (*User, error) {
-	users.RLock()
-	user, ok := users.m[did]
-	users.RUnlock()
-
+	user, ok := read(did)
 	if ok {
 		return user, nil
 	}
@@ -65,10 +82,7 @@ func GetOrFetch(did string) (*User, error) {
 	rec, err := atproto.RepoGetRecord(context.Background(), user.Client, "", "app.bsky.actor.profile", user.Did, "self")
 	var xerr *xrpc.Error
 	if errors.As(err, &xerr) && xerr.StatusCode == 400 {
-		users.Lock()
-		users.m[user.Did] = user
-		users.Unlock()
-
+		write(user)
 		return user, nil
 	}
 
@@ -89,18 +103,13 @@ func GetOrFetch(did string) (*User, error) {
 		user.Avatar = pr.Avatar.Ref.String()
 	}
 
-	users.Lock()
-	users.m[user.Did] = user
-	users.Unlock()
+	write(user)
 
 	return user, nil
 }
 
 func UpdateIdentity(did string, evt *atproto.SyncSubscribeRepos_Identity) error {
-	users.RLock()
-	user, ok := users.m[did]
-	users.RUnlock()
-
+	user, ok := read(did)
 	if !ok {
 		return nil
 	}
@@ -117,18 +126,13 @@ func UpdateIdentity(did string, evt *atproto.SyncSubscribeRepos_Identity) error 
 
 	newUser.Client.Host = id.PDSEndpoint()
 
-	users.Lock()
-	users.m[did] = &newUser
-	users.Unlock()
+	write(&newUser)
 
 	return nil
 }
 
 func Update(did string, profile *bsky.ActorProfile) {
-	users.RLock()
-	user, ok := users.m[did]
-	users.RUnlock()
-
+	user, ok := read(did)
 	if !ok {
 		return
 	}
@@ -143,7 +147,5 @@ func Update(did string, profile *bsky.ActorProfile) {
 		newUser.Avatar = profile.Avatar.Ref.String()
 	}
 
-	users.Lock()
-	users.m[did] = &newUser
-	users.Unlock()
+	write(&newUser)
 }
