@@ -37,7 +37,7 @@ func MakeMessage(userData *user.User, path string, repost *bsky.FeedRepost) (mes
 
 	did := atUri.Authority().String()
 
-	author, err := user.GetOrFetch(did)
+	author, err := user.DefaultCache.GetOrFetch(did)
 	if err != nil {
 		return message, fmt.Errorf("repost.MakeMessage: %w", err)
 	}

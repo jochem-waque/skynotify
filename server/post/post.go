@@ -64,7 +64,7 @@ func MakeMessage(userData *user.User, path string, post *bsky.FeedPost) (messagi
 
 		did := parentUri.Authority().String()
 
-		parentUser, err := user.GetOrFetch(did)
+		parentUser, err := user.DefaultCache.GetOrFetch(did)
 		if err != nil {
 			return message, isReply, fmt.Errorf("post.MakeMessage: %w", err)
 		}
@@ -79,7 +79,7 @@ func MakeMessage(userData *user.User, path string, post *bsky.FeedPost) (messagi
 
 		did := quotedUri.Authority().String()
 
-		quotedUser, err := user.GetOrFetch(did)
+		quotedUser, err := user.DefaultCache.GetOrFetch(did)
 		if err != nil {
 			return message, isReply, fmt.Errorf("post.MakeMessage: %w", err)
 		}

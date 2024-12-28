@@ -319,7 +319,7 @@ func main() {
 		RepoIdentity: func(evt *atproto.SyncSubscribeRepos_Identity) error {
 			h.Reset()
 
-			if err := user.UpdateIdentity(evt.Did, evt); err != nil {
+			if err := user.DefaultCache.UpdateIdentity(evt.Did, evt); err != nil {
 				slog.Error("rsc.RepoIdentity", "error", err)
 			}
 
@@ -387,7 +387,7 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 		return fmt.Errorf("processCommit: %w", err)
 	}
 
-	if len(rows) == 0 && !user.Exists(evt.Repo) {
+	if len(rows) == 0 && !user.DefaultCache.Exists(evt.Repo) {
 		return nil
 	}
 
@@ -484,7 +484,7 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 	var r *repo.Repo
 	messages := []messaging.MulticastMessage{}
 
-	userData, err := user.GetOrFetch(evt.Repo)
+	userData, err := user.DefaultCache.GetOrFetch(evt.Repo)
 	if err != nil {
 		return messages, fmt.Errorf("processOps: %w", err)
 	}
@@ -505,7 +505,7 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 				return messages, fmt.Errorf("processOps: couldn't read profile record")
 			}
 
-			user.Update(evt.Repo, pr)
+			user.DefaultCache.Update(evt.Repo, pr)
 
 			continue
 		}

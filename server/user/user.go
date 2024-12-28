@@ -20,6 +20,7 @@ import (
 )
 
 var directory = identity.DefaultDirectory()
+var DefaultCache = &UserCache{data: map[string]*User{}}
 
 type User struct {
 	Did         string
@@ -29,41 +30,41 @@ type User struct {
 	Client      *xrpc.Client
 }
 
-var users = struct {
-	sync.RWMutex
-	m map[string]*User
-}{m: make(map[string]*User)}
+type UserCache struct {
+	mut  sync.RWMutex
+	data map[string]*User
+}
 
-func read(did string) (*User, bool) {
-	users.RLock()
+func (u *UserCache) read(did string) (*User, bool) {
+	u.mut.RLock()
 
-	user, ok := users.m[did]
+	user, ok := u.data[did]
 
-	users.RUnlock()
+	u.mut.RUnlock()
 
 	return user, ok
 }
 
-func write(user *User) {
-	users.Lock()
+func (u *UserCache) write(user *User) {
+	u.mut.Lock()
 
 	if user.Handle == "handle.invalid" {
-		delete(users.m, user.Did)
+		delete(u.data, user.Did)
 	} else {
-		users.m[user.Did] = user
+		u.data[user.Did] = user
 	}
 
-	users.Unlock()
+	u.mut.Unlock()
 }
 
-func Exists(did string) bool {
-	_, ok := read(did)
+func (u *UserCache) Exists(did string) bool {
+	_, ok := u.read(did)
 
 	return ok
 }
 
-func GetOrFetch(did string) (*User, error) {
-	user, ok := read(did)
+func (u *UserCache) GetOrFetch(did string) (*User, error) {
+	user, ok := u.read(did)
 	if ok {
 		return user, nil
 	}
@@ -82,7 +83,7 @@ func GetOrFetch(did string) (*User, error) {
 	rec, err := atproto.RepoGetRecord(context.Background(), user.Client, "", "app.bsky.actor.profile", user.Did, "self")
 	var xerr *xrpc.Error
 	if errors.As(err, &xerr) && xerr.StatusCode == 400 {
-		write(user)
+		u.write(user)
 		return user, nil
 	}
 
@@ -103,13 +104,13 @@ func GetOrFetch(did string) (*User, error) {
 		user.Avatar = pr.Avatar.Ref.String()
 	}
 
-	write(user)
+	u.write(user)
 
 	return user, nil
 }
 
-func UpdateIdentity(did string, evt *atproto.SyncSubscribeRepos_Identity) error {
-	user, ok := read(did)
+func (u *UserCache) UpdateIdentity(did string, evt *atproto.SyncSubscribeRepos_Identity) error {
+	user, ok := u.read(did)
 	if !ok {
 		return nil
 	}
@@ -126,13 +127,13 @@ func UpdateIdentity(did string, evt *atproto.SyncSubscribeRepos_Identity) error 
 
 	newUser.Client.Host = id.PDSEndpoint()
 
-	write(&newUser)
+	u.write(&newUser)
 
 	return nil
 }
 
-func Update(did string, profile *bsky.ActorProfile) {
-	user, ok := read(did)
+func (u *UserCache) Update(did string, profile *bsky.ActorProfile) {
+	user, ok := u.read(did)
 	if !ok {
 		return
 	}
@@ -147,5 +148,5 @@ func Update(did string, profile *bsky.ActorProfile) {
 		newUser.Avatar = profile.Avatar.Ref.String()
 	}
 
-	write(&newUser)
+	u.write(&newUser)
 }
