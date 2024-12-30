@@ -3,27 +3,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import RedirectDropdown from "./redirectDropdown"
+import RedirectRadio from "./redirectRadio"
 
 export default function Page() {
   return (
     <main className="flex flex-col gap-4">
       <h1 className="text-2xl">Settings</h1>
-      <div>
-        <div className="flex gap-2 text-lg">
-          <span>Redirect mode: </span>
-          <RedirectDropdown></RedirectDropdown>
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
+          <h2 className="text-lg">Redirect mode</h2>
+          <RedirectRadio></RedirectRadio>
         </div>
-        <ul className="list-inside list-disc">
-          <li>
-            <span className="font-bold">Direct (fastest)</span>: directly open
-            posts. Opens posts in the browser on some platforms.
-          </li>
-          <li>
-            <span className="font-bold">Indirect</span>: redirect to a page that
-            attempts to open the Bluesky app. Works well on Apple devices.
-          </li>
-        </ul>
       </div>
     </main>
   )

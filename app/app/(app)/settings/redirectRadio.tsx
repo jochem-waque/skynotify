@@ -9,11 +9,13 @@ import { get, update } from "idb-keyval"
 import { ChangeEvent, useEffect, useState } from "react"
 import { UAParser } from "ua-parser-js"
 
-export default function RedirectDropdown() {
+export default function RedirectRadio() {
   const [value, setValue] = useState<string>()
 
-  function change(event: ChangeEvent<HTMLSelectElement>) {
-    setValue(event.currentTarget.value)
+  function change(event: ChangeEvent<HTMLInputElement>) {
+    if (event.currentTarget.checked) {
+      setValue(event.currentTarget.value)
+    }
   }
 
   useEffect(() => {
@@ -46,18 +48,30 @@ export default function RedirectDropdown() {
   }, [])
 
   return (
-    <select
-      className="inline border-b bg-transparent dark:border-white"
+    <fieldset
       disabled={!value}
-      value={value}
-      onChange={change}
+      className="flex flex-col gap-1 disabled:opacity-50"
     >
-      <option className="text-base dark:bg-neutral-900" value="direct">
-        Direct (fastest)
-      </option>
-      <option className="text-base dark:bg-neutral-900" value="manual">
-        Indirect
-      </option>
-    </select>
+      <label>
+        <input
+          type="radio"
+          value="direct"
+          checked={value === "direct"}
+          onChange={change}
+        ></input>{" "}
+        Direct (fastest): directly open posts. Opens posts in the browser on
+        some platforms.
+      </label>
+      <label>
+        <input
+          type="radio"
+          value="manual"
+          checked={value === "manual"}
+          onChange={change}
+        ></input>{" "}
+        Indirect: redirect to a page that attempts to open the Bluesky app.
+        Works well on Apple devices.
+      </label>
+    </fieldset>
   )
 }
