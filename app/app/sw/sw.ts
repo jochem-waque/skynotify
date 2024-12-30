@@ -3,18 +3,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 import { NotificationPayload } from "@/util/notification"
 import { defaultCache } from "@serwist/next/worker"
 import { initializeApp } from "firebase/app"
 import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw"
 import { get, update } from "idb-keyval"
-import type { PrecacheEntry, SerwistGlobalConfig } from "serwist"
-import { Serwist } from "serwist"
+import { PrecacheEntry, Serwist, SerwistGlobalConfig } from "serwist"
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
     __SW_MANIFEST: (PrecacheEntry | string)[] | undefined
   }
+
+  const process: { env: NodeJS.ProcessEnv }
 }
 
 declare const self: ServiceWorkerGlobalScope
