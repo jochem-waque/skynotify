@@ -5,12 +5,14 @@
  */
 "use client"
 
-import { ChangeEvent, MouseEvent, useRef, useState } from "react"
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react"
 import SelectableProfileList from "./selectableProfileList"
 
 export default function SearchableProfileList() {
   const [query, setQuery] = useState("")
   const timeout = useRef<NodeJS.Timeout>(undefined)
+  const previousQuery = useRef<string>("")
+  const parent = useRef<HTMLDivElement>(null)
 
   function change(event: ChangeEvent<HTMLInputElement>) {
     clearTimeout(timeout.current)
@@ -25,9 +27,25 @@ export default function SearchableProfileList() {
     }
   }
 
+  useEffect(() => {
+    if (previousQuery.current === query) {
+      return
+    }
+
+    const rect = parent.current?.getBoundingClientRect()
+    if (!rect) {
+      return
+    }
+
+    window.scrollBy({ top: rect.top - 8 })
+  }, [query])
+
   return (
     <>
-      <div className="sticky top-2 z-10 flex rounded-lg after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white dark:after:bg-neutral-900">
+      <div
+        ref={parent}
+        className="sticky top-2 z-10 flex rounded-lg after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white dark:after:bg-neutral-900"
+      >
         <svg
           onClick={click}
           className="z-10 box-content w-5 cursor-pointer rounded-l-lg bg-neutral-100 fill-current p-2 dark:bg-neutral-800"
@@ -43,10 +61,7 @@ export default function SearchableProfileList() {
           onChange={change}
         ></input>
       </div>
-      <SelectableProfileList
-        query={query}
-        chunkSize={10}
-      ></SelectableProfileList>
+      <SelectableProfileList query={query}></SelectableProfileList>
     </>
   )
 }
