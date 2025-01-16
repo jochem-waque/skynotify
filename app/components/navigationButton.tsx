@@ -5,20 +5,44 @@
  */
 "use client"
 
-import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { ComponentProps } from "react"
 
-export default function NavigationButton() {
-  const router = useRouter()
+type Props = {
+  active: boolean
+  icon: string
+  title: string
+  href: string
+}
+
+export default function NavigationButton({
+  active,
+  icon,
+  title,
+  href,
+  ...rest
+}: Props & Omit<ComponentProps<typeof Link>, keyof Props & "className">) {
+  if (active) {
+    return (
+      <Link
+        className="flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg bg-neutral-300 hover:bg-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-900"
+        href={href}
+        {...rest}
+      >
+        <h2>{icon}</h2>
+        <h1 className="text-sm">{title}</h1>
+      </Link>
+    )
+  }
 
   return (
-    <svg
-      onClick={() => router.back()}
-      className="w-4 shrink-0 cursor-pointer fill-current"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="15.6 15.3 18.4 19.4"
+    <Link
+      className="flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900"
+      href={href}
+      {...rest}
     >
-      <path d="M25.3 34.7L15.6 25l9.7-9.7 1.4 1.4-8.3 8.3 8.3 8.3z"></path>{" "}
-      <path d="M17 24h17v2H17z"></path>
-    </svg>
+      <span>{icon}</span>
+      <span className="text-sm">{title}</span>
+    </Link>
   )
 }

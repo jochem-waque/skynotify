@@ -21,7 +21,6 @@ export default function Page() {
   return (
     <>
       <main className="flex flex-col gap-4">
-        <h1 className="text-2xl">Set notifications</h1>
         <div className="flex flex-col gap-2">
           <p>
             Select the kinds of notifications you&apos;d like to receive from

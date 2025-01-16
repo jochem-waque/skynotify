@@ -16,7 +16,6 @@ export default function Page() {
   return (
     <>
       <main className="flex grow flex-col gap-4">
-        <h1 className="text-2xl">Import following</h1>
         <div className="flex flex-col gap-2">
           <p>Let&apos;s import your Bluesky following!</p>
           <ProgressBar></ProgressBar>

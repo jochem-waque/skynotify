@@ -5,9 +5,9 @@
  */
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { MouseEvent, useRef } from "react"
+import NavigationButton from "./navigationButton"
 
 export default function Navigation() {
   const ref = useRef<HTMLElement>(null)
@@ -44,45 +44,34 @@ export default function Navigation() {
       ref={ref}
       className="sticky bottom-0 left-0 z-20 flex min-w-full [justify-content:safe_center] gap-2 overflow-x-auto bg-neutral-200 p-2 pb-4 sm:pb-2 dark:bg-neutral-950"
     >
-      <Link
-        className={`${pathname === "/home" ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
+      <NavigationButton
         href="/home"
+        title="Home"
+        icon="🏠"
+        active={pathname === "/home"}
         onClick={click}
-      >
-        <span>🏠</span>
-        <span className="text-sm">Home</span>
-      </Link>
-      <Link
-        className={`${pathname === "/history" ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
+      ></NavigationButton>
+      <NavigationButton
         href="/history"
+        title="History"
+        icon="🗒️"
+        active={pathname === "/history"}
         onClick={click}
-      >
-        <span>🗒️</span>
-        <span className="text-sm">History</span>
-      </Link>
-      <Link
-        className={`${pathname.startsWith("/import") ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
+      ></NavigationButton>
+      <NavigationButton
         href="/import"
+        title="Import"
+        icon="📲"
+        active={pathname.startsWith("/import")}
         onClick={click}
-      >
-        <span>📲</span>
-        <span className="text-sm">Import</span>
-      </Link>
-      {/* <Link
-        className={`${pathname === "/about" ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
-        href="/about"
-      >
-        <span>❔</span>
-        <span className="text-sm">About</span>
-      </Link> */}
-      <Link
-        className={`${pathname === "/settings" ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
+      ></NavigationButton>
+      <NavigationButton
         href="/settings"
+        title="Settings"
+        icon="⚙️"
+        active={pathname === "/settings"}
         onClick={click}
-      >
-        <span>⚙️</span>
-        <span className="text-sm">Settings</span>
-      </Link>
+      ></NavigationButton>
     </nav>
   )
 }

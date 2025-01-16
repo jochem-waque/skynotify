@@ -19,7 +19,6 @@ export default function Page() {
   return (
     <>
       <main className="flex flex-col gap-4">
-        <h1 className="text-2xl">Select profiles</h1>
         <div className="flex flex-col gap-2">
           <p>
             Select all the profiles you&apos;d like to receive notifications
