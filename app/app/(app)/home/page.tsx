@@ -17,22 +17,20 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <>
-      <main className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <p>
-            You&apos;re currently receiving notifications for the following
-            accounts:
-          </p>
-          <PruneProfiles></PruneProfiles>
-          <ProgressBar></ProgressBar>
-          <Configuration></Configuration>
-          <div className="sticky bottom-18 flex w-full flex-col gap-2 after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%*(1+1/3))] after:w-full after:bg-neutral-100 dark:after:bg-neutral-900">
-            <SaveChangesButton></SaveChangesButton>
-          </div>
+    <main className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <p>
+          You&apos;re currently receiving notifications for the following
+          accounts:
+        </p>
+        <PruneProfiles></PruneProfiles>
+        <ProgressBar></ProgressBar>
+        <Configuration></Configuration>
+        <div className="sticky bottom-18 flex w-full flex-col gap-2 after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%*(1+1/3))] after:w-full after:bg-neutral-100 dark:after:bg-neutral-900">
+          <SaveChangesButton></SaveChangesButton>
         </div>
-        <Dialog></Dialog>
-      </main>
-    </>
+      </div>
+      <Dialog></Dialog>
+    </main>
   )
 }

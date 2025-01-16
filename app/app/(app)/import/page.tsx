@@ -14,14 +14,12 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <>
-      <main className="flex grow flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <p>Let&apos;s import your Bluesky following!</p>
-          <ProgressBar></ProgressBar>
-          <ImportFollowingSuspenseful></ImportFollowingSuspenseful>
-        </div>
-      </main>
-    </>
+    <main className="flex grow flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <p>Let&apos;s import your Bluesky following!</p>
+        <ProgressBar></ProgressBar>
+        <ImportFollowingSuspenseful></ImportFollowingSuspenseful>
+      </div>
+    </main>
   )
 }
