@@ -5,22 +5,25 @@
  */
 "use client"
 
+import SearchableList from "@/components/searchableList"
 import { useDataStore } from "@/util/store"
 import EditableProfile from "./editableProfile"
 
-// TODO in the future, this might need infinite scroll and a searchbar too
 export default function Configuration() {
   const profiles = useDataStore((state) => state.profiles)
 
   return (
-    <>
-      {[...profiles.entries()].map(([did, profile]) => (
+    <SearchableList
+      items={[...profiles.entries()].map(([did, value]) => ({ did, ...value }))}
+      renderItem={({ did, ...profile }) => (
         <EditableProfile
           key={did}
           did={did}
           profile={profile}
         ></EditableProfile>
-      ))}
-    </>
+      )}
+      keys={["handle", "displayName", "description"]}
+      placeholder="Search profiles"
+    ></SearchableList>
   )
 }
