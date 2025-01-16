@@ -56,6 +56,12 @@ export default async function Page({
         >
           Click here if you&apos;re not redirected
         </Link>
+        <Link
+          className="mt-8 text-blue-500 underline transition-opacity hover:opacity-75"
+          href={"/"}
+        >
+          Return to home
+        </Link>
       </div>
       <Footer></Footer>
       <Redirect href={redirectUrl.toString()}></Redirect>
