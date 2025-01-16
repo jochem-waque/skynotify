@@ -7,7 +7,6 @@ import OpenBackgroundNotifications from "@/components/openBackgroundNotification
 import UpdateToken from "@/components/updateToken"
 import { Metadata, Viewport } from "next"
 import { Noto_Sans, Noto_Sans_Mono } from "next/font/google"
-import Script from "next/script"
 import "./globals.css"
 
 const font = Noto_Sans({
@@ -57,15 +56,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${font.variable} ${mono.variable} font-sans`}>
-      {process.env.NODE_ENV === "development" && (
-        <head>
-          <Script
+      <head>
+        {process.env.NODE_ENV === "development" && (
+          <script
             src="https://unpkg.com/react-scan/dist/auto.global.js"
-            strategy="beforeInteractive"
-          ></Script>
-        </head>
-      )}
-      <body>
+            async
+          ></script>
+        )}
         <script
           key="website-data"
           type="application/ld+json"
@@ -78,6 +75,8 @@ export default function RootLayout({
             }),
           }}
         ></script>
+      </head>
+      <body>
         <div className="relative flex min-h-[100svh] w-full grow flex-col">
           {children}
         </div>
