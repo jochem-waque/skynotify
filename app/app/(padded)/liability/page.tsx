@@ -7,7 +7,7 @@ import Footer from "@/components/footer"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Liability Disclaimer | SkyNotify",
+  title: "Liability disclaimer | SkyNotify",
   robots: "none",
 }
 

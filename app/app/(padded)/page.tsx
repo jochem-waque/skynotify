@@ -10,7 +10,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Real-time Bluesky Post Notifications | SkyNotify",
+  title: "Real-time Bluesky post notifications | SkyNotify",
 }
 
 export default async function Page() {

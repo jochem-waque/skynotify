@@ -12,6 +12,7 @@ import SaveChangesButton from "./saveChangesButton"
 
 export const metadata: Metadata = {
   title: "Overview | SkyNotify",
+  robots: "none",
 }
 
 export default function Page() {

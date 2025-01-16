@@ -4,6 +4,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Footer from "@/components/footer"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Privacy policy changes | SkyNotify",
+  robots: "none",
+}
 
 export default function Page() {
   return (

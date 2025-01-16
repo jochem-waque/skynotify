@@ -3,7 +3,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { Metadata } from "next"
 import RedirectRadio from "./redirectRadio"
+
+export const metadata: Metadata = {
+  title: "Settings | SkyNotify",
+  robots: "none",
+}
 
 export default function Page() {
   return (
