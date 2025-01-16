@@ -4,6 +4,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Navigation from "@/components/navigation"
+import OpenBackgroundNotifications from "./openBackgroundNotifications"
+import UpdateToken from "./updateToken"
 
 export default function Layout({
   children,
@@ -16,6 +18,8 @@ export default function Layout({
         {children}
       </div>
       <Navigation></Navigation>
+      <OpenBackgroundNotifications></OpenBackgroundNotifications>
+      <UpdateToken></UpdateToken>
     </>
   )
 }

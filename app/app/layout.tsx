@@ -3,8 +3,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import OpenBackgroundNotifications from "@/components/openBackgroundNotifications"
-import UpdateToken from "@/components/updateToken"
 import { Metadata, Viewport } from "next"
 import { Noto_Sans, Noto_Sans_Mono } from "next/font/google"
 import "./globals.css"
@@ -80,8 +78,6 @@ export default function RootLayout({
         <div className="relative flex min-h-[100svh] w-full grow flex-col">
           {children}
         </div>
-        <OpenBackgroundNotifications></OpenBackgroundNotifications>
-        <UpdateToken></UpdateToken>
       </body>
     </html>
   )
