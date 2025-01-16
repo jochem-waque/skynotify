@@ -3,6 +3,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import ProgressBar from "@/components/progressBar"
 import { Metadata } from "next"
 import Configuration from "./configuration"
 import Dialog from "./dialog"
@@ -24,6 +25,7 @@ export default function Page() {
             accounts:
           </p>
           <PruneProfiles></PruneProfiles>
+          <ProgressBar></ProgressBar>
           <Configuration></Configuration>
           <div className="sticky bottom-18 flex w-full flex-col gap-2 after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%*(1+1/3))] after:w-full after:bg-neutral-100 dark:after:bg-neutral-900">
             <SaveChangesButton></SaveChangesButton>

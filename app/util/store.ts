@@ -306,6 +306,7 @@ const combined = combine(
         notifyReposts: new Set(
           result.filter(({ reposts }) => reposts).map(({ target }) => target),
         ),
+        followsCount: result.length,
       })
     },
     pruneProfiles: () =>
