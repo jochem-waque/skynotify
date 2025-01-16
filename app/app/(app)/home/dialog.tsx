@@ -86,7 +86,7 @@ export default function Dialog() {
       {visible && (
         <div
           onMouseDown={toggleVisibility}
-          className="fixed top-0 left-0 z-40 flex h-[100svh] w-[100vw] items-center justify-center bg-black/50 p-2"
+          className="fixed top-0 left-0 z-40 flex h-[100svh] w-[100vw] items-start justify-center bg-black/50 p-2"
         >
           <div className="flex w-full max-w-xl flex-col gap-2 rounded-lg bg-neutral-200 p-2 dark:bg-neutral-800">
             <div className="relative flex flex-col gap-2">
