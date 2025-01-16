@@ -5,6 +5,7 @@
  */
 import { Metadata } from "next"
 import Configuration from "./configuration"
+import Dialog from "./dialog"
 import PruneProfiles from "./pruneProfiles"
 import SaveChangesButton from "./saveChangesButton"
 
@@ -28,6 +29,7 @@ export default function Page() {
             <SaveChangesButton></SaveChangesButton>
           </div>
         </div>
+        <Dialog></Dialog>
       </main>
     </>
   )

@@ -352,6 +352,33 @@ const combined = combine(
           notifyReplies.size >= selected.size &&
           selected.difference(notifyReplies).size === 0,
       })),
+    addProfile: (
+      { did, ...profile }: Profile & { did: string },
+      {
+        posts,
+        replies,
+        reposts,
+      }: { posts: boolean; replies: boolean; reposts: boolean },
+    ) =>
+      set(
+        ({
+          profiles,
+          selected,
+          notifyPosts,
+          notifyReplies,
+          notifyReposts,
+        }) => ({
+          profiles: new Map([[did, profile], ...profiles.entries()]),
+          selected: new Set([did]).union(selected),
+          notifyPosts: posts ? new Set(notifyPosts.add(did)) : notifyPosts,
+          notifyReplies: replies
+            ? new Set(notifyReplies.add(did))
+            : notifyReplies,
+          notifyReposts: reposts
+            ? new Set(notifyReposts.add(did))
+            : notifyReposts,
+        }),
+      ),
     getMessaging: () => {
       let { messaging } = get()
       if (messaging) {
