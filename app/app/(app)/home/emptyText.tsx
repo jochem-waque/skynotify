@@ -5,9 +5,9 @@ import { useDataStore } from "@/util/store"
 export default function EmptyText() {
   const loaded = useDataStore((state) => state.loaded)
   const selected = useDataStore((state) => state.selected)
+  const profiles = useDataStore((state) => state.profiles)
 
-  if (!loaded || selected.size > 0) {
-    console.log(loaded, selected.size)
+  if (!loaded || selected.size > 0 || profiles.size > 0) {
     return null
   }
 
