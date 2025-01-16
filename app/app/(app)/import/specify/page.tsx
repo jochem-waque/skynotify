@@ -22,10 +22,6 @@ export default function Page() {
     <>
       <main className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <p>
-            Select the kinds of notifications you&apos;d like to receive from
-            each profile.
-          </p>
           <div className="flex flex-wrap gap-2">
             <label className="has-checked:bg-primary flex cursor-pointer items-center rounded-full bg-neutral-200 px-3 py-1 transition hover:opacity-75 has-focus-visible:outline-2 dark:bg-neutral-800">
               <NotifyAllPostsInput></NotifyAllPostsInput>

@@ -20,11 +20,6 @@ export default function Page() {
     <>
       <main className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <p>
-            Select all the profiles you&apos;d like to receive notifications
-            for. You&apos;ll be able to specify the kinds of notifications
-            you&apos;d like to receive from each profile later.
-          </p>
           <ToggleSelectAll></ToggleSelectAll>
           <ProgressBar></ProgressBar>
           <SearchableProfileList></SearchableProfileList>
