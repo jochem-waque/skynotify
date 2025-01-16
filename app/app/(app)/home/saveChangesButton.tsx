@@ -15,6 +15,8 @@ export default function SaveChangesButton() {
   const exportMap = useDataStore((state) => state.exportMap)
   const setToken = useDataStore((state) => state.setToken)
   const getMessaging = useDataStore((state) => state.getMessaging)
+  const setUnsaved = useDataStore((state) => state.setUnsaved)
+  const pruneProfiles = useDataStore((state) => state.pruneProfiles)
   const unsaved = useDataStore((state) => state.unsaved)
   const [error, setError] = useState("")
   const [saving, setSaving] = useState(false)
@@ -29,14 +31,14 @@ export default function SaveChangesButton() {
 
     await setToken(token)
 
-    try {
-      await save(token, exportMap())
-    } catch (e) {
-      setSaving(false)
-      throw e
+    const saved = await save(token, exportMap())
+    setSaving(false)
+    if (saved) {
+      setUnsaved(false)
+      pruneProfiles()
+      return
     }
 
-    // redirect works by throwing an error that Next handles
     setError(
       "An unexpected error occurred while saving the configuration, please try again later.",
     )

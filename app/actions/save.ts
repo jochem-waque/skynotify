@@ -8,7 +8,6 @@
 import Drizzle from "@/util/db"
 import { subscriptionTable, tokenTable } from "@/util/schema"
 import { eq } from "drizzle-orm"
-import { redirect } from "next/navigation"
 
 export async function save(
   token: string,
@@ -49,8 +48,8 @@ export async function save(
     })
   } catch (e) {
     console.error(e)
-    return
+    return false
   }
 
-  redirect("/home")
+  return true
 }

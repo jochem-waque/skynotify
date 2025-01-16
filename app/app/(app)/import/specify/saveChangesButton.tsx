@@ -9,6 +9,7 @@ import { save } from "@/actions/save"
 import { useDataStore } from "@/util/store"
 import { FirebaseError } from "firebase/app"
 import { getToken } from "firebase/messaging"
+import { redirect } from "next/navigation"
 import { useState } from "react"
 
 export default function SaveChangesButton() {
@@ -28,11 +29,13 @@ export default function SaveChangesButton() {
 
     await setToken(token)
 
-    await save(token, exportMap())
-
+    const saved = await save(token, exportMap())
     setSaving(false)
 
-    // redirect works by throwing an error that Next handles
+    if (saved) {
+      redirect("/home")
+    }
+
     setError(
       "An unexpected error occurred while saving the configuration, please try again later.",
     )
