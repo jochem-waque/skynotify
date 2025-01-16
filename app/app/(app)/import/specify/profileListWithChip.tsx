@@ -12,7 +12,6 @@ import NotifyPostsInput from "./notifyPostsInput"
 import NotifyRepliesInput from "./notifyRepliesInput"
 import NotifyRepostsInput from "./notifyRepostsInput"
 
-// TODO in the future, this might need infinite scroll and a searchbar too
 export default function ProfileListWithChip() {
   const profiles = useDataStore((state) => state.profiles)
   const selected = useDataStore((state) => state.selected)
