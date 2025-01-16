@@ -103,7 +103,7 @@ export default function ImportFollowing() {
       ></input>
       {error && <span className="text-center text-red-500">{error}</span>}
       <button
-        className="bg-primary rounded-lg p-4 text-center transition-opacity hover:opacity-75 disabled:cursor-wait disabled:opacity-50"
+        className="bg-primary cursor-pointer rounded-lg p-4 text-center transition-opacity hover:opacity-75 disabled:cursor-wait disabled:opacity-50"
         onClick={click}
         type="button"
         disabled={fetching}
