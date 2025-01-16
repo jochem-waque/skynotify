@@ -96,6 +96,7 @@ export default function Dialog() {
                 placeholder="handle.bsky.social"
                 onInput={input}
                 spellCheck={false}
+                autoFocus={true}
               ></input>
               {suggestions && (
                 <div className="absolute top-full -left-2 z-10 flex w-[calc(100%+1rem)] flex-col gap-1 rounded-lg bg-neutral-800 p-2 font-mono">
