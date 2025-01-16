@@ -8,7 +8,7 @@
 import Profile from "@/components/profile"
 import { useDataStore } from "@/util/store"
 import Fuse from "fuse.js"
-import { Fragment, useMemo } from "react"
+import { useMemo } from "react"
 import SelectableProfileInput from "./selectableProfileInput"
 
 export default function SelectableProfileList({ query }: { query: string }) {
@@ -34,16 +34,17 @@ export default function SelectableProfileList({ query }: { query: string }) {
   return (
     <div className="flex w-full grow flex-col gap-2">
       {filteredProfiles.map(([did, profile]) => (
-        <Fragment key={did}>
-          <label className="flex min-h-16 w-full cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 transition select-none hover:opacity-75 has-checked:bg-blue-400 has-focus-visible:opacity-75 has-focus-visible:outline-2 has-disabled:opacity-75 dark:bg-neutral-800 dark:has-checked:bg-blue-600">
-            <Profile
-              avatar={profile.avatar}
-              displayName={profile.displayName}
-              handle={profile.handle}
-            ></Profile>
-            <SelectableProfileInput did={did}></SelectableProfileInput>
-          </label>
-        </Fragment>
+        <label
+          key={did}
+          className="flex min-h-16 w-full cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 transition select-none hover:opacity-75 has-checked:bg-blue-400 has-focus-visible:opacity-75 has-focus-visible:outline-2 has-disabled:opacity-75 dark:bg-neutral-800 dark:has-checked:bg-blue-600"
+        >
+          <Profile
+            avatar={profile.avatar}
+            displayName={profile.displayName}
+            handle={profile.handle}
+          ></Profile>
+          <SelectableProfileInput did={did}></SelectableProfileInput>
+        </label>
       ))}
     </div>
   )
