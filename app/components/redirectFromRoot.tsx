@@ -6,31 +6,29 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 export default function RedirectFromRoot() {
   const router = useRouter()
+  const mql = useRef<MediaQueryList>(null)
 
   useEffect(() => {
-    async function listener(event: MediaQueryListEvent | MediaQueryList) {
-      const registration = await navigator.serviceWorker.ready
-      const subscription = await registration.pushManager.getSubscription()
-
-      if (subscription) {
-        router.replace("/home")
-        return
-      }
-
+    function listener(event: MediaQueryListEvent | MediaQueryList) {
       if (event.matches) {
-        router.replace("/import")
+        router.replace("/home")
       }
     }
 
-    const mql = window.matchMedia("(display-mode: standalone)")
-    listener(mql)
-    mql.addEventListener("change", listener)
+    if (!mql.current) {
+      mql.current = window.matchMedia("(display-mode: standalone)")
+    }
 
-    return () => mql.removeEventListener("change", listener)
+    const current = mql.current
+
+    listener(current)
+    current.addEventListener("change", listener)
+
+    return () => current.removeEventListener("change", listener)
   }, [router])
 
   return null
