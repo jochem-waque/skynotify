@@ -4,12 +4,12 @@ go 1.23.4
 
 require (
 	firebase.google.com/go/v4 v4.15.1
-	github.com/bluesky-social/indigo v0.0.0-20250109200452-eab52046f680
+	github.com/bluesky-social/indigo v0.0.0-20250116012810-3c27339bf07a
 	github.com/gorilla/websocket v1.5.3
 	github.com/influxdata/influxdb-client-go/v2 v2.14.0
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/lpernett/godotenv v0.0.0-20230527005122-0de1d4c5ef5e
-	google.golang.org/api v0.216.0
+	google.golang.org/api v0.217.0
 )
 
 require (
@@ -21,7 +21,7 @@ require (
 	cloud.google.com/go/firestore v1.18.0 // indirect
 	cloud.google.com/go/iam v1.3.1 // indirect
 	cloud.google.com/go/longrunning v0.6.4 // indirect
-	cloud.google.com/go/monitoring v1.22.1 // indirect
+	cloud.google.com/go/monitoring v1.23.0 // indirect
 	cloud.google.com/go/storage v1.50.0 // indirect
 	github.com/DataDog/zstd v1.5.6 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.25.0 // indirect
@@ -144,11 +144,11 @@ require (
 	golang.org/x/time v0.9.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	google.golang.org/appengine/v2 v2.0.6 // indirect
-	google.golang.org/genproto v0.0.0-20250106144421-5f5ef82da422 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250106144421-5f5ef82da422 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250106144421-5f5ef82da422 // indirect
+	google.golang.org/genproto v0.0.0-20250115164207-1a7da9e5054f // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20250115164207-1a7da9e5054f // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
 	google.golang.org/grpc v1.69.4 // indirect
-	google.golang.org/protobuf v1.36.2 // indirect
+	google.golang.org/protobuf v1.36.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/postgres v1.5.11 // indirect
 	gorm.io/gorm v1.25.12 // indirect
