@@ -14,6 +14,7 @@ export default function UpdateToken() {
   const loadSaved = useDataStore((state) => state.loadSaved)
   const fetchSelected = useDataStore((state) => state.fetchSelected)
   const getMessaging = useDataStore((state) => state.getMessaging)
+  const setLoaded = useDataStore((state) => state.setLoaded)
   const once = useRef(true)
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export default function UpdateToken() {
       const registration = await navigator.serviceWorker.ready
       const subscription = await registration.pushManager.getSubscription()
       if (!subscription) {
+        setLoaded()
         return
       }
 
@@ -39,7 +41,7 @@ export default function UpdateToken() {
       once.current = false
       updateToken()
     }
-  }, [setToken, fetchSelected, loadSaved, getMessaging])
+  }, [setToken, fetchSelected, loadSaved, getMessaging, setLoaded])
 
   return null
 }

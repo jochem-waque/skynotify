@@ -7,6 +7,7 @@ import ProgressBar from "@/components/progressBar"
 import { Metadata } from "next"
 import Configuration from "./configuration"
 import Dialog from "./dialog"
+import EmptyText from "./emptyText"
 import PruneProfiles from "./pruneProfiles"
 import SaveChangesButton from "./saveChangesButton"
 
@@ -19,13 +20,10 @@ export default function Page() {
   return (
     <main className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <p>
-          You&apos;re currently receiving notifications for the following
-          accounts:
-        </p>
         <PruneProfiles></PruneProfiles>
         <ProgressBar></ProgressBar>
         <Configuration></Configuration>
+        <EmptyText></EmptyText>
         <div className="sticky bottom-18 flex w-full flex-col gap-2 after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%*(1+1/3))] after:w-full after:bg-neutral-100 dark:after:bg-neutral-900">
           <SaveChangesButton></SaveChangesButton>
         </div>

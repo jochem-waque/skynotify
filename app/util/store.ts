@@ -49,6 +49,7 @@ const combined = combine(
     unsaved: false,
     allSelected: false,
     messaging: null as Messaging | null,
+    loaded: false,
   },
   (set, get) => ({
     setToken: async (token: string) => {
@@ -291,6 +292,7 @@ const combined = combine(
       }),
     loadSaved: async (token: string | null) => {
       if (!token) {
+        set({ loaded: true })
         return
       }
 
@@ -307,8 +309,10 @@ const combined = combine(
           result.filter(({ reposts }) => reposts).map(({ target }) => target),
         ),
         followsCount: result.length,
+        loaded: true,
       })
     },
+    setLoaded: () => set({ loaded: true }),
     pruneProfiles: () =>
       set(({ profiles, selected }) => ({
         profiles: new Map(
