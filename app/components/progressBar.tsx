@@ -25,11 +25,11 @@ export default function ProgressBar() {
         </p>
       )}
       <div
-        className={`${fetching || fetchError ? "mt-0 min-h-1" : "-mt-2 min-h-0"} relative w-full rounded-lg bg-neutral-100 transition-[margin-top,min-height] dark:bg-neutral-800`}
+        className={`${fetching || fetchError ? "mt-0 min-h-1" : "-mt-2 min-h-0"} relative w-full rounded-lg bg-neutral-200 transition-[margin-top,min-height] dark:bg-neutral-800`}
       >
         <div
           style={{ width: `${percentage}%` }}
-          className={`${fetchError ? "bg-red-500" : "bg-blue-400 dark:bg-blue-600"} absolute h-full rounded-lg transition-[width]`}
+          className={`${fetchError ? "bg-red-500" : "bg-primary"} absolute h-full rounded-lg transition-[width]`}
         ></div>
       </div>
     </>

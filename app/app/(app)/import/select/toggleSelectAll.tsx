@@ -14,7 +14,7 @@ export default function ToggleSelectAll() {
   return (
     <button
       onClick={() => toggleSelectAll()}
-      className={`${allSelected ? "bg-blue-400 dark:bg-blue-600" : "bg-neutral-100 dark:bg-neutral-800"} self-start rounded-full px-3 py-1 transition-[opacity,background-color] hover:opacity-75`}
+      className={`${allSelected ? "bg-primary" : "bg-neutral-200 dark:bg-neutral-800"} self-start rounded-full px-3 py-1 transition-[opacity,background-color] hover:opacity-75`}
       type="button"
     >
       {allSelected ? "Deselect all" : "Select all"}

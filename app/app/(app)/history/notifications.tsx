@@ -36,7 +36,7 @@ export default function Notifications() {
     <Link
       key={data.tag}
       href={data.url ?? "https://bsky.app/"}
-      className="w-full rounded-lg bg-neutral-100 p-4 transition-opacity hover:opacity-75 dark:bg-neutral-800"
+      className="w-full rounded-lg bg-neutral-200 p-4 transition-opacity hover:opacity-75 dark:bg-neutral-800"
     >
       <div className="flex items-start gap-2">
         {data.icon && (

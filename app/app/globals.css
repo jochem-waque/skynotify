@@ -5,14 +5,19 @@
  */
 @import "tailwindcss";
 
+@theme {
+  --color-primary: var(--color-blue-400);
+}
+
 @layer base {
   :root {
     color-scheme: light dark;
+    @apply bg-neutral-100 text-black dark:bg-neutral-900 dark:text-white;
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      @apply bg-neutral-900 text-white;
+      --color-primary: var(--color-blue-600);
     }
   }
 }

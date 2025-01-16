@@ -42,10 +42,10 @@ export default function Navigation() {
   return (
     <nav
       ref={ref}
-      className="sticky bottom-0 left-0 z-20 flex min-w-full [justify-content:safe_center] gap-2 overflow-x-auto bg-neutral-100 p-2 pb-4 sm:pb-2 dark:bg-neutral-950"
+      className="sticky bottom-0 left-0 z-20 flex min-w-full [justify-content:safe_center] gap-2 overflow-x-auto bg-neutral-200 p-2 pb-4 sm:pb-2 dark:bg-neutral-950"
     >
       <Link
-        className={`${pathname === "/home" ? "bg-neutral-200 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-900`}
+        className={`${pathname === "/home" ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
         href="/home"
         onClick={click}
       >
@@ -53,7 +53,7 @@ export default function Navigation() {
         <span className="text-sm">Home</span>
       </Link>
       <Link
-        className={`${pathname === "/history" ? "bg-neutral-200 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-900`}
+        className={`${pathname === "/history" ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
         href="/history"
         onClick={click}
       >
@@ -61,7 +61,7 @@ export default function Navigation() {
         <span className="text-sm">History</span>
       </Link>
       <Link
-        className={`${pathname.startsWith("/import") ? "bg-neutral-200 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-900`}
+        className={`${pathname.startsWith("/import") ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
         href="/import"
         onClick={click}
       >
@@ -69,14 +69,14 @@ export default function Navigation() {
         <span className="text-sm">Import</span>
       </Link>
       {/* <Link
-        className={`${pathname === "/about" ? "bg-neutral-200 dark:bg-neutral-900" : ""} flex h-12 w-20 flex-col items-center justify-center rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-900`}
+        className={`${pathname === "/about" ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
         href="/about"
       >
         <span>❔</span>
         <span className="text-sm">About</span>
       </Link> */}
       <Link
-        className={`${pathname === "/settings" ? "bg-neutral-200 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-900`}
+        className={`${pathname === "/settings" ? "bg-neutral-300 dark:bg-neutral-900" : ""} flex h-12 w-20 shrink-0 flex-col items-center justify-center rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900`}
         href="/settings"
         onClick={click}
       >

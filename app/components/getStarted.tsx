@@ -38,7 +38,7 @@ export default function GetStarted() {
     return (
       <button
         type="button"
-        className="w-full max-w-48 rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
+        className="bg-primary w-full max-w-48 rounded-lg p-4 text-center transition-opacity hover:opacity-75"
         onClick={promptAndRedirect}
       >
         Get started
@@ -48,7 +48,7 @@ export default function GetStarted() {
 
   return (
     <Link
-      className="w-full max-w-48 rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
+      className="bg-primary w-full max-w-48 rounded-lg p-4 text-center transition-opacity hover:opacity-75"
       href={"install"}
     >
       Get started

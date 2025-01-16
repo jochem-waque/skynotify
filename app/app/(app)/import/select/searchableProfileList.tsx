@@ -20,7 +20,7 @@ export default function SearchableProfileList() {
       renderItem={({ did, ...profile }) => (
         <label
           key={did}
-          className="flex min-h-16 w-full cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 transition select-none hover:opacity-75 has-checked:bg-blue-400 has-focus-visible:opacity-75 has-focus-visible:outline-2 has-disabled:opacity-75 dark:bg-neutral-800 dark:has-checked:bg-blue-600"
+          className="has-checked:bg-primary flex min-h-16 w-full cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-200 p-2 transition select-none hover:opacity-75 has-focus-visible:opacity-75 has-focus-visible:outline-2 has-disabled:opacity-75 dark:bg-neutral-800"
         >
           <Profile
             avatar={profile.avatar}

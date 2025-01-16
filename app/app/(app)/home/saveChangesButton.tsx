@@ -86,7 +86,7 @@ export default function SaveChangesButton() {
         onClick={click}
         disabled={saving || !unsaved}
         type="button"
-        className={`${saving ? "cursor-wait" : ""} z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:opacity-50 dark:bg-blue-600`}
+        className={`${saving ? "cursor-wait" : ""} bg-primary z-10 w-full rounded-lg p-4 text-center transition-opacity hover:opacity-75 disabled:opacity-50`}
       >
         Save changes
       </button>

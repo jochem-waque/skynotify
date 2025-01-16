@@ -75,11 +75,11 @@ export default function SearchableList<T extends object>({
     <>
       <div
         ref={parent}
-        className="sticky top-2 z-10 flex rounded-lg after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white dark:after:bg-neutral-900"
+        className="sticky top-2 z-10 flex rounded-lg after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-neutral-100 dark:after:bg-neutral-900"
       >
         <svg
           onClick={click}
-          className="z-10 box-content w-5 cursor-pointer rounded-l-lg bg-neutral-100 fill-current p-2 dark:bg-neutral-800"
+          className="z-10 box-content w-5 cursor-pointer rounded-l-lg bg-neutral-200 fill-current p-2 dark:bg-neutral-800"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="10 10 31.66 31.66"
         >
@@ -87,7 +87,7 @@ export default function SearchableList<T extends object>({
           <path d="M32.682 31.267l8.98 8.98-1.414 1.414-8.98-8.98z"></path>
         </svg>
         <input
-          className="z-10 w-full grow rounded-r-lg bg-neutral-100 p-2 font-mono dark:bg-neutral-800"
+          className="z-10 w-full grow rounded-r-lg bg-neutral-200 p-2 font-mono dark:bg-neutral-800"
           placeholder={placeholder}
           onChange={change}
         ></input>

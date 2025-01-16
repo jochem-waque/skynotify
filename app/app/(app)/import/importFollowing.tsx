@@ -102,7 +102,7 @@ export default function ImportFollowing() {
       <input
         ref={ref}
         defaultValue={actor ?? undefined}
-        className="w-full rounded-lg bg-neutral-100 p-2 font-mono dark:bg-neutral-800"
+        className="w-full rounded-lg bg-neutral-200 p-2 font-mono dark:bg-neutral-800"
         spellCheck={false}
         type="url"
         onKeyDown={keyDown}
@@ -110,7 +110,7 @@ export default function ImportFollowing() {
       ></input>
       {error && <span className="text-center text-red-500">{error}</span>}
       <button
-        className="rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 disabled:cursor-wait disabled:opacity-50 dark:bg-blue-600"
+        className="bg-primary rounded-lg p-4 text-center transition-opacity hover:opacity-75 disabled:cursor-wait disabled:opacity-50"
         onClick={click}
         type="button"
         disabled={fetching}
