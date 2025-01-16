@@ -5,63 +5,32 @@
  */
 "use client"
 
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react"
-import SelectableProfileList from "./selectableProfileList"
+import Profile from "@/components/profile"
+import SearchableList from "@/components/searchableList"
+import { useDataStore } from "@/util/store"
+import SelectableProfileInput from "./selectableProfileInput"
 
 export default function SearchableProfileList() {
-  const [query, setQuery] = useState("")
-  const timeout = useRef<NodeJS.Timeout>(undefined)
-  const previousQuery = useRef<string>("")
-  const parent = useRef<HTMLDivElement>(null)
-
-  function change(event: ChangeEvent<HTMLInputElement>) {
-    clearTimeout(timeout.current)
-    const value = event.currentTarget.value
-    timeout.current = setTimeout(() => setQuery(value), 200)
-  }
-
-  function click(event: MouseEvent<SVGSVGElement>) {
-    const sibling = event.currentTarget.nextElementSibling
-    if (sibling instanceof HTMLInputElement) {
-      sibling.focus()
-    }
-  }
-
-  useEffect(() => {
-    if (previousQuery.current === query) {
-      return
-    }
-
-    const rect = parent.current?.getBoundingClientRect()
-    if (!rect) {
-      return
-    }
-
-    window.scrollBy({ top: rect.top - 8 })
-  }, [query])
+  const profiles = useDataStore((state) => state.profiles)
 
   return (
-    <>
-      <div
-        ref={parent}
-        className="sticky top-2 z-10 flex rounded-lg after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white dark:after:bg-neutral-900"
-      >
-        <svg
-          onClick={click}
-          className="z-10 box-content w-5 cursor-pointer rounded-l-lg bg-neutral-100 fill-current p-2 dark:bg-neutral-800"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="10 10 31.66 31.66"
+    <SearchableList
+      placeholder="Search following"
+      items={[...profiles.entries()].map(([did, value]) => ({ did, ...value }))}
+      renderItem={({ did, ...profile }) => (
+        <label
+          key={did}
+          className="flex min-h-16 w-full cursor-pointer items-center justify-between gap-2 rounded-lg bg-neutral-100 p-2 transition select-none hover:opacity-75 has-checked:bg-blue-400 has-focus-visible:opacity-75 has-focus-visible:outline-2 has-disabled:opacity-75 dark:bg-neutral-800 dark:has-checked:bg-blue-600"
         >
-          <path d="M23 36c-7.2 0-13-5.8-13-13s5.8-13 13-13 13 5.8 13 13-5.8 13-13 13zm0-24c-6.1 0-11 4.9-11 11s4.9 11 11 11 11-4.9 11-11-4.9-11-11-11z"></path>
-          <path d="M32.682 31.267l8.98 8.98-1.414 1.414-8.98-8.98z"></path>
-        </svg>
-        <input
-          className="z-10 w-full grow rounded-r-lg bg-neutral-100 p-2 font-mono dark:bg-neutral-800"
-          placeholder="Search following"
-          onChange={change}
-        ></input>
-      </div>
-      <SelectableProfileList query={query}></SelectableProfileList>
-    </>
+          <Profile
+            avatar={profile.avatar}
+            displayName={profile.displayName}
+            handle={profile.handle}
+          ></Profile>
+          <SelectableProfileInput did={did}></SelectableProfileInput>
+        </label>
+      )}
+      keys={["handle", "displayName", "description"]}
+    ></SearchableList>
   )
 }
