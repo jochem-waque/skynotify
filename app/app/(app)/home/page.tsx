@@ -24,7 +24,7 @@ export default function Page() {
           </p>
           <PruneProfiles></PruneProfiles>
           <Configuration></Configuration>
-          <div className="sticky bottom-16 flex w-full flex-col gap-2 after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%*(1+1/3))] after:w-full after:bg-white dark:after:bg-neutral-900">
+          <div className="sticky bottom-18 flex w-full flex-col gap-2 after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%*(1+1/3))] after:w-full after:bg-white dark:after:bg-neutral-900">
             <SaveChangesButton></SaveChangesButton>
           </div>
         </div>

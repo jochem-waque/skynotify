@@ -29,7 +29,7 @@ export default function Page() {
           <ToggleSelectAll></ToggleSelectAll>
           <ProgressBar></ProgressBar>
           <SearchableProfileList></SearchableProfileList>
-          <div className="sticky bottom-16 flex w-full after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white dark:after:bg-neutral-900">
+          <div className="sticky bottom-18 flex w-full after:absolute after:-bottom-2 after:z-0 after:h-[calc(100%+1rem)] after:w-full after:bg-white dark:after:bg-neutral-900">
             <Link
               href="specify"
               className="z-10 w-full rounded-lg bg-blue-400 p-4 text-center transition-opacity hover:opacity-75 dark:bg-blue-600"
