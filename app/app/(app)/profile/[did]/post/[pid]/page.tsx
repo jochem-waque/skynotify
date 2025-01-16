@@ -3,7 +3,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Footer from "@/components/footer"
 import { Metadata } from "next"
 import { headers } from "next/headers"
 import Link from "next/link"
@@ -56,14 +55,7 @@ export default async function Page({
         >
           Click here if you&apos;re not redirected
         </Link>
-        <Link
-          className="mt-8 text-blue-500 underline transition-opacity hover:opacity-75"
-          href={"/"}
-        >
-          Return to home
-        </Link>
       </div>
-      <Footer></Footer>
       <Redirect href={redirectUrl.toString()}></Redirect>
     </>
   )
