@@ -30,6 +30,9 @@ type StateFromCombine<T> =
 
 const combined = combine(
   {
+    atpAgent: new AtpAgent({
+      service: "https://public.api.bsky.app/",
+    }),
     token: null as string | null,
     actor: null as string | null,
     followsCount: 0,
@@ -63,22 +66,18 @@ const combined = combine(
     setActor: (actor: string) => set({ actor }),
     setFollowsCount: (followsCount: number) => set({ followsCount }),
     fetchSelected: async () => {
-      const { fetching, selected } = get()
+      const { fetching, selected, atpAgent } = get()
       if (fetching) {
         return
       }
 
       set({ fetching: true, profiles: new Map(), fetchError: false })
 
-      const agent = new AtpAgent({
-        service: "https://public.api.bsky.app/",
-      })
-
       const actors = [...selected]
       for (let i = 0; i < actors.length; i += 25) {
         let response: AppBskyActorGetProfiles.Response | undefined = undefined
         try {
-          response = await agent.getProfiles({
+          response = await atpAgent.getProfiles({
             actors: actors.slice(i, i + 25),
           })
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -100,21 +99,19 @@ const combined = combine(
       set({ fetchError: false, fetching: false })
     },
     fetchFollowing: async (actor: string) => {
-      if (get().fetching) {
+      const { fetching, atpAgent } = get()
+
+      if (fetching) {
         return
       }
 
       set({ fetching: true, profiles: new Map(), fetchError: false })
 
-      const agent = new AtpAgent({
-        service: "https://public.api.bsky.app/",
-      })
-
       for (const splitActor of actor.split(",")) {
         let response: AppBskyGraphGetFollows.Response | undefined = undefined
         do {
           try {
-            response = await agent.getFollows({
+            response = await atpAgent.getFollows({
               actor: splitActor,
               limit: 100,
               cursor: response?.data.cursor,

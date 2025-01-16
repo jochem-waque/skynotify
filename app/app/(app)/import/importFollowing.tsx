@@ -6,7 +6,6 @@
 "use client"
 
 import { useDataStore } from "@/util/store"
-import { AtpAgent } from "@atproto/api"
 import { XRPCError } from "@atproto/xrpc"
 import { useRouter, useSearchParams } from "next/navigation"
 import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react"
@@ -17,27 +16,21 @@ export default function ImportFollowing() {
   const setFollowsCount = useDataStore((state) => state.setFollowsCount)
   const actor = useDataStore((state) => state.actor)
   const fetching = useDataStore((state) => state.fetching)
+  const atpAgent = useDataStore((state) => state.atpAgent)
   const [error, setError] = useState<string>("")
   const params = useSearchParams()
   const router = useRouter()
-  const atpAgent = useRef<AtpAgent>(null)
   const ref = useRef<HTMLInputElement>(null)
   const trySkip = useRef(true)
   const removedParam = useRef(false)
 
   const getFollowing = useCallback(
     async (actor: string) => {
-      if (!atpAgent.current) {
-        atpAgent.current = new AtpAgent({
-          service: "https://public.api.bsky.app/",
-        })
-      }
-
       let followCount = 0
       for (const splitActor of actor.split(",")) {
         let response
         try {
-          response = await atpAgent.current.getProfile({ actor: splitActor })
+          response = await atpAgent.getProfile({ actor: splitActor })
         } catch (e) {
           if (!(e instanceof XRPCError)) {
             setError("An unknown error ocurred, please try again later")
@@ -67,7 +60,7 @@ export default function ImportFollowing() {
       fetchFollowing(actor)
       router.push("/import/select")
     },
-    [fetchFollowing, router, setActor, setFollowsCount],
+    [fetchFollowing, router, atpAgent, setActor, setFollowsCount],
   )
 
   function click() {
