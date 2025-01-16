@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2024  Jochem-W
+ * Copyright (C) 2024-2025  Jochem-W
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -21,7 +21,7 @@ export default function Page() {
           <span className="text-sm opacity-50">
             Last updated:{" "}
             <Link className="underline" href="privacy/changes">
-              2024-11-25
+              2024-2025-11-25
             </Link>
           </span>
         </div>
