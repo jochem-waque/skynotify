@@ -421,11 +421,13 @@ func sendMulticast(message *messaging.MulticastMessage) {
 
 		// https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode
 		if errorutils.IsUnknown(response.Error) ||
-			errorutils.IsInvalidArgument(response.Error) ||
 			errorutils.IsResourceExhausted(response.Error) ||
 			errorutils.IsUnavailable(response.Error) ||
 			errorutils.IsInternal(response.Error) {
 			slog.Error("processCommit", "token", message.Tokens[i], "error", response.Error)
+			continue
+		} else if errorutils.IsInvalidArgument(response.Error) {
+			slog.Error("processCommit", "message", message, "error", response.Error)
 			continue
 		}
 
