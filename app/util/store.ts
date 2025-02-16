@@ -54,15 +54,13 @@ const combined = combine(
   (set, get) => ({
     setToken: async (token: string) => {
       const { token: previous } = get()
-      if (token === previous) {
-        return
-      }
-
       if (previous !== null) {
         await updateToken(previous, token)
       }
 
-      set({ token })
+      if (token !== previous) {
+        set({ token })
+      }
     },
     setActor: (actor: string) => set({ actor }),
     setFollowsCount: (followsCount: number) => set({ followsCount }),
