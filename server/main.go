@@ -28,7 +28,6 @@ import (
 	"github.com/Jochem-W/skynotify/server/heartbeat"
 	"github.com/Jochem-W/skynotify/server/post"
 	"github.com/Jochem-W/skynotify/server/repost"
-	"github.com/Jochem-W/skynotify/server/retry"
 	"github.com/Jochem-W/skynotify/server/user"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/api/bsky"
@@ -50,12 +49,6 @@ var querier *db.DBQuerier
 
 var nWriteApi api.WriteAPI
 var fWriteApi api.WriteAPI
-
-var retryMessages *retry.RetryMessages = &retry.RetryMessages{
-	Retries: 3,
-	Delay:   15 * time.Minute,
-	Action:  sendMessage,
-}
 
 func loadEnv() error {
 	if _, err := os.Stat(".env"); err != nil {
@@ -428,16 +421,6 @@ func sendMulticast(message *messaging.MulticastMessage) {
 
 		if !errorutils.IsNotFound(response.Error) {
 			slog.Error("processCommit", "error", response.Error)
-			singleMessage := messaging.Message{
-				Data:         message.Data,
-				Notification: message.Notification,
-				Android:      message.Android,
-				Webpush:      message.Webpush,
-				APNS:         message.APNS,
-				FCMOptions:   message.FCMOptions,
-				Token:        message.Tokens[i],
-			}
-			retryMessages.Retry(&singleMessage)
 			continue
 		}
 
@@ -452,17 +435,6 @@ func sendMulticast(message *messaging.MulticastMessage) {
 
 	writeNotificationPoint(tag, true, successCount)
 	writeNotificationPoint(tag, false, failCount)
-}
-
-func sendMessage(message *messaging.Message) error {
-	_, err := messagingClient.Send(context.Background(), message)
-	tag := message.FCMOptions.AnalyticsLabel
-	if tag == "" {
-		tag = "unknown"
-	}
-
-	writeNotificationPoint(tag, err == nil, 1)
-	return fmt.Errorf("sendMessage: %w", err)
 }
 
 func openRepo(evt *atproto.SyncSubscribeRepos_Commit, r **repo.Repo) error {
