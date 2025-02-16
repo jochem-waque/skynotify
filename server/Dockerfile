@@ -1,4 +1,4 @@
-FROM golang:1.23 AS build
+FROM golang:1.24 AS build
 WORKDIR /usr/src/app
 
 COPY go.mod go.sum ./
@@ -8,7 +8,7 @@ COPY . .
 RUN go build -v -o /usr/local/bin/app
 
 
-FROM golang:1.23
+FROM golang:1.24
 WORKDIR /app
 
 COPY --from=build /usr/local/bin/app .
