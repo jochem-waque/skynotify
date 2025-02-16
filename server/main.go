@@ -401,9 +401,16 @@ func processCommit(evt *atproto.SyncSubscribeRepos_Commit) error {
 	return nil
 }
 
-func formatMessage(m *messaging.MulticastMessage) string {
-	return fmt.Sprintf("&{Tokens:%#v Data:%#v Notification:%#v Webpush:%#v FCMOptions:%#v}",
-		m.Tokens, m.Data, m.Notification, m.Webpush, m.FCMOptions)
+func formatMessage(msg *messaging.MulticastMessage, tk *string) string {
+	var tokens string
+	if tk != nil {
+		tokens = fmt.Sprintf("Token:%s", *tk)
+	} else {
+		tokens = fmt.Sprintf("Tokens:%#v", msg.Tokens)
+	}
+
+	return fmt.Sprintf("&{%s Data:%#v Notification:%#v Webpush:%#v FCMOptions:%#v}",
+		tokens, msg.Data, msg.Notification, msg.Webpush, msg.FCMOptions)
 }
 
 func sendMulticast(message *messaging.MulticastMessage) {
@@ -432,7 +439,7 @@ func sendMulticast(message *messaging.MulticastMessage) {
 			slog.Error("processCommit", "token", message.Tokens[i], "error", response.Error)
 			continue
 		} else if errorutils.IsInvalidArgument(response.Error) {
-			slog.Error("processCommit", "message", formatMessage(message), "error", response.Error)
+			slog.Error("processCommit", "message", formatMessage(message, &message.Tokens[i]), "error", response.Error)
 			continue
 		}
 
