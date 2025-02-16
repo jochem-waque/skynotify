@@ -425,7 +425,7 @@ func sendMulticast(message *messaging.MulticastMessage) {
 			errorutils.IsResourceExhausted(response.Error) ||
 			errorutils.IsUnavailable(response.Error) ||
 			errorutils.IsInternal(response.Error) {
-			slog.Error("processCommit", "error", response.Error)
+			slog.Error("processCommit", "token", message.Tokens[i], "error", response.Error)
 			continue
 		}
 
