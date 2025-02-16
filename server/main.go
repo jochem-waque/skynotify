@@ -419,18 +419,23 @@ func sendMulticast(message *messaging.MulticastMessage) {
 
 		failCount += 1
 
-		if !errorutils.IsNotFound(response.Error) {
+		// https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode
+		if errorutils.IsUnknown(response.Error) ||
+			errorutils.IsInvalidArgument(response.Error) ||
+			errorutils.IsResourceExhausted(response.Error) ||
+			errorutils.IsUnavailable(response.Error) ||
+			errorutils.IsInternal(response.Error) {
 			slog.Error("processCommit", "error", response.Error)
 			continue
 		}
 
 		token := message.Tokens[i]
 		if _, err := querier.InvalidateToken(context.Background(), token); err != nil {
-			slog.Error("processCommit", "error", err)
+			slog.Error("processCommit", "error", err, "previous", response.Error)
 			continue
 		}
 
-		slog.Info("processCommit: invalidated token", "token", token)
+		slog.Info("processCommit: invalidated token", "token", token, "error", response.Error)
 	}
 
 	writeNotificationPoint(tag, true, successCount)
