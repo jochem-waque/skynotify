@@ -20,7 +20,12 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func Connect(postgres *db.PostgresDB, msg *firebase.Messaging, influx *db.Influx, seq int64) (*websocket.Conn, error) {
+// TODO not ideal
+var postgres *db.PostgresDB
+var firebaseMessaging *firebase.Messaging
+var influx *db.Influx
+
+func Connect(pg *db.PostgresDB, msg *firebase.Messaging, inf *db.Influx, seq int64) (*websocket.Conn, error) {
 	uri := "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos"
 	if seq != 0 {
 		slog.Info("Resuming from", "seq", seq)
@@ -35,6 +40,10 @@ func Connect(postgres *db.PostgresDB, msg *firebase.Messaging, influx *db.Influx
 	h, hCtx := heartbeat.NewHeartbeat(time.Minute * 5)
 	ctx, cancel := signal.NotifyContext(hCtx, os.Interrupt, syscall.SIGTERM)
 
+	postgres = pg
+	firebaseMessaging = msg
+	influx = inf
+
 	rsc := &events.RepoStreamCallbacks{
 		RepoIdentity: func(evt *atproto.SyncSubscribeRepos_Identity) error {
 			h.Reset()
@@ -48,7 +57,7 @@ func Connect(postgres *db.PostgresDB, msg *firebase.Messaging, influx *db.Influx
 		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
 			h.Reset()
 
-			if err := processCommit(postgres, msg, influx, evt); err != nil {
+			if err := processCommit(postgres, firebaseMessaging, influx, evt); err != nil {
 				slog.Error("rsc.RepoCommit", "error", err)
 			}
 
