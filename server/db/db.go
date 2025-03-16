@@ -36,8 +36,6 @@ func NewQuerier(conn genericConn) *DBQuerier {
 	return &DBQuerier{conn: conn}
 }
 
-const getSubscriptionsSQL = `SELECT token.token, posts, reposts, replies FROM subscription INNER JOIN token ON token.id = subscription.token WHERE target = $1 AND unregistered IS NULL;`
-
 type GetSubscriptionsRow struct {
 	Token   string `json:"token"`
 	Posts   bool   `json:"posts"`
@@ -46,7 +44,10 @@ type GetSubscriptionsRow struct {
 }
 
 func (q *DBQuerier) GetSubscriptions(ctx context.Context, did string) ([]GetSubscriptionsRow, error) {
-	rows, err := q.conn.Query(ctx, getSubscriptionsSQL, did)
+	rows, err := q.conn.Query(ctx, `SELECT token.token, posts, reposts, replies
+FROM subscription
+INNER JOIN token ON token.id = subscription.token
+WHERE target = $1 AND unregistered IS NULL;`, did)
 	if err != nil {
 		return nil, fmt.Errorf("GetSubscriptions: %w", err)
 	}
@@ -59,10 +60,10 @@ func (q *DBQuerier) GetSubscriptions(ctx context.Context, did string) ([]GetSubs
 	return subscriptions, nil
 }
 
-const invalidateTokenSQL = `UPDATE token SET unregistered = NOW() WHERE token = $1;`
-
 func (q *DBQuerier) InvalidateToken(ctx context.Context, token string) (pgconn.CommandTag, error) {
-	cmdTag, err := q.conn.Exec(ctx, invalidateTokenSQL, token)
+	cmdTag, err := q.conn.Exec(ctx, `UPDATE token
+SET unregistered = NOW()
+WHERE token = $1;`, token)
 	if err != nil {
 		return cmdTag, fmt.Errorf("InvalidateToken: %w", err)
 	}
