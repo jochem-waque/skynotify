@@ -24,6 +24,7 @@ func LoadInflux() (*Influx, error) {
 	token := os.Getenv("INFLUXDB_ADMIN_TOKEN")
 
 	if token == "" {
+		slog.Warn("LoadInflux: not connecting to influx; some functionality may be disabled")
 		return nil, nil
 	}
 
@@ -78,6 +79,8 @@ func LoadInflux() (*Influx, error) {
 		}
 	}
 
+	influx := &Influx{notification: notificationApi, firehose: firehoseApi, client: influxClient}
+
 	tasksApi := influxClient.TasksAPI()
 	tasks, err := tasksApi.FindTasks(context.Background(), &api.TaskFilter{Name: "firehose-downsample"})
 	if err != nil {
@@ -86,7 +89,7 @@ func LoadInflux() (*Influx, error) {
 
 	for _, task := range tasks {
 		if task.Name == "firehose-downsample" {
-			return nil, nil
+			return influx, nil
 		}
 	}
 
@@ -100,7 +103,7 @@ func LoadInflux() (*Influx, error) {
 		return nil, fmt.Errorf("loadInflux: %w", err)
 	}
 
-	return &Influx{notification: notificationApi, firehose: firehoseApi, client: influxClient}, nil
+	return influx, nil
 }
 
 func (i *Influx) Close() {
