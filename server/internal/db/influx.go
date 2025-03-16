@@ -104,9 +104,11 @@ func LoadInflux() (*Influx, error) {
 }
 
 func (i *Influx) Close() {
-	if i.client != nil {
-		i.client.Close()
+	if i == nil || i.client == nil {
+		return
 	}
+
+	i.client.Close()
 }
 
 func (i *Influx) GetLastSeq() (int64, error) {
@@ -144,7 +146,7 @@ func (i *Influx) GetLastSeq() (int64, error) {
 }
 
 func (i *Influx) WriteNotificationPoint(notificationType string, success bool, value int) {
-	if i.notification == nil {
+	if i == nil || i.notification == nil {
 		return
 	}
 
@@ -157,7 +159,7 @@ func (i *Influx) WriteNotificationPoint(notificationType string, success bool, v
 }
 
 func (i *Influx) WriteCommitPoint(evt *atproto.SyncSubscribeRepos_Commit) error {
-	if i.firehose == nil {
+	if i == nil || i.firehose == nil {
 		return nil
 	}
 
