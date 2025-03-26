@@ -8,7 +8,7 @@ import (
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/errorutils"
 	"firebase.google.com/go/v4/messaging"
-	"github.com/Jochem-W/skynotify/server/internal/db"
+	"github.com/jochem-waque/skynotify/server/internal/db"
 	"google.golang.org/api/option"
 )
 

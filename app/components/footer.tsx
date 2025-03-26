@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2024-2025  Jochem-W
+ * Copyright (C) 2024-2025  Jochem Waqué
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -50,9 +50,9 @@ export default function Footer({
           &copy;{" "}
           <Link
             className="underline transition-opacity hover:opacity-75"
-            href="https://github.com/Jochem-W"
+            href="https://github.com/jochem-waque"
           >
-            Jochem-W
+            Jochem Waqué
           </Link>{" "}
           2024-2025
         </span>

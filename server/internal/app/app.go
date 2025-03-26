@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/Jochem-W/skynotify/server/internal/config"
-	"github.com/Jochem-W/skynotify/server/internal/db"
-	"github.com/Jochem-W/skynotify/server/internal/firebase"
-	"github.com/Jochem-W/skynotify/server/internal/firehose"
+	"github.com/jochem-waque/skynotify/server/internal/config"
+	"github.com/jochem-waque/skynotify/server/internal/db"
+	"github.com/jochem-waque/skynotify/server/internal/firebase"
+	"github.com/jochem-waque/skynotify/server/internal/firehose"
 )
 
 type App struct {

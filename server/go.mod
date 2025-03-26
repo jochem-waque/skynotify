@@ -1,4 +1,4 @@
-module github.com/Jochem-W/skynotify/server
+module github.com/jochem-waque/skynotify/server
 
 go 1.24.0
 

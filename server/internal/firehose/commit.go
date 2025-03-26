@@ -6,10 +6,10 @@ import (
 	"log/slog"
 
 	"firebase.google.com/go/v4/messaging"
-	"github.com/Jochem-W/skynotify/server/internal/db"
-	"github.com/Jochem-W/skynotify/server/internal/firebase"
-	"github.com/Jochem-W/skynotify/server/internal/users"
 	"github.com/bluesky-social/indigo/api/atproto"
+	"github.com/jochem-waque/skynotify/server/internal/db"
+	"github.com/jochem-waque/skynotify/server/internal/firebase"
+	"github.com/jochem-waque/skynotify/server/internal/users"
 )
 
 func processCommit(postgres *db.PostgresDB, msg *firebase.Messaging, influx *db.Influx, evt *atproto.SyncSubscribeRepos_Commit) error {

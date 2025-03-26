@@ -5,12 +5,12 @@
   "license": "AGPL-3.0-or-later",
   "homepage": "https://skynotify.co/",
   "bugs": {
-    "url": "https://github.com/Jochem-W/skynotify/issues"
+    "url": "https://github.com/jochem-waque/skynotify/issues"
   },
-  "author": "Jochem-W <admin@skynotify.co> (https://jochem.cc/)",
+  "author": "Jochem Waqué <admin@skynotify.co> (https://jochem.cc/)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jochem-W/skynotify.git",
+    "url": "git+https://github.com/jochem-waque/skynotify.git",
     "directory": "app"
   },
   "engineStrict": true,

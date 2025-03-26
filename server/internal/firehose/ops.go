@@ -7,12 +7,12 @@ import (
 	"strings"
 
 	"firebase.google.com/go/v4/messaging"
-	"github.com/Jochem-W/skynotify/server/internal/db"
-	"github.com/Jochem-W/skynotify/server/internal/messages"
-	"github.com/Jochem-W/skynotify/server/internal/users"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/api/bsky"
 	"github.com/bluesky-social/indigo/repo"
+	"github.com/jochem-waque/skynotify/server/internal/db"
+	"github.com/jochem-waque/skynotify/server/internal/messages"
+	"github.com/jochem-waque/skynotify/server/internal/users"
 )
 
 func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {

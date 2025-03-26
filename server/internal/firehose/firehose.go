@@ -10,14 +10,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Jochem-W/skynotify/server/internal/db"
-	"github.com/Jochem-W/skynotify/server/internal/firebase"
-	"github.com/Jochem-W/skynotify/server/internal/heartbeat"
-	"github.com/Jochem-W/skynotify/server/internal/users"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/events"
 	"github.com/bluesky-social/indigo/events/schedulers/parallel"
 	"github.com/gorilla/websocket"
+	"github.com/jochem-waque/skynotify/server/internal/db"
+	"github.com/jochem-waque/skynotify/server/internal/firebase"
+	"github.com/jochem-waque/skynotify/server/internal/heartbeat"
+	"github.com/jochem-waque/skynotify/server/internal/users"
 )
 
 func Connect(postgres *db.PostgresDB, msg *firebase.Messaging, influx *db.Influx, seq int64) (*websocket.Conn, error) {

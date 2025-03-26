@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2024-2025  Jochem-W
+ * Copyright (C) 2024-2025  Jochem Waqué
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -13,11 +13,11 @@ import (
 	"time"
 
 	"firebase.google.com/go/v4/messaging"
-	"github.com/Jochem-W/skynotify/server/internal/users"
 	"github.com/bluesky-social/indigo/api/atproto"
 	"github.com/bluesky-social/indigo/api/bsky"
 	"github.com/bluesky-social/indigo/atproto/syntax"
 	"github.com/bluesky-social/indigo/xrpc"
+	"github.com/jochem-waque/skynotify/server/internal/users"
 )
 
 func Repost(userData *users.User, path string, repost *bsky.FeedRepost) (messaging.MulticastMessage, error) {
