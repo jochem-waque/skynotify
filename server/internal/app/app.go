@@ -1,6 +1,8 @@
 package app
 
 import (
+	"context"
+
 	"github.com/jochem-waque/skynotify/server/internal/config"
 	"github.com/jochem-waque/skynotify/server/internal/db"
 	"github.com/jochem-waque/skynotify/server/internal/firebase"
@@ -8,6 +10,7 @@ import (
 )
 
 type App struct {
+	Cache     *db.Cache
 	Postgres  *db.PostgresDB
 	Influx    *db.Influx
 	Messaging *firebase.Messaging
@@ -34,7 +37,12 @@ func Init() (*App, error) {
 		return nil, err
 	}
 
-	return &App{Postgres: postgres, Influx: influx, Messaging: firebase}, nil
+	cache, err := db.CreateCache(context.Background(), postgres)
+	if err != nil {
+		return nil, err
+	}
+
+	return &App{Cache: cache, Postgres: postgres, Influx: influx, Messaging: firebase}, nil
 }
 
 func (a *App) Close() {
@@ -43,7 +51,7 @@ func (a *App) Close() {
 }
 
 func (a *App) Connect(seq int64) error {
-	conn, err := firehose.Connect(a.Postgres, a.Messaging, a.Influx, seq)
+	conn, err := firehose.Connect(a.Cache, a.Messaging, a.Influx, seq)
 	if err != nil {
 		return err
 	}

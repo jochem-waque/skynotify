@@ -64,7 +64,7 @@ func (m *Messaging) SendMulticast(message *messaging.MulticastMessage) {
 		}
 
 		token := message.Tokens[i]
-		if _, err := m.postgres.InvalidateToken(context.Background(), token); err != nil {
+		if err := m.postgres.InvalidateToken(context.Background(), token); err != nil {
 			slog.Error("processCommit", "error", err, "previous", response.Error)
 			continue
 		}

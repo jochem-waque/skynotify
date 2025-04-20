@@ -33,7 +33,7 @@ func hasUsefulOp(evt *atproto.SyncSubscribeRepos_Commit) bool {
 	return false
 }
 
-func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptionsRow) ([]messaging.MulticastMessage, error) {
+func processOps(evt *atproto.SyncSubscribeRepos_Commit, subs map[string]db.CacheEntry) ([]messaging.MulticastMessage, error) {
 	var r *repo.Repo
 	multicast := []messaging.MulticastMessage{}
 
@@ -63,11 +63,11 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 			continue
 		}
 
-		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") && len(rows) > 0 {
+		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.repost/") {
 			tokens := []string{}
-			for _, row := range rows {
-				if row.Reposts {
-					tokens = append(tokens, row.Token)
+			for token, entry := range subs {
+				if entry.Reposts {
+					tokens = append(tokens, token)
 				}
 			}
 
@@ -102,7 +102,7 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 			continue
 		}
 
-		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") && len(rows) > 0 {
+		if op.Action == "create" && strings.HasPrefix(op.Path, "app.bsky.feed.post/") {
 			if err = openRepo(evt, &r); err != nil {
 				return multicast, fmt.Errorf("processOps: %w", err)
 			}
@@ -123,9 +123,9 @@ func processOps(evt *atproto.SyncSubscribeRepos_Commit, rows []db.GetSubscriptio
 			}
 
 			tokens := []string{}
-			for _, row := range rows {
-				if reply && row.Replies || !reply && row.Posts {
-					tokens = append(tokens, row.Token)
+			for token, entry := range subs {
+				if reply && entry.Replies || !reply && entry.Posts {
+					tokens = append(tokens, token)
 				}
 			}
 

@@ -20,7 +20,7 @@ import (
 	"github.com/jochem-waque/skynotify/server/internal/users"
 )
 
-func Connect(postgres *db.PostgresDB, msg *firebase.Messaging, influx *db.Influx, seq int64) (*websocket.Conn, error) {
+func Connect(cache *db.Cache, msg *firebase.Messaging, influx *db.Influx, seq int64) (*websocket.Conn, error) {
 	uri := "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos"
 	if seq != 0 {
 		slog.Info("Resuming from", "seq", seq)
@@ -48,7 +48,7 @@ func Connect(postgres *db.PostgresDB, msg *firebase.Messaging, influx *db.Influx
 		RepoCommit: func(evt *atproto.SyncSubscribeRepos_Commit) error {
 			h.Reset()
 
-			if err := processCommit(postgres, msg, influx, evt); err != nil {
+			if err := processCommit(cache, msg, influx, evt); err != nil {
 				slog.Error("rsc.RepoCommit", "error", err)
 			}
 

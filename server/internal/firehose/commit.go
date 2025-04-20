@@ -1,7 +1,6 @@
 package firehose
 
 import (
-	"context"
 	"fmt"
 	"log/slog"
 
@@ -12,7 +11,7 @@ import (
 	"github.com/jochem-waque/skynotify/server/internal/users"
 )
 
-func processCommit(postgres *db.PostgresDB, msg *firebase.Messaging, influx *db.Influx, evt *atproto.SyncSubscribeRepos_Commit) error {
+func processCommit(cache *db.Cache, msg *firebase.Messaging, influx *db.Influx, evt *atproto.SyncSubscribeRepos_Commit) error {
 	err := influx.WriteCommitPoint(evt)
 	if err != nil {
 		slog.Warn("processCommit", "error", err)
@@ -27,16 +26,12 @@ func processCommit(postgres *db.PostgresDB, msg *firebase.Messaging, influx *db.
 		return nil
 	}
 
-	rows, err := postgres.GetSubscriptions(context.Background(), evt.Repo)
-	if err != nil {
-		return fmt.Errorf("processCommit: %w", err)
-	}
-
-	if len(rows) == 0 && !users.DefaultCache.Exists(evt.Repo) {
+	subs := cache.GetSubscriptionsFor(evt.Repo)
+	if len(subs) == 0 && !users.DefaultCache.Exists(evt.Repo) {
 		return nil
 	}
 
-	messages, err := processOps(evt, rows)
+	messages, err := processOps(evt, subs)
 	if err != nil {
 		return fmt.Errorf("processCommit: %w", err)
 	}
